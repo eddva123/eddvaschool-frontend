@@ -1,0 +1,162 @@
+import React, { useState, useEffect } from 'react';
+import { Bell, Plus, Edit2, Trash2 } from 'lucide-react';
+import api from '../../services/api';
+import Modal from '../../components/admin/Modal';
+import NoticeForm from '../../components/admin/forms/NoticeForm';
+
+export default function Notices() {
+  const [notices, setNotices] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedNotice, setSelectedNotice] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    fetchNotices();
+  }, []);
+
+  const fetchNotices = async () => {
+    try {
+      const res = await api.get('/notices');
+      setNotices(Array.isArray(res.data) ? res.data : []);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAddClick = () => {
+    setSelectedNotice(null);
+    setIsModalOpen(true);
+  };
+
+  const handleEditClick = (notice) => {
+    setSelectedNotice(notice);
+    setIsModalOpen(true);
+  };
+
+  const handleDeleteClick = async (id) => {
+    if (confirm('Are you sure you want to delete this notice?')) {
+      try {
+        await api.delete(`/notices/${id}`);
+        setNotices(notices.filter(n => n.id !== id));
+      } catch (error) {
+        alert('Failed to delete notice');
+      }
+    }
+  };
+
+  const handleSubmit = async (formData) => {
+    setIsSubmitting(true);
+    try {
+      if (selectedNotice) {
+        const res = await api.put(`/notices/${selectedNotice.id}`, formData);
+        setNotices(notices.map(n => n.id === selectedNotice.id ? res.data : n));
+      } else {
+        const res = await api.post('/notices', formData);
+        setNotices([...notices, res.data]);
+      }
+      setIsModalOpen(false);
+      setSelectedNotice(null);
+    } catch (error) {
+      alert(error.response?.data?.error || 'Failed to save notice');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const priorityColors = {
+    LOW: 'bg-blue-50 text-blue-700',
+    NORMAL: 'bg-surface-100 text-surface-700',
+    HIGH: 'bg-orange-50 text-orange-700',
+    URGENT: 'bg-red-50 text-red-700'
+  };
+
+  if (loading) return <div className="p-8">Loading...</div>;
+
+  return (
+    <div className="mx-auto max-w-6xl">
+      <div className="mb-8 flex items-center justify-between">
+        <div>
+          <h1 className="font-display text-3xl font-extrabold text-surface-950">Notices & Announcements</h1>
+          <p className="mt-2 text-sm text-surface-500">Manage school notices and important announcements.</p>
+        </div>
+        <button 
+          onClick={handleAddClick}
+          className="rounded-lg bg-brand-600 px-4 py-2 font-bold text-white shadow-sm hover:bg-brand-700"
+        >
+          Publish Notice
+        </button>
+      </div>
+
+      <div className="space-y-4">
+        {notices.length === 0 ? (
+          <div className="rounded-lg border border-surface-200 bg-white p-8 text-center">
+            <Bell className="mx-auto mb-3 h-10 w-10 text-surface-300" />
+            <p className="text-surface-500">No notices published yet</p>
+          </div>
+        ) : (
+          notices.map(notice => (
+            <div key={notice.id} className="rounded-lg border border-surface-200 bg-white p-6 shadow-sm">
+              <div className="mb-4 flex items-start justify-between">
+                <div className="flex-1">
+                  <div className="mb-2 flex items-center gap-3">
+                    <h3 className="font-display text-lg font-bold text-surface-950">{notice.title}</h3>
+                    <span className={`inline-flex rounded-full px-2 py-1 text-xs font-bold ${priorityColors[notice.priority] || priorityColors.NORMAL}`}>
+                      {notice.priority || 'NORMAL'}
+                    </span>
+                  </div>
+                  <p className="text-sm text-surface-500">{notice.category || 'General'}</p>
+                </div>
+                <div className="flex gap-2">
+                  <button 
+                    onClick={() => handleEditClick(notice)}
+                    className="rounded p-1 text-surface-500 hover:bg-surface-100 hover:text-brand-600"
+                  >
+                    <Edit2 className="h-4 w-4" />
+                  </button>
+                  <button 
+                    onClick={() => handleDeleteClick(notice.id)}
+                    className="rounded p-1 text-surface-500 hover:bg-red-50 hover:text-red-600"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+              <p className="text-sm text-surface-700 leading-relaxed">{notice.content}</p>
+              <p className="mt-3 text-xs text-surface-400">
+                Posted: {new Date(notice.postedDate).toLocaleDateString()}
+                {notice.expiryDate && ` · Expires: ${new Date(notice.expiryDate).toLocaleDateString()}`}
+                {notice.targetRoles && notice.targetRoles.length > 0 && ` · Audience: ${notice.targetRoles.join(', ')}`}
+              </p>
+              {notice.attachments && Object.keys(notice.attachments).length > 0 && (
+                <div className="mt-4 pt-4 border-t border-surface-100 flex flex-wrap gap-2">
+                  {Object.entries(notice.attachments).map(([filename, data]) => (
+                    <a key={filename} href={data} download={filename} className="inline-flex items-center gap-2 px-3 py-1.5 bg-brand-50 text-brand-700 rounded-lg text-xs font-bold hover:bg-brand-100 transition-colors">
+                      <span className="truncate max-w-[200px]">{filename}</span>
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))
+        )}
+      </div>
+
+      <Modal 
+        isOpen={isModalOpen}
+        title={selectedNotice ? 'Edit Notice' : 'Publish New Notice'}
+        onClose={() => setIsModalOpen(false)}
+        size="lg"
+      >
+        <NoticeForm 
+          notice={selectedNotice}
+          onSubmit={handleSubmit}
+          onCancel={() => setIsModalOpen(false)}
+          isLoading={isSubmitting}
+        />
+      </Modal>
+    </div>
+  );
+}

@@ -7,7 +7,6 @@ import {
 } from 'react-router-dom';
 
 import { AuthProvider, useAuth } from '../context/AuthContext';
-import MainLayout from '../layouts/MainLayout';
 import AdminLayout from '../components/admin/Layout';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { getHomePathForRole } from '../utils/roleRedirect';
@@ -128,6 +127,10 @@ const router = createBrowserRouter([
     ),
   },
   {
+    path: '/assessments/:id',
+    element: <Navigate to="/teacher/assessments/:id" replace />,
+  },
+  {
     path: '/',
     element: <RoleBasedHome />,
   },
@@ -135,7 +138,7 @@ const router = createBrowserRouter([
     path: '/teacher',
     element: (
       <ProtectedRoute roles={['TEACHER']}>
-        <MainLayout />
+        <AdminLayout />
       </ProtectedRoute>
     ),
     children: [

@@ -3,19 +3,23 @@ import { NavLink } from 'react-router-dom';
 import {
   AlertCircle,
   BarChart3,
+  BookOpen,
   Building2,
   CalendarDays,
   ChevronLeft,
-  ChevronRight,
-  ArrowRight,
+  ClipboardCheck,
+  ClipboardList,
+  FileText,
   GraduationCap,
-  Home,
   LayoutDashboard,
   MessageSquare,
+  MessageSquareWarning,
+  Presentation,
+  Sparkles,
   Settings as SettingsIcon,
   Shield,
-  Sparkles,
   Users,
+  Video,
   Wallet,
   Landmark,
   X,
@@ -30,6 +34,13 @@ const superAdminItems = [
   { to: '/admin/complaints', label: 'Tickets', icon: AlertCircle },
   { to: '/admin/analytics', label: 'Analytics & Reports', icon: BarChart3 },
   { to: '/admin/settings', label: 'Settings', icon: SettingsIcon },
+];
+
+const superAdminGroups = [
+  {
+    heading: 'Super Admin',
+    items: superAdminItems,
+  },
 ];
 
 const instituteGroups = [
@@ -71,27 +82,70 @@ const instituteGroups = [
   },
 ];
 
+const teacherGroups = [
+  {
+    heading: 'Teaching',
+    items: [
+      { to: '/teacher', label: 'Dashboard', icon: LayoutDashboard, end: true },
+      { to: '/teacher/topics', label: 'Course Content', icon: BookOpen },
+      { to: '/teacher/classes', label: 'My Schedule', icon: Video },
+      { to: '/teacher/attendance', label: 'Attendance', icon: ClipboardCheck },
+    ],
+  },
+  {
+    heading: 'Evaluation',
+    items: [
+      { to: '/teacher/assignments', label: 'Assignments', icon: FileText },
+      { to: '/teacher/assessments', label: 'Assessments', icon: ClipboardList },
+      { to: '/teacher/reports', label: 'Reports', icon: BarChart3 },
+    ],
+  },
+  {
+    heading: 'Tools',
+    items: [
+      { to: '/teacher/creator', label: 'PPT & Mind Maps', icon: Presentation },
+      { to: '/teacher/grievances', label: 'Grievances', icon: MessageSquareWarning },
+      { to: '/teacher/chat', label: 'Chat', icon: MessageSquare },
+      { to: '/teacher/profile', label: 'Profile', icon: SettingsIcon },
+    ],
+  },
+];
+
 export default function Sidebar({ open, onClose }) {
   const { user, institute } = useAuth();
   const isInstitute = user?.role === 'INSTITUTE_ADMIN';
-  const items = isInstitute ? null : superAdminItems;
+  const isTeacher = user?.role === 'TEACHER';
+  const groups = isTeacher ? teacherGroups : isInstitute ? instituteGroups : superAdminGroups;
   const [collapsed, setCollapsed] = useState(false);
+  const canCollapse = isInstitute || isTeacher;
+  const roleLabel = isTeacher ? 'Teacher Workspace' : isInstitute ? 'Institute Admin' : 'Super Admin';
+  const workspaceName = isTeacher ? user?.name || 'Teacher' : institute?.name || 'Institute';
 
   return (
     <>
       <aside
         className={cn(
           'fixed inset-y-0 left-0 z-50 w-[280px] flex-shrink-0 border-r border-slate-200 bg-white transition-all duration-300 dark:border-slate-800 dark:bg-slate-950 md:static',
-          collapsed && isInstitute ? 'md:w-[80px]' : 'md:w-[280px]',
+          collapsed && canCollapse ? 'md:w-[80px]' : 'md:w-[280px]',
           open ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
         )}
       >
         <div className="flex h-full flex-col overflow-hidden">
           <div className="flex h-16 items-center justify-between border-b border-slate-100 px-6 dark:border-slate-800">
-            <div className={cn('min-w-0 transition-opacity', collapsed && isInstitute && 'md:opacity-0 md:pointer-events-none md:w-0 md:overflow-hidden')}>
+            <div className={cn('min-w-0 transition-opacity', collapsed && canCollapse && 'md:opacity-0 md:pointer-events-none md:w-0 md:overflow-hidden')}>
               <EddvaLogo />
             </div>
             <div className="flex items-center gap-1">
+              {canCollapse && (
+                <button
+                  type="button"
+                  onClick={() => setCollapsed((value) => !value)}
+                  className="hidden rounded-xl p-2 text-surface-500 hover:bg-surface-100 md:inline-flex"
+                  aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+                >
+                  <ChevronLeft className={cn('h-5 w-5 transition-transform', collapsed && 'rotate-180')} />
+                </button>
+              )}
               <button onClick={onClose} className="rounded-xl p-2 text-surface-500 hover:bg-surface-100 md:hidden" aria-label="Close menu">
                 <X className="h-5 w-5" />
               </button>
@@ -99,64 +153,12 @@ export default function Sidebar({ open, onClose }) {
           </div>
 
           <div className="flex-1 overflow-y-auto px-4 py-6 custom-scrollbar">
-            {!isInstitute && (
-              <>
-                <p className="mb-3 px-3 text-[10px] font-extrabold uppercase tracking-[0.22em] text-slate-400 dark:text-slate-500">
-                  Super Admin
-                </p>
-                <nav className="space-y-1">
-                  {items.map((item) => (
-                    <NavLink
-                      key={item.to + item.label}
-                      to={item.to}
-                      end={item.end}
-                      onClick={onClose}
-                      className={({ isActive }) =>
-                        cn(
-                          'group relative flex items-center gap-3 rounded-2xl px-3 py-2.5 text-[13px] font-semibold transition-all',
-                          isActive
-                            ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-600/25 before:absolute before:left-1 before:top-1/2 before:h-7 before:w-1 before:-translate-y-1/2 before:rounded-full before:bg-white/90'
-                            : 'text-slate-600 hover:bg-slate-50 dark:text-slate-400 dark:hover:bg-slate-900'
-                        )
-                      }
-                    >
-                      <item.icon className="h-[18px] w-[18px] shrink-0" />
-                      <span>{item.label}</span>
-                    </NavLink>
-                  ))}
-                </nav>
-
-                <div className="mt-6 rounded-3xl border border-[rgba(37,99,235,0.10)] bg-gradient-to-br from-white/95 to-blue-50/40 p-4 shadow-sm dark:border-slate-700 dark:from-slate-900/90 dark:to-slate-900/40">
-                  <div className="flex items-center gap-3">
-                    <div className="relative grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-600/25">
-                      <Sparkles className="h-6 w-6" />
-                      <span className="absolute -right-1 -top-1 h-3 w-3 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.9)]" />
-                    </div>
-                    <div className="min-w-0">
-                      <p className="font-display text-base font-extrabold text-slate-950 dark:text-white">EDDVA AI Assistant</p>
-                      <p className="mt-0.5 text-xs font-semibold text-slate-500 dark:text-slate-400">
-                        Your smart admin assistant
-                      </p>
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-3 text-sm font-extrabold text-white shadow-lg shadow-blue-600/25 transition hover:brightness-110"
-                  >
-                    Ask EDDVA AI
-                    <ArrowRight className="h-5 w-5" />
-                  </button>
-                </div>
-              </>
-            )}
-
-            {isInstitute &&
-              instituteGroups.map((group) => (
+            {groups.map((group) => (
                 <div key={group.heading} className="mb-6">
                   <p
                     className={cn(
                       'mb-2 px-3 text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500',
-                      collapsed && 'md:hidden'
+                      collapsed && canCollapse && 'md:hidden'
                     )}
                   >
                     {group.heading}
@@ -167,7 +169,7 @@ export default function Sidebar({ open, onClose }) {
                         key={`${group.heading}-${item.label}`}
                         to={item.to}
                         end={item.end}
-                        title={collapsed ? item.label : undefined}
+                        title={collapsed && canCollapse ? item.label : undefined}
                         onClick={onClose}
                         className={({ isActive }) =>
                           cn(
@@ -179,7 +181,7 @@ export default function Sidebar({ open, onClose }) {
                         }
                       >
                         <item.icon className="h-[18px] w-[18px] shrink-0" />
-                        <span className={cn('truncate', collapsed && 'md:hidden')}>{item.label}</span>
+                        <span className={cn('truncate', collapsed && canCollapse && 'md:hidden')}>{item.label}</span>
                       </NavLink>
                     ))}
                   </nav>
@@ -188,19 +190,25 @@ export default function Sidebar({ open, onClose }) {
           </div>
 
           <div className="border-t border-slate-100 p-4 dark:border-slate-800">
-            {isInstitute ? (
+            {isInstitute || isTeacher ? (
               <div
                 className={cn(
                   'flex items-center gap-3 rounded-xl bg-slate-50 p-3 dark:bg-slate-900',
                   collapsed && 'md:justify-center md:p-2'
                 )}
               >
-                <InstituteLogo institute={institute} size="sm" />
+                {isInstitute ? (
+                  <InstituteLogo institute={institute} size="sm" />
+                ) : (
+                  <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-blue-100 text-xs font-black text-blue-700 dark:bg-blue-900 dark:text-blue-300">
+                    {(user?.name || 'T').charAt(0).toUpperCase()}
+                  </div>
+                )}
                 <div className={cn('min-w-0 flex-1', collapsed && 'md:hidden')}>
-                  <p className="truncate text-xs font-bold text-slate-950 dark:text-white">{institute?.name || 'Institute'}</p>
+                  <p className="truncate text-xs font-bold text-slate-950 dark:text-white">{workspaceName}</p>
                   <div className="mt-1 flex items-center gap-1.5">
                     <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                    <span className="text-[10px] font-bold text-emerald-600">Online</span>
+                    <span className="text-[10px] font-bold text-emerald-600">{roleLabel}</span>
                   </div>
                 </div>
               </div>

@@ -61,6 +61,18 @@ const CreatorStudio: React.FC = () => {
     branches: false,
   });
 
+  const notify = (message: string) => {
+    window.alert(message);
+  };
+
+  const handleArchiveMindMap = (mapId: number) => {
+    setMindMaps((current) =>
+      current.map((map) =>
+        map.id === mapId ? { ...map, status: "archived" } : map,
+      ),
+    );
+  };
+
   useEffect(() => {
     const fetchPresentations = async () => {
       try {
@@ -137,7 +149,7 @@ const CreatorStudio: React.FC = () => {
       setPptTitle("");
       setPptSubject("");
       setPptDescription("");
-      setPptTemplate(" ");
+      setPptTemplate("");
       setPptFile(null);
     } catch (error) {
       alert("Failed to create presentation");
@@ -213,7 +225,7 @@ const CreatorStudio: React.FC = () => {
               </span>
             </div>
             <div className="creator__ppt-actions">
-              <button className="creator__ppt-action" title="Edit">
+              <button className="creator__ppt-action" title="Edit" type="button" onClick={() => notify("Edit presentation coming soon") }>
                 <Edit3 size={16} />
               </button>
               {ppt.ppt_file && (
@@ -275,11 +287,11 @@ const CreatorStudio: React.FC = () => {
               </span>
             </div>
             <div className="creator__mindmap-actions">
-              <button className="creator__ppt-action" title="Edit">
+              <button className="creator__ppt-action" title="Edit" type="button" onClick={() => notify("Edit mind map coming soon") }>
                 <Edit3 size={16} />
               </button>
               {map.status === "active" && (
-                <button className="creator__ppt-action" title="Archive">
+                <button className="creator__ppt-action" title="Archive" type="button" onClick={() => handleArchiveMindMap(map.id)}>
                   <Archive size={16} />
                 </button>
               )}
@@ -294,7 +306,7 @@ const CreatorStudio: React.FC = () => {
     <div className="creator__section">
       <div className="creator__section-header">
         <h3>Smart Teaching Content</h3>
-        <Button variant="outline" icon={<Sparkles size={16} />}>
+        <Button variant="outline" icon={<Sparkles size={16} />} onClick={() => notify("AI generation tools coming soon")}>
           AI Generate
         </Button>
       </div>
@@ -334,7 +346,7 @@ const CreatorStudio: React.FC = () => {
             </div>
             <h4>{item.title}</h4>
             <p>{item.desc}</p>
-            <Button size="sm" variant="outline">
+            <Button size="sm" variant="outline" onClick={() => notify(`${item.title} is opening soon`)}>
               Explore
             </Button>
           </GlassCard>

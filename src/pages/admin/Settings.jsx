@@ -102,14 +102,14 @@ export default function Settings() {
               className={cn(
                 "w-full flex items-center gap-4 p-5 rounded-3xl transition-all duration-300 border text-left group",
                 activeTab === tab.id 
-                  ? "bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none translate-x-2" 
-                  : "bg-transparent border-transparent text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800"
+                  ? "border-blue-600 bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-xl shadow-blue-600/20 translate-x-2" 
+                  : "border-transparent bg-white/70 dark:bg-slate-900/60 text-slate-500 hover:border-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800"
               )}
             >
               <div className={cn(
                 "w-12 h-12 rounded-2xl flex items-center justify-center transition-colors",
                 activeTab === tab.id 
-                  ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20" 
+                  ? "bg-white/15 text-white shadow-lg shadow-black/10" 
                   : "bg-slate-100 dark:bg-slate-800 text-slate-500 group-hover:bg-blue-50 group-hover:text-blue-600"
               )}>
                 <tab.icon size={22} />

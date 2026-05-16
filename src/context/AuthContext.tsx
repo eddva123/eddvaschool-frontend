@@ -144,7 +144,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const login = async (email: string, password: string) => {
-    setLoading(true);
     try {
       const res = await api.post('/auth/login', { email, password });
       const { token, user: userData, institute: instData, tenantDomain } = res.data;
@@ -158,8 +157,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       return res.data;
-    } finally {
-      setLoading(false);
+    } catch (err) {
+      throw err;
     }
   };
 

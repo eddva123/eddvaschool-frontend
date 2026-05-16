@@ -13,6 +13,7 @@ import {
   MessageCircle,
   ChevronLeft,
   GraduationCap,
+  Sparkles,
 } from 'lucide-react';
 import './Sidebar.css';
 
@@ -36,8 +37,24 @@ const Sidebar: React.FC = () => {
     <aside className={`sidebar ${collapsed ? 'sidebar--collapsed' : ''}`}>
       <div className="sidebar__header">
         <div className="sidebar__logo">
-          <GraduationCap size={28} />
-          {!collapsed && <span className="sidebar__brand">EDDVA</span>}
+          <div className="sidebar__logo-icon">
+            <img 
+              src="/logo.png" 
+              alt="EDDVA" 
+              className="sidebar__logo-image"
+              onError={(e) => {
+                (e.currentTarget as HTMLImageElement).style.display = 'none';
+                (e.currentTarget as HTMLImageElement).nextElementSibling?.classList.remove('hidden');
+              }}
+            />
+            <Sparkles size={24} className="sidebar__logo-fallback" style={{display: 'none'}} />
+          </div>
+          {!collapsed && (
+            <div className="sidebar__brand-text">
+              <div className="sidebar__brand">EDDVA</div>
+              <div className="sidebar__brand-tagline">Learn with AI</div>
+            </div>
+          )}
         </div>
         <button className="sidebar__toggle" onClick={() => setCollapsed(!collapsed)}>
           <ChevronLeft size={18} className={collapsed ? 'sidebar__toggle-icon--rotated' : ''} />

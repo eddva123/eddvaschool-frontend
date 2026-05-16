@@ -2,6 +2,11 @@
   padding: 24px;
 }
 
+.notifications-page,
+.notification-card {
+  animation: notificationRise 0.45s ease both;
+}
+
 .notifications-header {
   margin-bottom: 24px;
 }
@@ -55,4 +60,15 @@
   padding: 8px;
   border-radius: 8px;
   cursor: pointer;
+}
+
+@keyframes notificationRise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

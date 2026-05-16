@@ -1,19 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Camera, Mail, Phone, Shield, BookOpen } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import "./Profile.css";
 
 const Profile: React.FC = () => {
   const { user } = useAuth();
+  const avatarInputRef = useRef<HTMLInputElement | null>(null);
 
   const [profile, setProfile] = useState({
     name: "",
     email: "",
     phone: "",
-    department: "Computer Science",
+    department: "",
     role: "",
-    bio: "Passionate educator focused on interactive learning.",
+    bio: "",
   });
+  const [avatarUrl, setAvatarUrl] = useState<string>(localStorage.getItem("teacher_avatar") || "");
 
   useEffect(() => {
     if (user) {
@@ -22,11 +24,8 @@ const Profile: React.FC = () => {
         email: user.email || "",
         role: user.role || "Teacher",
         phone: localStorage.getItem("teacher_phone") || "",
-        department:
-          localStorage.getItem("teacher_department") || "Computer Science",
-        bio:
-          localStorage.getItem("teacher_bio") ||
-          "Passionate educator focused on interactive learning.",
+        department: localStorage.getItem("teacher_department") || "",
+        bio: localStorage.getItem("teacher_bio") || "",
       });
     }
   }, [user]);
@@ -44,6 +43,9 @@ const Profile: React.FC = () => {
     localStorage.setItem("teacher_phone", profile.phone);
     localStorage.setItem("teacher_department", profile.department);
     localStorage.setItem("teacher_bio", profile.bio);
+    if (avatarUrl) {
+      localStorage.setItem("teacher_avatar", avatarUrl);
+    }
 
     alert("Profile updated successfully!");
   };
@@ -52,10 +54,30 @@ const Profile: React.FC = () => {
     <div className="profile-page">
       <div className="profile-header">
         <div className="profile-avatar">
-          {profile.name?.charAt(0)}
-          <button className="profile-avatar-btn">
+          {avatarUrl ? (
+            <img src={avatarUrl} alt="Teacher avatar" style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "999px" }} />
+          ) : (
+            profile.name?.charAt(0)
+          )}
+          <button
+            className="profile-avatar-btn"
+            type="button"
+            onClick={() => avatarInputRef.current?.click()}
+          >
             <Camera size={16} />
           </button>
+          <input
+            ref={avatarInputRef}
+            type="file"
+            accept="image/*"
+            hidden
+            onChange={(event) => {
+              const file = event.target.files?.[0];
+              if (!file) return;
+              const objectUrl = URL.createObjectURL(file);
+              setAvatarUrl(objectUrl);
+            }}
+          />
         </div>
 
         <div>

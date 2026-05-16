@@ -416,16 +416,15 @@ const TopicManagement: React.FC = () => {
           placeholder="Search topics..."
         />
 
-        {!isTeacher && (
-          <Button
-            icon={<Plus size={16} />}
-            onClick={() =>
-              setShowTopicModal(true)
-            }
-          >
-            Create Topic
-          </Button>
-        )}
+        <Button
+          icon={<Plus size={16} />}
+          className="topic__action-btn"
+          onClick={() =>
+            setShowTopicModal(true)
+          }
+        >
+          Create Topic
+        </Button>
       </div>
 
       <div className="topic__list">
@@ -545,30 +544,29 @@ const TopicManagement: React.FC = () => {
             : ''}
         </h3>
 
-        {!isTeacher && (
-          <Button
-            size="sm"
-            icon={<Plus size={16} />}
-            onClick={() => {
-              if (
-                selectedTopic ===
-                null
-              ) {
-                alert(
-                  'Please select a topic card first'
-                );
-
-                return;
-              }
-
-              setShowChapterModal(
-                true
+        <Button
+          size="sm"
+          icon={<Plus size={16} />}
+          className="topic__action-btn"
+          onClick={() => {
+            if (
+              selectedTopic ===
+              null
+            ) {
+              alert(
+                'Please select a topic card first'
               );
-            }}
-          >
-            Add Chapter
-          </Button>
-        )}
+
+              return;
+            }
+
+            setShowChapterModal(
+              true
+            );
+          }}
+        >
+          Add Chapter
+        </Button>
       </div>
 
       <div className="topic__chapter-list">
@@ -677,6 +675,7 @@ const TopicManagement: React.FC = () => {
         <Button
           size="sm"
           icon={<Plus size={16} />}
+          className="topic__action-btn"
           onClick={() =>
             setShowMaterialModal(
               true
@@ -754,7 +753,7 @@ const TopicManagement: React.FC = () => {
         ]}
       />
 
-      {!isTeacher && (
+      {
       <>
       {/* CREATE TOPIC MODAL */}
       <Modal
@@ -914,7 +913,7 @@ const TopicManagement: React.FC = () => {
         </div>
       </Modal>
       </>
-      )}
+      }
 
       {/* MATERIAL MODAL */}
       <Modal

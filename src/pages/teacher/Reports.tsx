@@ -6,27 +6,36 @@ import Badge from '../../components/Badge';
 import ProgressBar from '../../components/ProgressBar';
 import Tabs from '../../components/Tabs';
 import DataTable from '../../components/DataTable';
-import { studentPerformance as dummyStudentPerformance, classAnalytics as dummyClassAnalytics, weaknessData, performanceChartData as dummyPerformanceData } from '../../data/dummyData';
 import api from '../../services/api';
 import './Reports.css';
 
 const Reports: React.FC = () => {
-  const [performanceChartData, setPerformanceChartData] = useState(dummyPerformanceData);
-  const [studentPerformance, setStudentPerformance] = useState(dummyStudentPerformance);
-  const [classAnalytics, setClassAnalytics] = useState(dummyClassAnalytics);
+  const [performanceChartData, setPerformanceChartData] = useState<any[]>([]);
+  const [studentPerformance, setStudentPerformance] = useState<any[]>([]);
+  const [classAnalytics, setClassAnalytics] = useState<any[]>([]);
+  const [weaknessData, setWeaknessData] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchReports = async () => {
       try {
         const res = await api.get('/reports/class/1');
         if (res.data && res.data.data && res.data.data.length > 0) {
-          // Map backend class analytics to performance chart data
-          const formattedData = res.data.data.map((item: any, idx: number) => ({
+          const formattedData = res.data.data.map((item: any) => ({
             month: item.title,
             avgScore: Math.round(item.avg_score || 0),
-            attendance: dummyPerformanceData[idx % dummyPerformanceData.length].attendance // fallback
+            attendance: Math.round(item.attendance_rate || 0)
           }));
           setPerformanceChartData(formattedData);
+          setClassAnalytics(res.data.data.map((item: any) => ({
+            class: item.class_name || item.title || '-',
+            avgScore: Math.round(item.avg_score || 0),
+            passRate: Math.round(item.pass_rate || 0),
+            topSubject: item.top_subject || '-',
+            weakSubject: item.weak_subject || '-',
+            attendance: Math.round(item.attendance_rate || 0),
+          })));
+          setStudentPerformance(Array.isArray(res.data.students) ? res.data.students : []);
+          setWeaknessData(Array.isArray(res.data.weaknesses) ? res.data.weaknesses : []);
         }
       } catch (err) {
         console.error('Error fetching reports:', err);
@@ -82,14 +91,14 @@ const Reports: React.FC = () => {
             <div className="reports__weakness-stats">
               <div className="reports__weakness-stat">
                 <span className="reports__weakness-label">Weak Students</span>
-                <span className="reports__weakness-value">{item.weakStudents}</span>
+                <span className="reports__weakness-value">{item.weakStudents || item.weak_students || 0}</span>
               </div>
               <div className="reports__weakness-stat">
                 <span className="reports__weakness-label">Avg Score</span>
-                <span className="reports__weakness-value reports__weakness-value--low">{item.avgScore}%</span>
+                <span className="reports__weakness-value reports__weakness-value--low">{item.avgScore || item.avg_score || 0}%</span>
               </div>
             </div>
-            <ProgressBar value={item.avgScore} size="sm" color="var(--gradient-warm)" />
+            <ProgressBar value={item.avgScore || item.avg_score || 0} size="sm" color="var(--gradient-warm)" />
           </GlassCard>
         ))}
       </div>
@@ -140,10 +149,10 @@ const Reports: React.FC = () => {
   return (
     <div className="reports">
       <div className="reports__stats">
-        <StatCard title="Class Average" value="79%" change="+4%" changeType="positive" icon={<BarChart3 size={24} />} />
-        <StatCard title="Pass Rate" value="92%" change="+2%" changeType="positive" icon={<Target size={24} />} gradient="var(--gradient-cool)" />
-        <StatCard title="At-Risk Students" value="15" change="+3" changeType="negative" icon={<AlertTriangle size={24} />} gradient="var(--gradient-warm)" />
-        <StatCard title="Total Students" value="164" icon={<Users size={24} />} gradient="var(--gradient-accent)" />
+        <StatCard title="Class Average" value={`${classAnalytics[0]?.avgScore || 0}%`} change="Live" changeType="positive" icon={<BarChart3 size={24} />} />
+        <StatCard title="Pass Rate" value={`${classAnalytics[0]?.passRate || 0}%`} change="Live" changeType="positive" icon={<Target size={24} />} gradient="var(--gradient-cool)" />
+        <StatCard title="At-Risk Students" value={String(weaknessData.reduce((sum, item) => sum + Number(item.weakStudents || item.weak_students || 0), 0))} change="Live" changeType="negative" icon={<AlertTriangle size={24} />} gradient="var(--gradient-warm)" />
+        <StatCard title="Total Students" value={String(studentPerformance.length)} icon={<Users size={24} />} gradient="var(--gradient-accent)" />
       </div>
 
       <Tabs

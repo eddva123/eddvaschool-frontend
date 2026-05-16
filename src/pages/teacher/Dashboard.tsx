@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Users, UserCheck, FileText, ClipboardList, Clock, MapPin, TrendingUp, AlertCircle } from 'lucide-react';
 import StatCard from '../../components/StatCard';
 import GlassCard from '../../components/GlassCard';
 import Badge from '../../components/Badge';
 import ProgressBar from '../../components/ProgressBar';
-import { dashboardStats, upcomingClasses, notifications, studentActivityFeed, attendanceSummary, performanceChartData } from '../../data/dummyData';
+import api from '../../services/api';
+import useLiveRefresh from '../../hooks/useLiveRefresh';
 import './Dashboard.css';
 
 const iconMap: Record<string, React.ReactNode> = {
@@ -15,6 +16,123 @@ const iconMap: Record<string, React.ReactNode> = {
 };
 
 const Dashboard: React.FC = () => {
+  const [stats, setStats] = useState<any>(null);
+  const [upcomingClasses, setUpcomingClasses] = useState<any[]>([]);
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [students, setStudents] = useState<any[]>([]);
+  const [events, setEvents] = useState<any[]>([]);
+  const [notices, setNotices] = useState<any[]>([]);
+
+  const loadDashboard = async () => {
+    try {
+      const [statsRes, eventsRes, studentsRes, noticesRes] = await Promise.allSettled([
+        api.get('/dashboard/stats'),
+        api.get('/events'),
+        api.get('/students'),
+        api.get('/notices'),
+      ]);
+
+      if (statsRes.status === 'fulfilled') {
+        const data = statsRes.value.data || {};
+        setStats(data);
+        setUpcomingClasses((data.upcomingClasses || []).map((item: any) => ({
+          id: item.id,
+          time: `${item.startTime || item.start_time || '--'} - ${item.endTime || item.end_time || '--'}`,
+          subject: item.subjectName || item.subject_name || 'Scheduled class',
+          room: item.room || 'Classroom',
+          class: item.className || item.class_name || '-',
+        })));
+      }
+
+      if (eventsRes.status === 'fulfilled') {
+        const list = eventsRes.value.data?.data ?? eventsRes.value.data ?? [];
+        setEvents(Array.isArray(list) ? list : []);
+      }
+
+      if (studentsRes.status === 'fulfilled') {
+        const list = studentsRes.value.data?.data ?? studentsRes.value.data ?? [];
+        setStudents(Array.isArray(list) ? list : []);
+      }
+
+      if (noticesRes.status === 'fulfilled') {
+        const list = noticesRes.value.data?.data ?? noticesRes.value.data ?? [];
+        setNotices(Array.isArray(list) ? list : []);
+      }
+
+      try {
+        const res = await api.get('/notifications');
+        const list = res.data?.data ?? res.data;
+        setNotifications(Array.isArray(list) ? list : []);
+      } catch {
+        setNotifications([]);
+      }
+    } catch (error) {
+      console.error('Failed to load teacher dashboard:', error);
+    }
+  };
+
+  useLiveRefresh(loadDashboard, [], 20000);
+
+  const attendanceSummary = useMemo(
+    () => [
+      {
+        class: 'All Classes',
+        present: stats?.totalPresent || 0,
+        total: stats?.totalStudents || students.length || 0,
+        percentage: stats?.attendancePct || 0,
+      },
+    ],
+    [stats?.attendancePct, stats?.totalPresent, stats?.totalStudents, students.length]
+  );
+
+  const performanceChartData = useMemo(
+    () =>
+      ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'].map((month, index) => ({
+        month,
+        avgScore: Math.max(20, Math.min(100, (stats?.performanceScore || 68) + index * 2 - 5)),
+      })),
+    [stats?.performanceScore]
+  );
+
+  const studentActivityFeed = useMemo(
+    () =>
+      students.slice(0, 4).map((student: any, index: number) => ({
+        id: student.id || `student-${index}`,
+        student: student.name || student.fullName || 'New student',
+        action: 'was added to the institute roster',
+        target: student.studentProfile?.section?.class?.name || student.class_name || 'a class',
+        time: student.createdAt || student.created_at || 'Just now',
+      })),
+    [students]
+  );
+
+  const liveUpdates = useMemo(() => {
+    const eventItems = events.slice(0, 3).map((event: any) => ({
+      id: `event-${event.id}`,
+      title: event.title || 'Event',
+      detail: event.location || event.category || 'Scheduled by institute admin',
+      time: event.startTime || event.start_time || event.created_at || '',
+      tone: 'info',
+    }));
+
+    const noticeItems = notices.slice(0, 3).map((notice: any) => ({
+      id: `notice-${notice.id}`,
+      title: notice.title || 'Notice',
+      detail: notice.category || notice.priority || 'Published by institute admin',
+      time: notice.postedDate || notice.created_at || '',
+      tone: notice.priority === 'URGENT' ? 'error' : 'success',
+    }));
+
+    return [...eventItems, ...noticeItems].slice(0, 6);
+  }, [events, notices]);
+
+  const dashboardStats = [
+    { id: 'students', title: 'Students', value: stats?.totalStudents ?? 0, change: 'Live', changeType: 'positive', icon: 'Users' },
+    { id: 'classes', title: 'Upcoming Classes', value: upcomingClasses.length, change: 'Scheduled', changeType: 'neutral', icon: 'UserCheck' },
+    { id: 'assignments', title: 'Assignments', value: stats?.assignments ?? 0, change: 'Active', changeType: 'positive', icon: 'FileText' },
+    { id: 'assessments', title: 'Assessments', value: stats?.assessments ?? 0, change: 'Live', changeType: 'positive', icon: 'ClipboardList' },
+  ];
+
   return (
     <div className="dashboard">
       <div className="dashboard__stats">
@@ -75,6 +193,29 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
           </GlassCard>
+
+          <GlassCard className="dashboard__card">
+            <div className="dashboard__card-header">
+              <h3>Institute Updates</h3>
+              <Badge variant="purple">Live sync</Badge>
+            </div>
+            <div className="dashboard__updates-list">
+              {liveUpdates.length > 0 ? liveUpdates.map((item) => (
+                <div key={item.id} className="dashboard__update-item">
+                  <div className={`dashboard__notification-icon dashboard__notification-icon--${item.tone}`}>
+                    <AlertCircle size={14} />
+                  </div>
+                  <div className="dashboard__update-content">
+                    <p className="dashboard__update-title">{item.title}</p>
+                    <span className="dashboard__update-detail">{item.detail}</span>
+                    <span className="dashboard__notification-time">{item.time ? new Date(item.time).toLocaleString() : 'Just now'}</span>
+                  </div>
+                </div>
+              )) : (
+                <p className="dashboard__empty-state">No recent institute updates yet.</p>
+              )}
+            </div>
+          </GlassCard>
         </div>
 
         <div className="dashboard__side">
@@ -130,7 +271,7 @@ const Dashboard: React.FC = () => {
               {studentActivityFeed.map((activity) => (
                 <div key={activity.id} className="dashboard__activity-item">
                   <div className="dashboard__activity-avatar">
-                    {activity.student.split(' ').map(n => n[0]).join('')}
+                    {activity.student.split(' ').map((n: string) => n[0]).join('')}
                   </div>
                   <div className="dashboard__activity-content">
                     <p><strong>{activity.student}</strong> {activity.action} <span className="dashboard__activity-target">{activity.target}</span></p>

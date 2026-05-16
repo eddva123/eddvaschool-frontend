@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   ClipboardList,
   Trophy,
@@ -24,6 +25,7 @@ import api from "../../services/api";
 import "./AssessmentSystem.css";
 
 const AssessmentSystem: React.FC = () => {
+  const navigate = useNavigate();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [testsList, setTestsList] = useState<any[]>([]);
   const [formData, setFormData] = useState({
@@ -208,7 +210,7 @@ const AssessmentSystem: React.FC = () => {
         <span
           className="assessment__title-link"
           onClick={() => {
-            window.location.href = `/assessments/${row.id}`;
+            navigate(`/teacher/assessments/${row.id}`);
           }}
         >
           {v}

@@ -12,16 +12,17 @@ export default function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { user } = useAuth();
   const isInstitute = user?.role === 'INSTITUTE_ADMIN';
+  const isTeacher = user?.role === 'TEACHER';
 
   return (
-    <div className={cn('relative flex min-h-screen w-full overflow-hidden', isInstitute ? 'eddva-canvas' : 'bg-surface-50 dark:bg-slate-950')}>
+    <div className="relative flex min-h-screen w-full overflow-hidden bg-surface-50 dark:bg-slate-950">
       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
         <Navbar onMenuClick={() => setSidebarOpen(true)} />
         <main className="flex-1 overflow-x-hidden overflow-y-auto p-3 sm:p-5 lg:p-6">
           <AnimatePresence mode="wait">
             <PageTransition key={location.pathname}>
-              <div className={cn('mx-auto h-full', isInstitute ? 'max-w-[1680px]' : 'max-w-7xl')}>
+              <div className={cn('mx-auto h-full', isInstitute || isTeacher ? 'max-w-[1680px]' : 'max-w-7xl')}>
                 <Outlet />
               </div>
             </PageTransition>

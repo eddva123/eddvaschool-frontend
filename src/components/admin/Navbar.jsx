@@ -9,8 +9,6 @@ import {
   Sparkles,
   Sun,
   MessageCircle,
-  X,
-  User,
   GraduationCap,
   Users,
   Settings as SettingsIcon,
@@ -18,7 +16,6 @@ import {
 } from 'lucide-react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { InstituteLogo } from './Brand';
 import { cn } from './Skeleton';
 import api from '../../services/api';
 
@@ -38,6 +35,12 @@ export default function Navbar({ onMenuClick }) {
   const { user, institute, logout } = useAuth();
   const title = pageTitle(location.pathname);
   const isInstitute = user?.role === 'INSTITUTE_ADMIN';
+  const isTeacher = user?.role === 'TEACHER';
+  const roleName = isTeacher ? 'Teacher' : isInstitute ? 'Institute Admin' : 'Super Admin';
+  const workspaceName = isTeacher ? user?.name || 'Teacher Workspace' : isInstitute ? institute?.name || 'Eddva Institute' : 'EDDVA HQ';
+  const workspaceLabel = isTeacher ? 'Teaching Workspace' : isInstitute ? 'Active Workspace' : 'Super Admin Console';
+  const messagesPath = isTeacher ? '/teacher/chat' : '/admin/communications';
+  const profilePath = isTeacher ? '/teacher/profile' : '/admin/settings';
 
   const [theme, setTheme] = useState(() => localStorage.getItem('eddva-theme') || 'light');
   const [quickOpen, setQuickOpen] = useState(false);
@@ -95,14 +98,28 @@ export default function Navbar({ onMenuClick }) {
     setIsSearching(true);
     try {
       // Internal page matching
-      const pages = [
-        { name: 'Dashboard', path: '/institute/dashboard', icon: Sparkles },
-        { name: 'Students List', path: '/students', icon: GraduationCap },
-        { name: 'Teachers Directory', path: '/teachers', icon: Users },
-        { name: 'Fees Management', path: '/fees', icon: SettingsIcon },
-        { name: 'System Settings', path: '/settings', icon: SettingsIcon },
-        { name: 'Academics & Classes', path: '/academics', icon: SettingsIcon },
-      ].filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()));
+      const teacherPages = [
+        { name: 'Dashboard', path: '/teacher', icon: Sparkles },
+        { name: 'Course Content', path: '/teacher/topics', icon: GraduationCap },
+        { name: 'My Schedule', path: '/teacher/classes', icon: Users },
+        { name: 'Assignments', path: '/teacher/assignments', icon: SettingsIcon },
+        { name: 'Assessments', path: '/teacher/assessments', icon: SettingsIcon },
+        { name: 'Reports', path: '/teacher/reports', icon: SettingsIcon },
+      ];
+      const adminPages = [
+        { name: 'Dashboard', path: '/admin', icon: Sparkles },
+        { name: 'Students List', path: '/admin/students', icon: GraduationCap },
+        { name: 'Teachers Directory', path: '/admin/teachers', icon: Users },
+        { name: 'Fees Management', path: '/admin/fees', icon: SettingsIcon },
+        { name: 'System Settings', path: '/admin/settings', icon: SettingsIcon },
+        { name: 'Academics & Classes', path: '/admin/academics', icon: SettingsIcon },
+      ];
+      const pages = (isTeacher ? teacherPages : adminPages).filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()));
+
+      if (isTeacher) {
+        setSearchResults({ students: [], teachers: [], pages });
+        return;
+      }
 
       // Mock API calls for students and teachers (would be real API in production)
       const [sRes, tRes] = await Promise.all([
@@ -128,10 +145,12 @@ export default function Navbar({ onMenuClick }) {
 
   const searchPlaceholder = useMemo(
     () =>
-      isInstitute
-        ? 'Search students, classes, teachers, reports…'
+      isTeacher
+        ? 'Search lessons, classes, assignments, reports'
+        : isInstitute
+        ? 'Search students, classes, teachers, reports'
         : 'Search institutes, tickets, or activity',
-    [isInstitute]
+    [isInstitute, isTeacher]
   );
 
   return (
@@ -143,11 +162,12 @@ export default function Navbar({ onMenuClick }) {
           </button>
           <div className="flex flex-col">
             <p className="text-[11px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-tighter">
-              {isInstitute ? (institute?.name || 'Eddva Institute') : 'EDDVA HQ'}
+              {workspaceName}
             </p>
             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest opacity-60">
-              {isInstitute ? 'Active Workspace' : 'Super Admin Console'}
+              {workspaceLabel}
             </p>
+            <h1 className="mt-0.5 text-lg font-black leading-tight text-slate-950 dark:text-white">{title}</h1>
           </div>
         </div>
 
@@ -196,13 +216,30 @@ export default function Navbar({ onMenuClick }) {
                     <div className="mb-4">
                       <p className="px-4 py-2 text-[10px] font-black uppercase tracking-widest text-slate-400">Students</p>
                       {searchResults.students.map(s => (
-                        <Link key={s.id} to={`/students/${s.id}`} onClick={() => setSearchOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 group">
+                        <Link key={s.id} to="/admin/students" onClick={() => setSearchOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 group">
                           <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-[10px] font-black">
                             {s.photo ? <img src={s.photo} className="w-full h-full object-cover rounded-xl" /> : s.name[0]}
                           </div>
                           <div className="flex flex-col">
                             <span className="text-sm font-bold text-slate-700 dark:text-slate-200">{s.name}</span>
                             <span className="text-[10px] font-bold text-slate-400">{s.studentProfile?.enrollmentNo || 'No ID'}</span>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+
+                  {searchResults.teachers.length > 0 && (
+                    <div className="mb-4">
+                      <p className="px-4 py-2 text-[10px] font-black uppercase tracking-widest text-slate-400">Teachers</p>
+                      {searchResults.teachers.map(t => (
+                        <Link key={t.id} to="/admin/teachers" onClick={() => setSearchOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 group">
+                          <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-[10px] font-black">
+                            {t.photo ? <img src={t.photo} className="w-full h-full object-cover rounded-xl" /> : t.name[0]}
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="text-sm font-bold text-slate-700 dark:text-slate-200">{t.name}</span>
+                            <span className="text-[10px] font-bold text-slate-400">{t.email || 'Teacher profile'}</span>
                           </div>
                         </Link>
                       ))}
@@ -233,24 +270,24 @@ export default function Navbar({ onMenuClick }) {
             </button>
             {quickOpen && (
               <div className="absolute right-0 z-50 mt-4 w-56 overflow-hidden rounded-[2rem] border border-slate-100 bg-white py-2 shadow-2xl dark:border-slate-800 dark:bg-slate-900">
-                <Link to="/students" className="flex items-center gap-3 px-5 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-800" onClick={() => setQuickOpen(false)}>
+                <Link to={isTeacher ? '/teacher/assignments' : '/admin/students'} className="flex items-center gap-3 px-5 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-800" onClick={() => setQuickOpen(false)}>
                   <div className="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-600 flex items-center justify-center">
                     <GraduationCap size={16} />
                   </div>
-                  Add student
+                  {isTeacher ? 'Add assignment' : 'Add student'}
                 </Link>
-                <Link to="/teachers" className="flex items-center gap-3 px-5 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-800" onClick={() => setQuickOpen(false)}>
+                <Link to={isTeacher ? '/teacher/assessments' : '/admin/teachers'} className="flex items-center gap-3 px-5 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-800" onClick={() => setQuickOpen(false)}>
                   <div className="w-8 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 flex items-center justify-center">
                     <Users size={16} />
                   </div>
-                  Add teacher
+                  {isTeacher ? 'Create assessment' : 'Add teacher'}
                 </Link>
                 <div className="h-px bg-slate-100 dark:bg-slate-800 my-1 mx-4" />
-                <Link to="/notices" className="flex items-center gap-3 px-5 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-800" onClick={() => setQuickOpen(false)}>
+                <Link to={isTeacher ? '/teacher/creator' : '/admin/notices'} className="flex items-center gap-3 px-5 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-800" onClick={() => setQuickOpen(false)}>
                   <div className="w-8 h-8 rounded-xl bg-amber-50 dark:bg-amber-900/30 text-amber-600 flex items-center justify-center">
                     <MessageCircle size={16} />
                   </div>
-                  Publish notice
+                  {isTeacher ? 'Open creator' : 'Publish notice'}
                 </Link>
               </div>
             )}
@@ -267,7 +304,7 @@ export default function Navbar({ onMenuClick }) {
             </button>
             <button
               type="button"
-              onClick={() => navigate('/communications')}
+              onClick={() => navigate(messagesPath)}
               className="relative h-10 w-10 flex items-center justify-center rounded-2xl text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
               aria-label="Messages"
             >
@@ -311,7 +348,7 @@ export default function Navbar({ onMenuClick }) {
             </div>
           </div>
 
-          <div className="flex items-center gap-3 border-l border-slate-100 pl-4 dark:border-slate-800">
+          <Link to={profilePath} className="flex items-center gap-3 border-l border-slate-100 pl-4 dark:border-slate-800">
             <div className="relative">
               <div className="grid h-10 w-10 place-items-center rounded-2xl bg-blue-100 text-sm font-black text-blue-700 dark:bg-blue-900 dark:text-blue-300">
                 {(user?.name || 'A').charAt(0).toUpperCase()}
@@ -321,10 +358,10 @@ export default function Navbar({ onMenuClick }) {
             <div className="hidden min-w-0 sm:block">
               <p className="truncate text-xs font-black text-slate-950 dark:text-white leading-tight">{user?.name || 'Admin'}</p>
               <p className="truncate text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5 opacity-60">
-                {isInstitute ? 'Institute Admin' : 'Super Admin'}
+                {roleName}
               </p>
             </div>
-          </div>
+          </Link>
           <button onClick={logout} className="ml-2 rounded-2xl p-2.5 text-slate-400 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/40 transition-colors" aria-label="Logout">
             <LogOut className="h-5 w-5" />
           </button>

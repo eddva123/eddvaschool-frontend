@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Send, Users, User, Headphones, Smile, Paperclip, MoreVertical, Phone, Video } from 'lucide-react';
 import SearchBar from '../../components/SearchBar';
 import Tabs from '../../components/Tabs';
-import { chatContacts } from '../../data/dummyData';
 import { io, Socket } from 'socket.io-client';
 import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
@@ -10,11 +9,16 @@ import './ChatSystem.css';
 
 const ChatSystem: React.FC = () => {
   const { user } = useAuth();
-  const [activeContact, setActiveContact] = useState<any>(chatContacts.students[0]);
+  const [activeContact, setActiveContact] = useState<any>(null);
+  const [contacts, setContacts] = useState<any[]>([]);
   const [message, setMessage] = useState('');
   const [search, setSearch] = useState('');
   const [messages, setMessages] = useState<any[]>([]);
   const socketRef = useRef<Socket | null>(null);
+
+  const handleUnavailableAction = (action: string) => {
+    window.alert(`${action} is not connected yet.`);
+  };
 
   useEffect(() => {
     socketRef.current = io('http://localhost:5000');
@@ -36,6 +40,31 @@ const ChatSystem: React.FC = () => {
       socketRef.current?.disconnect();
     };
   }, [user]);
+
+  useEffect(() => {
+    async function fetchRooms() {
+      try {
+        const res = await api.get('/chat/rooms');
+        const list = res.data?.data ?? [];
+        const formatted = list.map((room: any) => ({
+          id: room.id,
+          name: room.name || room.title || `Room ${String(room.id).slice(0, 6)}`,
+          online: false,
+          time: room.created_at ? new Date(room.created_at).toLocaleDateString() : '',
+          lastMessage: room.last_message || 'No messages yet',
+          unread: 0,
+        }));
+        setContacts(formatted);
+        setActiveContact((current: any) => current || formatted[0] || null);
+      } catch (error) {
+        console.error('Failed to fetch chat rooms:', error);
+        setContacts([]);
+        setActiveContact(null);
+      }
+    }
+
+    fetchRooms();
+  }, []);
 
   useEffect(() => {
     if (activeContact) {
@@ -115,16 +144,16 @@ const ChatSystem: React.FC = () => {
     </div>
   );
 
-  const studentContent = renderContactList(chatContacts.students);
-  const parentContent = renderContactList(chatContacts.parents);
-  const staffContent = renderContactList(chatContacts.staff);
+  const studentContent = renderContactList(contacts);
+  const parentContent = renderContactList([]);
+  const staffContent = renderContactList([]);
 
   return (
     <div className="chat">
       <div className="chat__sidebar">
         <div className="chat__sidebar-header">
           <h3>Messages</h3>
-          <button className="chat__icon-btn"><MoreVertical size={18} /></button>
+          <button className="chat__icon-btn" type="button" onClick={() => handleUnavailableAction('Chat options')}><MoreVertical size={18} /></button>
         </div>
         <div className="chat__sidebar-search">
           <SearchBar value={search} onChange={setSearch} placeholder="Search conversations..." />
@@ -153,9 +182,9 @@ const ChatSystem: React.FC = () => {
                 </div>
               </div>
               <div className="chat__header-actions">
-                <button className="chat__icon-btn"><Phone size={18} /></button>
-                <button className="chat__icon-btn"><Video size={18} /></button>
-                <button className="chat__icon-btn"><MoreVertical size={18} /></button>
+                <button className="chat__icon-btn" type="button" onClick={() => handleUnavailableAction('Voice call')}><Phone size={18} /></button>
+                <button className="chat__icon-btn" type="button" onClick={() => handleUnavailableAction('Video call')}><Video size={18} /></button>
+                <button className="chat__icon-btn" type="button" onClick={() => handleUnavailableAction('More chat actions')}><MoreVertical size={18} /></button>
               </div>
             </div>
 
@@ -175,7 +204,7 @@ const ChatSystem: React.FC = () => {
             </div>
 
             <div className="chat__input-area">
-              <button className="chat__icon-btn"><Paperclip size={20} /></button>
+              <button className="chat__icon-btn" type="button" onClick={() => handleUnavailableAction('Attachments')}><Paperclip size={20} /></button>
               <div className="chat__input-wrapper">
                 <input
                   type="text"
@@ -185,7 +214,7 @@ const ChatSystem: React.FC = () => {
                   onChange={(e) => setMessage(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
                 />
-                <button className="chat__icon-btn"><Smile size={20} /></button>
+                <button className="chat__icon-btn" type="button" onClick={() => handleUnavailableAction('Emoji picker')}><Smile size={20} /></button>
               </div>
               <button className="chat__send-btn" disabled={!message.trim()} onClick={handleSendMessage}>
                 <Send size={18} />

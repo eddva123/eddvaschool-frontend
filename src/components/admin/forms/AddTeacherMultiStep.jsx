@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   User, BookOpen, Briefcase, MapPin, FileText, CheckCircle, 
@@ -9,6 +9,7 @@ import {
   Search, Check, X, Loader2
 } from 'lucide-react';
 import api from '../../../services/api';
+import { useAuth } from '../../../context/AuthContext';
 
 // --- Constants ---
 const STEPS = [
@@ -20,11 +21,64 @@ const STEPS = [
   { id: 6, title: 'Review & Submit', icon: CheckCircle, description: 'Final verification' }
 ];
 
+const BLOOD_GROUP_OPTIONS = ['', 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
+const MARITAL_STATUS_OPTIONS = ['', 'Single', 'Married', 'Divorced', 'Widowed'];
+
+function getInstituteCode(name = 'Eddva School') {
+  const words = String(name)
+    .replace(/[^a-zA-Z0-9\s]/g, ' ')
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+  const code = words.length > 1 ? words.map((word) => word[0]).join('') : (words[0] || 'EDDVA').slice(0, 3);
+  return code.toUpperCase().slice(0, 6);
+}
+
+function getScopedId(instituteName, existingCount = 0) {
+  const year = new Date().getFullYear();
+  return `${getInstituteCode(instituteName)}-${year}-${String(existingCount + 1).padStart(3, '0')}`;
+}
+
 // --- Sub-components ---
 
-const FloatingInput = ({ label, icon: Icon, type = 'text', name, value, onChange, placeholder, error, ...props }) => {
+const FloatingInput = React.memo(function FloatingInput({ label, icon: Icon, type = 'text', name, value, onChange, placeholder, error, ...props }) {
   const [isFocused, setIsFocused] = useState(false);
   const hasValue = value && String(value).length > 0;
+  const isDateField = type === 'date';
+
+  if (isDateField) {
+    return (
+      <div className="relative group">
+        <label className="mb-2 block text-[10px] font-black uppercase tracking-widest text-blue-600">
+          {label}
+        </label>
+        <div className={`
+          relative flex items-center rounded-2xl border-2 transition-all duration-300
+          ${isFocused ? 'border-blue-500 shadow-lg shadow-blue-500/10' : 'border-slate-200 dark:border-slate-700'}
+          ${error ? 'border-red-500' : ''}
+          bg-white dark:bg-slate-900
+        `}>
+          {Icon && (
+            <div className={`pl-4 transition-colors duration-300 ${isFocused ? 'text-blue-500' : 'text-slate-400'}`}>
+              <Icon size={18} />
+            </div>
+          )}
+          <input
+            type={type}
+            name={name}
+            value={value}
+            onChange={onChange}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+            className="w-full bg-transparent px-4 py-3.5 outline-none text-slate-900 dark:text-white font-semibold text-sm"
+            placeholder={placeholder || label}
+            {...props}
+          />
+        </div>
+        {error && <p className="mt-1 ml-4 text-[10px] font-bold text-red-500 uppercase tracking-wider">{error}</p>}
+      </div>
+    );
+  }
 
   return (
     <div className="relative group">
@@ -32,7 +86,7 @@ const FloatingInput = ({ label, icon: Icon, type = 'text', name, value, onChange
         relative flex items-center transition-all duration-300 rounded-2xl border-2 
         ${isFocused ? 'border-blue-500 shadow-lg shadow-blue-500/10' : 'border-slate-200 dark:border-slate-700'}
         ${error ? 'border-red-500' : ''}
-        bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm
+        bg-white dark:bg-slate-900
       `}>
         {Icon && (
           <div className={`pl-4 transition-colors duration-300 ${isFocused ? 'text-blue-500' : 'text-slate-400'}`}>
@@ -63,41 +117,184 @@ const FloatingInput = ({ label, icon: Icon, type = 'text', name, value, onChange
       {error && <p className="mt-1 ml-4 text-[10px] font-bold text-red-500 uppercase tracking-wider">{error}</p>}
     </div>
   );
-};
+});
 
-const SectionHeader = ({ title, description, badge }) => (
-  <div className="mb-8">
-    <div className="flex items-center gap-3 mb-1">
-      <h2 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">{title}</h2>
-      {badge && (
-        <span className="px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-600 text-[10px] font-black uppercase tracking-widest border border-blue-500/20">
-          {badge}
-        </span>
-      )}
+const FloatingSelect = React.memo(function FloatingSelect({ label, name, value, onChange, options }) {
+  return (
+    <div className="relative">
+      <select
+        name={name}
+        value={value}
+        onChange={onChange}
+        className="w-full h-[54px] rounded-2xl border-2 border-slate-200 bg-white px-4 pt-4 text-sm font-semibold text-slate-900 outline-none transition focus:border-blue-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
+      >
+        {options.map((option) => (
+          <option key={option || 'blank'} value={option}>
+            {option || `Select ${label}`}
+          </option>
+        ))}
+      </select>
+      <label className="absolute left-4 top-1.5 text-[10px] font-black uppercase text-blue-600">{label}</label>
     </div>
-    <p className="text-sm font-medium text-slate-500 dark:text-slate-400">{description}</p>
-  </div>
-);
+  );
+});
 
-const AIAssistantCard = ({ message }) => (
-  <motion.div 
-    initial={{ opacity: 0, scale: 0.95 }}
-    animate={{ opacity: 1, scale: 1 }}
-    className="bg-gradient-to-br from-blue-600/5 to-indigo-600/5 border border-blue-500/10 rounded-2xl p-5 mb-8 flex gap-4 items-start"
-  >
-    <div className="p-2 bg-blue-600 rounded-xl shadow-lg shadow-blue-600/20 shrink-0">
-      <Sparkles className="text-white" size={20} />
+const SectionHeader = React.memo(function SectionHeader({ title, description, badge }) {
+  return (
+    <div className="mb-8">
+      <div className="flex items-center gap-3 mb-1">
+        <h2 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">{title}</h2>
+        {badge && (
+          <span className="px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-600 text-[10px] font-black uppercase tracking-widest border border-blue-500/20">
+            {badge}
+          </span>
+        )}
+      </div>
+      <p className="text-sm font-medium text-slate-500 dark:text-slate-400">{description}</p>
     </div>
-    <div>
-      <h4 className="text-sm font-black text-blue-700 dark:text-blue-400 uppercase tracking-wider mb-1">EDDVA AI Insight</h4>
-      <p className="text-sm font-semibold text-slate-700 dark:text-slate-300 leading-relaxed">{message}</p>
-    </div>
-  </motion.div>
-);
+  );
+});
+
+const AIAssistantCard = React.memo(function AIAssistantCard({ message }) {
+  return (
+    <motion.div 
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      className="bg-gradient-to-br from-blue-600/5 to-indigo-600/5 border border-blue-500/10 rounded-2xl p-5 mb-8 flex gap-4 items-start"
+    >
+      <div className="p-2 bg-blue-600 rounded-xl shadow-lg shadow-blue-600/20 shrink-0">
+        <Sparkles className="text-white" size={20} />
+      </div>
+      <div>
+        <h4 className="text-sm font-black text-blue-700 dark:text-blue-400 uppercase tracking-wider mb-1">EDDVA AI Insight</h4>
+        <p className="text-sm font-semibold text-slate-700 dark:text-slate-300 leading-relaxed">{message}</p>
+      </div>
+    </motion.div>
+  );
+});
 
 // --- Main Component ---
 
 export default function AddTeacherMultiStep({ teacher, onSubmit, onCancel, isLoading }) {
+  return <TeacherFormWizard teacher={teacher} onSubmit={onSubmit} onCancel={onCancel} isLoading={isLoading} />;
+}
+
+const TeacherSidebar = React.memo(function TeacherSidebar({ currentStep, onStepSelect }) {
+  return (
+    <div className="w-80 shrink-0 bg-slate-50 dark:bg-slate-900/40 border-r border-slate-200 dark:border-slate-800 p-8 hidden lg:flex flex-col">
+      <div className="mb-10">
+        <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tighter flex items-center gap-2">
+           <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
+              <Sparkles className="text-white" size={16} />
+           </div>
+           EDDVA <span className="text-blue-600">PRO</span>
+        </h1>
+      </div>
+
+      <div className="flex-1 space-y-2 overflow-y-auto custom-scrollbar">
+        {STEPS.map(step => {
+          const Icon = step.icon;
+          const isActive = currentStep === step.id;
+          const isCompleted = currentStep > step.id;
+
+          return (
+            <button
+              key={step.id}
+              type="button"
+              onClick={() => onStepSelect(step.id)}
+              className={`
+                w-full flex items-center gap-4 p-4 rounded-2xl transition-all duration-300 text-left
+                ${isActive ? 'bg-white dark:bg-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none' : 'hover:bg-slate-200/50 dark:hover:bg-slate-800/30'}
+              `}
+            >
+              <div className={`
+                w-10 h-10 rounded-xl flex items-center justify-center transition-all
+                ${isActive ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30 rotate-3' : isCompleted ? 'bg-emerald-500 text-white' : 'bg-slate-200 dark:bg-slate-800 text-slate-400'}
+              `}>
+                {isCompleted ? <Check size={20} strokeWidth={3} /> : <Icon size={20} />}
+              </div>
+              <div>
+                <h4 className={`text-xs font-black uppercase tracking-wider ${isActive ? 'text-slate-900 dark:text-white' : 'text-slate-400'}`}>{step.title}</h4>
+                <p className="text-[10px] font-bold text-slate-400 leading-tight">{step.description}</p>
+              </div>
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="mt-8 p-6 rounded-3xl bg-gradient-to-br from-slate-900 to-slate-800 text-white">
+         <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2">System Status</p>
+         <div className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-xs font-black">AI CORE ACTIVE</span>
+         </div>
+      </div>
+    </div>
+  );
+});
+
+const TeacherFooter = React.memo(function TeacherFooter({
+  currentStep,
+  isLoading,
+  onCancel,
+  onBack,
+  onNext,
+  onSubmit,
+}) {
+  return (
+    <div className="p-6 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl border-t border-slate-200 dark:border-slate-800 flex items-center justify-between z-10">
+      <button
+        type="button"
+        onClick={onCancel}
+        className="px-6 py-3 rounded-2xl text-sm font-black text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+      >
+        CANCEL
+      </button>
+
+      <div className="flex gap-3">
+        <button
+          type="button"
+          className="px-6 py-3 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-black uppercase tracking-widest hover:bg-slate-200 transition-all flex items-center gap-2"
+        >
+          <Save size={16} /> Save Draft
+        </button>
+
+        {currentStep > 1 && (
+          <button
+            type="button"
+            onClick={onBack}
+            className="px-6 py-3 rounded-2xl border-2 border-slate-200 dark:border-slate-800 text-xs font-black uppercase tracking-widest flex items-center gap-2 hover:bg-slate-50 transition-all text-slate-600 dark:text-slate-300"
+          >
+            <ChevronLeft size={16} /> Back
+          </button>
+        )}
+
+        {currentStep < STEPS.length ? (
+          <button
+            type="button"
+            onClick={onNext}
+            className="px-8 py-3 rounded-2xl bg-blue-600 text-white text-xs font-black uppercase tracking-widest shadow-lg shadow-blue-600/25 hover:scale-105 active:scale-95 transition-all flex items-center gap-2"
+          >
+            Next Step <ChevronRight size={16} />
+          </button>
+        ) : (
+          <button
+            type="button"
+            disabled={isLoading}
+            onClick={onSubmit}
+            className="px-8 py-3 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-xs font-black uppercase tracking-widest shadow-lg shadow-emerald-600/25 hover:scale-105 active:scale-95 transition-all flex items-center gap-2"
+          >
+            {isLoading ? <Loader2 className="animate-spin" size={16} /> : <CheckCircle size={16} />}
+            Deploy Teacher
+          </button>
+        )}
+      </div>
+    </div>
+  );
+});
+
+function TeacherFormWizard({ teacher, onSubmit, onCancel, isLoading }) {
+  const { institute } = useAuth();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     // Basic Info
@@ -109,6 +306,8 @@ export default function AddTeacherMultiStep({ teacher, onSubmit, onCancel, isLoa
     qualification: '', degree: '', institute: '', passingYear: '', 
     specialization: '', subjects: [], languages: [], certifications: '',
     experience: '', achievements: '',
+    educationDetails: [],
+    experienceDetails: [],
 
     // Professional
     department: '', role: '', employmentType: 'FULL_TIME', joinDate: '',
@@ -130,11 +329,16 @@ export default function AddTeacherMultiStep({ teacher, onSubmit, onCancel, isLoa
   const [idLoading, setIdLoading] = useState(false);
   const [classes, setClasses] = useState([]);
   const [availableSubjects, setAvailableSubjects] = useState([]);
+  const formDataRef = useRef(formData);
 
   useEffect(() => {
     fetchClasses();
     fetchSubjects();
   }, []);
+
+  useEffect(() => {
+    formDataRef.current = formData;
+  }, [formData]);
 
   const fetchClasses = async () => {
     try {
@@ -154,7 +358,7 @@ export default function AddTeacherMultiStep({ teacher, onSubmit, onCancel, isLoa
     }
   };
 
-  const handleToggleSection = (sectionId) => {
+  const handleToggleSection = useCallback((sectionId) => {
     setFormData(prev => {
       const current = prev.assignedSections || [];
       if (current.includes(sectionId)) {
@@ -162,45 +366,78 @@ export default function AddTeacherMultiStep({ teacher, onSubmit, onCancel, isLoa
       }
       return { ...prev, assignedSections: [...current, sectionId] };
     });
-  };
+  }, []);
 
   // Sync with existing teacher data if editing
   useEffect(() => {
     if (teacher) {
+      const profile = teacher.teacherProfile || {};
       setFormData(prev => ({
         ...prev,
         ...teacher,
         name: teacher.name || '',
         email: teacher.email || '',
         // Map nested profile data
-        ...(teacher.teacherProfile || {})
+        ...profile,
+        employeeCode: profile.employeeId || profile.employeeCode || teacher.employeeId || '',
+        educationDetails: Array.isArray(profile.educationDetails) ? profile.educationDetails : [],
+        experienceDetails: Array.isArray(profile.experienceDetails) ? profile.experienceDetails : [],
       }));
     }
   }, [teacher]);
 
-  const handleChange = (e) => {
+  const handleChange = useCallback((e) => {
     const { name, value, type, checked } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
-  };
+  }, []);
 
-  const handleNext = () => {
-    if (currentStep < STEPS.length) setCurrentStep(prev => prev + 1);
-  };
+  const handleNext = useCallback(() => {
+    setCurrentStep(prev => (prev < STEPS.length ? prev + 1 : prev));
+  }, []);
 
-  const handleBack = () => {
-    if (currentStep > 1) setCurrentStep(prev => prev - 1);
-  };
+  const handleBack = useCallback(() => {
+    setCurrentStep(prev => (prev > 1 ? prev - 1 : prev));
+  }, []);
 
-  const generateTeacherId = () => {
+  const handleStepSelect = useCallback((stepId) => {
+    setCurrentStep(stepId);
+  }, []);
+
+  const handleSubmitForm = useCallback(() => {
+    onSubmit(formDataRef.current);
+  }, [onSubmit]);
+
+  const generateTeacherId = useCallback(async () => {
     setIdLoading(true);
-    setTimeout(() => {
-      setFormData(prev => ({ ...prev, employeeCode: `EDDVA-T-${Math.floor(1000 + Math.random() * 9000)}` }));
+    try {
+      const res = await api.get('/teachers');
+      const list = res.data?.data ?? res.data;
+      const count = Array.isArray(list) ? list.length : 0;
+      setFormData(prev => ({ ...prev, employeeCode: getScopedId(institute?.name, count) }));
+    } catch (error) {
+      console.error('Failed to generate teacher id:', error);
+      setFormData(prev => ({ ...prev, employeeCode: getScopedId(institute?.name, 0) }));
+    } finally {
       setIdLoading(false);
-    }, 800);
-  };
+    }
+  }, [institute?.name]);
+
+  const updateEducationDetail = useCallback((index, field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      educationDetails: (prev.educationDetails || []).map((item, idx) => idx === index ? { ...item, [field]: value } : item),
+    }));
+  }, []);
+
+  const updateExperienceDetail = useCallback((index, field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      experienceDetails: (prev.experienceDetails || []).map((item, idx) => idx === index ? { ...item, [field]: value } : item),
+    }));
+  }, []);
 
   // --- Step Renderers ---
 
@@ -214,7 +451,7 @@ export default function AddTeacherMultiStep({ teacher, onSubmit, onCancel, isLoa
       
       <div className="flex flex-col md:flex-row gap-8 mb-8">
         <div className="shrink-0 flex flex-col items-center gap-4">
-          <div className="w-40 h-40 rounded-3xl border-2 border-dashed border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 flex flex-col items-center justify-center relative overflow-hidden group cursor-pointer hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/5 transition-all">
+                <div className="w-40 h-40 rounded-3xl border-2 border-dashed border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 flex flex-col items-center justify-center relative overflow-hidden group cursor-pointer hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/5 transition-all">
             {formData.photo ? (
               <img src={typeof formData.photo === 'string' ? formData.photo : URL.createObjectURL(formData.photo)} alt="Preview" className="w-full h-full object-cover" />
             ) : (
@@ -283,8 +520,8 @@ export default function AddTeacherMultiStep({ teacher, onSubmit, onCancel, isLoa
           </select>
           <label className="absolute left-4 top-1.5 text-[10px] font-black text-blue-600 uppercase">Gender</label>
         </div>
-        <FloatingInput label="Blood Group" name="bloodGroup" value={formData.bloodGroup} onChange={handleChange} />
-        <FloatingInput label="Marital Status" name="maritalStatus" value={formData.maritalStatus} onChange={handleChange} />
+        <FloatingSelect label="Blood Group" name="bloodGroup" value={formData.bloodGroup} onChange={handleChange} options={BLOOD_GROUP_OPTIONS} />
+        <FloatingSelect label="Marital Status" name="maritalStatus" value={formData.maritalStatus} onChange={handleChange} options={MARITAL_STATUS_OPTIONS} />
       </div>
 
       <AIAssistantCard message="I've verified the national ID format. No duplicate teacher records found for this identity." />
@@ -306,13 +543,49 @@ export default function AddTeacherMultiStep({ teacher, onSubmit, onCancel, isLoa
         <FloatingInput label="Subject Specialization" name="specialization" value={formData.specialization} onChange={handleChange} icon={Sparkles} />
         <FloatingInput label="Languages Known" name="languages" value={formData.languages} onChange={handleChange} icon={Globe} />
       </div>
+      <div className="mb-6 rounded-3xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <div>
+            <h5 className="text-xs font-black uppercase tracking-widest text-slate-500">Education History</h5>
+            <p className="mt-1 text-xs font-semibold text-slate-400">Add multiple degrees, diplomas, and certifications.</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setFormData(prev => ({
+              ...prev,
+              educationDetails: [...(prev.educationDetails || []), { qualification: '', institute: '', year: '', grade: '' }]
+            }))}
+            className="inline-flex items-center gap-2 rounded-2xl bg-blue-600 px-4 py-2 text-xs font-black uppercase tracking-widest text-white"
+          >
+            <Plus size={14} /> Add Education
+          </button>
+        </div>
+        <div className="space-y-3">
+          {(formData.educationDetails || []).map((item, index) => (
+            <div key={index} className="grid gap-3 rounded-2xl bg-slate-50 p-3 dark:bg-slate-800 md:grid-cols-[1fr_1fr_110px_110px_40px]">
+              <input value={item.qualification || ''} onChange={(e) => updateEducationDetail(index, 'qualification', e.target.value)} placeholder="Degree / Course" className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold outline-none focus:border-blue-500 dark:border-slate-700 dark:bg-slate-900" />
+              <input value={item.institute || ''} onChange={(e) => updateEducationDetail(index, 'institute', e.target.value)} placeholder="Institute" className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold outline-none focus:border-blue-500 dark:border-slate-700 dark:bg-slate-900" />
+              <input value={item.year || ''} onChange={(e) => updateEducationDetail(index, 'year', e.target.value)} placeholder="Year" className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold outline-none focus:border-blue-500 dark:border-slate-700 dark:bg-slate-900" />
+              <input value={item.grade || ''} onChange={(e) => updateEducationDetail(index, 'grade', e.target.value)} placeholder="Grade" className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold outline-none focus:border-blue-500 dark:border-slate-700 dark:bg-slate-900" />
+              <button type="button" onClick={() => setFormData(prev => ({ ...prev, educationDetails: prev.educationDetails.filter((_, idx) => idx !== index) }))} className="grid h-10 w-10 place-items-center rounded-xl text-rose-500 hover:bg-rose-50">
+                <Trash2 size={16} />
+              </button>
+            </div>
+          ))}
+          {(formData.educationDetails || []).length === 0 && (
+            <div className="rounded-2xl border border-dashed border-slate-200 p-5 text-center text-xs font-bold text-slate-400 dark:border-slate-800">
+              No education rows added yet.
+            </div>
+          )}
+        </div>
+      </div>
       <div className="grid grid-cols-1 gap-5">
         <div className="relative flex items-start transition-all duration-300 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-white/50 dark:bg-slate-900/50 p-4">
-          <textarea 
+              <textarea 
             name="achievements" 
             value={formData.achievements} 
             onChange={handleChange}
-            className="w-full bg-transparent outline-none text-sm font-semibold resize-none h-24"
+                className="w-full bg-white dark:bg-slate-900 outline-none text-sm font-semibold resize-none h-24 rounded-2xl px-4 py-3 border-2 border-slate-200 dark:border-slate-700"
             placeholder="Academic Achievements & Awards..."
           />
           <label className="absolute left-4 -top-2.5 px-2 bg-white dark:bg-slate-900 text-xs text-blue-600 font-bold">Achievements</label>
@@ -346,6 +619,44 @@ export default function AddTeacherMultiStep({ teacher, onSubmit, onCancel, isLoa
         <FloatingInput label="Department" name="department" value={formData.department} onChange={handleChange} icon={Building} />
         <FloatingInput label="Role / Designation" name="role" value={formData.role} onChange={handleChange} icon={User} />
         <FloatingInput label="Experience (Years)" name="experience" value={formData.experience} onChange={handleChange} icon={Clock} />
+      </div>
+
+      <div className="mb-8 rounded-3xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <div>
+            <h5 className="text-xs font-black uppercase tracking-widest text-slate-500">Experience History</h5>
+            <p className="mt-1 text-xs font-semibold text-slate-400">Add previous organizations, roles, and durations.</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setFormData(prev => ({
+              ...prev,
+              experienceDetails: [...(prev.experienceDetails || []), { organization: '', role: '', from: '', to: '', description: '' }]
+            }))}
+            className="inline-flex items-center gap-2 rounded-2xl bg-blue-600 px-4 py-2 text-xs font-black uppercase tracking-widest text-white"
+          >
+            <Plus size={14} /> Add Experience
+          </button>
+        </div>
+        <div className="space-y-3">
+          {(formData.experienceDetails || []).map((item, index) => (
+            <div key={index} className="grid gap-3 rounded-2xl bg-slate-50 p-3 dark:bg-slate-800 md:grid-cols-[1fr_1fr_120px_120px_40px]">
+              <input value={item.organization || ''} onChange={(e) => updateExperienceDetail(index, 'organization', e.target.value)} placeholder="Organization" className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold outline-none focus:border-blue-500 dark:border-slate-700 dark:bg-slate-900" />
+              <input value={item.role || ''} onChange={(e) => updateExperienceDetail(index, 'role', e.target.value)} placeholder="Role" className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold outline-none focus:border-blue-500 dark:border-slate-700 dark:bg-slate-900" />
+              <input type="date" value={item.from || ''} onChange={(e) => updateExperienceDetail(index, 'from', e.target.value)} className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold outline-none focus:border-blue-500 dark:border-slate-700 dark:bg-slate-900" />
+              <input type="date" value={item.to || ''} onChange={(e) => updateExperienceDetail(index, 'to', e.target.value)} className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold outline-none focus:border-blue-500 dark:border-slate-700 dark:bg-slate-900" />
+              <button type="button" onClick={() => setFormData(prev => ({ ...prev, experienceDetails: prev.experienceDetails.filter((_, idx) => idx !== index) }))} className="grid h-10 w-10 place-items-center rounded-xl text-rose-500 hover:bg-rose-50">
+                <Trash2 size={16} />
+              </button>
+              <textarea value={item.description || ''} onChange={(e) => updateExperienceDetail(index, 'description', e.target.value)} placeholder="Responsibilities / achievements" className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold outline-none focus:border-blue-500 dark:border-slate-700 dark:bg-slate-900 md:col-span-5" rows={2} />
+            </div>
+          ))}
+          {(formData.experienceDetails || []).length === 0 && (
+            <div className="rounded-2xl border border-dashed border-slate-200 p-5 text-center text-xs font-bold text-slate-400 dark:border-slate-800">
+              No experience rows added yet.
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="mb-8">
@@ -560,69 +871,9 @@ export default function AddTeacherMultiStep({ teacher, onSubmit, onCancel, isLoa
     </motion.div>
   );
 
-  const CurrentStepComponent = () => {
-    switch (currentStep) {
-      case 1: return renderBasicInfo();
-      case 2: return renderAcademicDetails();
-      case 3: return renderProfessionalDetails();
-      case 4: return renderAddressMedical();
-      case 5: return renderDocsUpload();
-      case 6: return renderReviewSubmit();
-      default: return null;
-    }
-  };
-
   return (
     <div className="flex h-[85vh] min-h-[600px] overflow-hidden bg-white dark:bg-slate-950 rounded-[2.5rem] shadow-2xl border border-slate-200 dark:border-slate-800">
-      {/* Sidebar Navigation */}
-      <div className="w-80 shrink-0 bg-slate-50 dark:bg-slate-900/40 border-r border-slate-200 dark:border-slate-800 p-8 hidden lg:flex flex-col">
-        <div className="mb-10">
-          <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tighter flex items-center gap-2">
-             <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
-                <Sparkles className="text-white" size={16} />
-             </div>
-             EDDVA <span className="text-blue-600">PRO</span>
-          </h1>
-        </div>
-
-        <div className="flex-1 space-y-2 overflow-y-auto custom-scrollbar">
-          {STEPS.map(step => {
-            const Icon = step.icon;
-            const isActive = currentStep === step.id;
-            const isCompleted = currentStep > step.id;
-            
-            return (
-              <button 
-                key={step.id}
-                onClick={() => setCurrentStep(step.id)}
-                className={`
-                  w-full flex items-center gap-4 p-4 rounded-2xl transition-all duration-300 text-left
-                  ${isActive ? 'bg-white dark:bg-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none' : 'hover:bg-slate-200/50 dark:hover:bg-slate-800/30'}
-                `}
-              >
-                <div className={`
-                  w-10 h-10 rounded-xl flex items-center justify-center transition-all
-                  ${isActive ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30 rotate-3' : isCompleted ? 'bg-emerald-500 text-white' : 'bg-slate-200 dark:bg-slate-800 text-slate-400'}
-                `}>
-                  {isCompleted ? <Check size={20} strokeWidth={3} /> : <Icon size={20} />}
-                </div>
-                <div>
-                  <h4 className={`text-xs font-black uppercase tracking-wider ${isActive ? 'text-slate-900 dark:text-white' : 'text-slate-400'}`}>{step.title}</h4>
-                  <p className="text-[10px] font-bold text-slate-400 leading-tight">{step.description}</p>
-                </div>
-              </button>
-            );
-          })}
-        </div>
-
-        <div className="mt-8 p-6 rounded-3xl bg-gradient-to-br from-slate-900 to-slate-800 text-white">
-           <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2">System Status</p>
-           <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-xs font-black">AI CORE ACTIVE</span>
-           </div>
-        </div>
-      </div>
+      <TeacherSidebar currentStep={currentStep} onStepSelect={handleStepSelect} />
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col relative">
@@ -638,59 +889,24 @@ export default function AddTeacherMultiStep({ teacher, onSubmit, onCancel, isLoa
         {/* Content Body */}
         <div className="flex-1 overflow-y-auto p-6 md:p-12 custom-scrollbar bg-white dark:bg-slate-950">
           <AnimatePresence mode="wait">
-            <CurrentStepComponent key={currentStep} />
+            {currentStep === 1 && <React.Fragment key={1}>{renderBasicInfo()}</React.Fragment>}
+            {currentStep === 2 && <React.Fragment key={2}>{renderAcademicDetails()}</React.Fragment>}
+            {currentStep === 3 && <React.Fragment key={3}>{renderProfessionalDetails()}</React.Fragment>}
+            {currentStep === 4 && <React.Fragment key={4}>{renderAddressMedical()}</React.Fragment>}
+            {currentStep === 5 && <React.Fragment key={5}>{renderDocsUpload()}</React.Fragment>}
+            {currentStep === 6 && <React.Fragment key={6}>{renderReviewSubmit()}</React.Fragment>}
           </AnimatePresence>
         </div>
 
         {/* Footer Actions */}
-        <div className="p-6 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl border-t border-slate-200 dark:border-slate-800 flex items-center justify-between z-10">
-          <button 
-            type="button" 
-            onClick={onCancel}
-            className="px-6 py-3 rounded-2xl text-sm font-black text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
-          >
-            CANCEL
-          </button>
-
-          <div className="flex gap-3">
-            <button 
-              type="button"
-              className="px-6 py-3 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-black uppercase tracking-widest hover:bg-slate-200 transition-all flex items-center gap-2"
-            >
-              <Save size={16} /> Save Draft
-            </button>
-            
-            {currentStep > 1 && (
-              <button 
-                type="button" 
-                onClick={handleBack}
-                className="px-6 py-3 rounded-2xl border-2 border-slate-200 dark:border-slate-800 text-xs font-black uppercase tracking-widest flex items-center gap-2 hover:bg-slate-50 transition-all text-slate-600 dark:text-slate-300"
-              >
-                <ChevronLeft size={16} /> Back
-              </button>
-            )}
-
-            {currentStep < STEPS.length ? (
-              <button 
-                type="button" 
-                onClick={handleNext}
-                className="px-8 py-3 rounded-2xl bg-blue-600 text-white text-xs font-black uppercase tracking-widest shadow-lg shadow-blue-600/25 hover:scale-105 active:scale-95 transition-all flex items-center gap-2"
-              >
-                Next Step <ChevronRight size={16} />
-              </button>
-            ) : (
-              <button 
-                type="button" 
-                disabled={isLoading}
-                onClick={() => onSubmit(formData)}
-                className="px-8 py-3 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-xs font-black uppercase tracking-widest shadow-lg shadow-emerald-600/25 hover:scale-105 active:scale-95 transition-all flex items-center gap-2"
-              >
-                {isLoading ? <Loader2 className="animate-spin" size={16} /> : <CheckCircle size={16} />}
-                Deploy Teacher
-              </button>
-            )}
-          </div>
-        </div>
+        <TeacherFooter
+          currentStep={currentStep}
+          isLoading={isLoading}
+          onCancel={onCancel}
+          onBack={handleBack}
+          onNext={handleNext}
+          onSubmit={handleSubmitForm}
+        />
       </div>
     </div>
   );

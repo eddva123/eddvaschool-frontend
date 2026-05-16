@@ -7,6 +7,8 @@ import {
   Smartphone, Mail, Shield, HeartPulse,
   Check, Loader2, Calendar, Fingerprint, Briefcase
 } from 'lucide-react';
+import api from '../../../services/api';
+import { useAuth } from '../../../context/AuthContext';
 
 const STEPS = [
   { id: 1, title: 'Basic Information', icon: User, description: 'Personal & identity details' },
@@ -16,6 +18,24 @@ const STEPS = [
   { id: 5, title: 'Document Uploads', icon: Upload, description: 'Identity & certificates' },
   { id: 6, title: 'Review & Submit', icon: CheckCircle, description: 'Final verification' }
 ];
+
+const BLOOD_GROUP_OPTIONS = ['', 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
+const MARITAL_STATUS_OPTIONS = ['', 'Single', 'Married'];
+
+function getInstituteCode(name = 'Eddva School') {
+  const words = String(name)
+    .replace(/[^a-zA-Z0-9\s]/g, ' ')
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+  const code = words.length > 1 ? words.map((word) => word[0]).join('') : (words[0] || 'EDDVA').slice(0, 3);
+  return code.toUpperCase().slice(0, 6);
+}
+
+function getScopedId(instituteName, existingCount = 0) {
+  const year = new Date().getFullYear();
+  return `${getInstituteCode(instituteName)}-${year}-${String(existingCount + 1).padStart(3, '0')}`;
+}
 
 const FloatingInput = ({ label, icon: Icon, type = 'text', name, value, onChange, placeholder, error, ...props }) => {
   const [isFocused, setIsFocused] = useState(false);
@@ -60,6 +80,24 @@ const FloatingInput = ({ label, icon: Icon, type = 'text', name, value, onChange
   );
 };
 
+const FloatingSelect = ({ label, name, value, onChange, options }) => (
+  <div className="relative">
+    <select
+      name={name}
+      value={value}
+      onChange={onChange}
+      className="w-full h-[54px] rounded-2xl border-2 border-slate-200 bg-white/50 px-4 pt-4 text-sm font-semibold text-slate-900 outline-none transition focus:border-blue-500 dark:border-slate-700 dark:bg-slate-900/50 dark:text-white"
+    >
+      {options.map((option) => (
+        <option key={option || 'blank'} value={option}>
+          {option || `Select ${label}`}
+        </option>
+      ))}
+    </select>
+    <label className="absolute left-4 top-1.5 text-[10px] font-black uppercase text-blue-600">{label}</label>
+  </div>
+);
+
 const SectionHeader = ({ title, description, badge }) => (
   <div className="mb-8">
     <div className="flex items-center gap-3 mb-1">
@@ -91,10 +129,11 @@ const AIAssistantCard = ({ message }) => (
 );
 
 export default function AddStudentMultiStep({ student, onSubmit, onCancel, isLoading }) {
+  const { institute } = useAuth();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     name: '', email: '', password: '', confirmPassword: '', phone: '',
-    dob: '', gender: '', bloodGroup: '', nationalId: '', photo: null,
+    dob: '', gender: '', bloodGroup: '', maritalStatus: '', nationalId: '', photo: null,
     enrollmentNo: '', rollNo: '', classId: '', sectionId: '', admissionDate: '',
     fatherName: '', motherName: '', parentPhone: '', parentEmail: '', parentOccupation: '',
     currentAddress: '', permanentAddress: '', city: '', state: '', pinCode: '',
@@ -155,12 +194,19 @@ export default function AddStudentMultiStep({ student, onSubmit, onCancel, isLoa
     }));
   };
 
-  const generateEnrollmentNo = () => {
+  const generateEnrollmentNo = async () => {
     setIdLoading(true);
-    setTimeout(() => {
-      setFormData(prev => ({ ...prev, enrollmentNo: `ENR-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}` }));
+    try {
+      const res = await api.get('/students');
+      const list = res.data?.data ?? res.data;
+      const count = Array.isArray(list) ? list.length : 0;
+      setFormData(prev => ({ ...prev, enrollmentNo: getScopedId(institute?.name, count) }));
+    } catch (error) {
+      console.error('Failed to generate student id:', error);
+      setFormData(prev => ({ ...prev, enrollmentNo: getScopedId(institute?.name, 0) }));
+    } finally {
       setIdLoading(false);
-    }, 800);
+    }
   };
 
   const handleDocumentUpload = (docName, file) => {
@@ -226,7 +272,8 @@ export default function AddStudentMultiStep({ student, onSubmit, onCancel, isLoa
                 </select>
                 <label className="absolute left-4 top-1.5 text-[10px] font-black text-blue-600 uppercase">Gender</label>
               </div>
-              <FloatingInput label="Blood Group" name="bloodGroup" value={formData.bloodGroup} onChange={handleChange} />
+              <FloatingSelect label="Blood Group" name="bloodGroup" value={formData.bloodGroup} onChange={handleChange} options={BLOOD_GROUP_OPTIONS} />
+              <FloatingSelect label="Marital Status" name="maritalStatus" value={formData.maritalStatus} onChange={handleChange} options={MARITAL_STATUS_OPTIONS} />
             </div>
           </motion.div>
         );

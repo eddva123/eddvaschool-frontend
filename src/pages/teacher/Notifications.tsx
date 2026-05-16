@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Bell, Trash2, CheckCircle } from "lucide-react";
+import api from "../../services/api";
+import useLiveRefresh from "../../hooks/useLiveRefresh";
 import "./Notifications.css";
 
 interface Notification {
@@ -44,7 +46,53 @@ const defaultNotifications: Notification[] = [
 const Notifications: React.FC = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
-  useEffect(() => {
+  const loadNotifications = async () => {
+    try {
+      const [noticesRes, notificationsRes] = await Promise.allSettled([
+        api.get('/notices'),
+        api.get('/notifications'),
+      ]);
+
+      const nextNotifications: Notification[] = [];
+
+      if (noticesRes.status === 'fulfilled') {
+        const notices = noticesRes.value.data?.data ?? noticesRes.value.data ?? [];
+        if (Array.isArray(notices)) {
+          notices.slice(0, 8).forEach((notice: any, index: number) => {
+            nextNotifications.push({
+              id: Number(notice.id ?? index + 1000),
+              title: notice.title || 'Notice',
+              message: notice.content || notice.category || 'New institute notice published.',
+              time: notice.postedDate ? new Date(notice.postedDate).toLocaleString() : 'Just now',
+              read: false,
+            });
+          });
+        }
+      }
+
+      if (notificationsRes.status === 'fulfilled') {
+        const items = notificationsRes.value.data?.data ?? notificationsRes.value.data ?? [];
+        if (Array.isArray(items)) {
+          items.forEach((item: any, index: number) => {
+            nextNotifications.push({
+              id: Number(item.id ?? index + 2000),
+              title: item.title || 'Notification',
+              message: item.message || item.content || 'Institute update available.',
+              time: item.time || item.created_at || 'Just now',
+              read: Boolean(item.read),
+            });
+          });
+        }
+      }
+
+      if (nextNotifications.length > 0) {
+        setNotifications(nextNotifications);
+        return;
+      }
+    } catch (error) {
+      console.error('Notification sync error:', error);
+    }
+
     try {
       const stored = localStorage.getItem("teacher_notifications");
       if (stored) {
@@ -52,18 +100,22 @@ const Notifications: React.FC = () => {
 
         if (Array.isArray(parsed) && parsed.length > 0) {
           setNotifications(parsed);
-        } else {
-          setNotifications(defaultNotifications);
+          return;
         }
       }
     } catch (error) {
       console.error("Notification parsing error:", error);
-
       localStorage.removeItem("teacher_notifications");
-
-      setNotifications(defaultNotifications);
     }
+
+    setNotifications(defaultNotifications);
+  };
+
+  useEffect(() => {
+    loadNotifications();
   }, []);
+
+  useLiveRefresh(loadNotifications, [], 30000);
 
   useEffect(() => {
     localStorage.setItem(

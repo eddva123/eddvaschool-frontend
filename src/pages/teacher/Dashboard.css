@@ -4,6 +4,10 @@
   gap: 18px;
 }
 
+.dashboard__card {
+  animation: dashboardRise 0.5s ease both;
+}
+
 .dashboard__stats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -256,6 +260,72 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+.dashboard__updates-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dashboard__update-item {
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  border-radius: var(--radius-md);
+  background: var(--gray-50);
+  border: 1px solid transparent;
+  transition: all var(--transition-fast);
+}
+
+.dashboard__update-item:hover {
+  background: rgba(59, 130, 246, 0.04);
+  border-color: rgba(59, 130, 246, 0.08);
+  transform: translateY(-1px);
+}
+
+.dashboard__update-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.dashboard__update-title {
+  font-size: 0.813rem;
+  font-weight: 700;
+  color: var(--gray-800);
+  margin-bottom: 2px;
+}
+
+.dashboard__update-detail {
+  display: block;
+  font-size: 0.688rem;
+  color: var(--gray-500);
+  margin-bottom: 3px;
+}
+
+.dashboard__empty-state {
+  font-size: 0.813rem;
+  color: var(--gray-500);
+  padding: 8px 2px;
+}
+
+@keyframes dashboardRise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dashboard__card,
+  .dashboard__update-item {
+    animation: none;
+    transition: none;
+  }
 }
 
 .dashboard__activity-item {

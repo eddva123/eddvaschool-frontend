@@ -60,7 +60,7 @@ export default function Settings() {
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left text-sm font-bold transition ${
-                activeTab === tab.id ? 'bg-brand-50 text-brand-800' : 'text-surface-600 hover:bg-surface-50 hover:text-surface-950'
+                activeTab === tab.id ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-600/20' : 'text-surface-600 hover:bg-surface-50 hover:text-surface-950'
               }`}
             >
               <tab.icon className="h-4 w-4" />

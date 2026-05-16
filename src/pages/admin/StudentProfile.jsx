@@ -23,10 +23,10 @@ const TabButton = ({ active, onClick, icon: Icon, label }) => (
   <button
     onClick={onClick}
     className={`
-      flex items-center gap-2 px-6 py-4 border-b-2 font-bold text-sm transition-all
+      flex items-center gap-2 rounded-2xl border px-5 py-3 text-sm font-semibold transition-all duration-200
       ${active 
-        ? 'border-blue-600 text-blue-600 bg-blue-50/50' 
-        : 'border-transparent text-slate-400 hover:text-slate-600 hover:bg-slate-50'}
+        ? 'border-blue-600 bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-600/20' 
+        : 'border-transparent bg-transparent text-slate-500 hover:border-slate-200 hover:bg-slate-50 hover:text-slate-900 dark:hover:bg-slate-900/70 dark:hover:text-white'}
     `}
   >
     <Icon size={18} />
@@ -185,7 +185,7 @@ export default function StudentProfile() {
             </div>
           </div>
 
-          <div className="flex border-b border-slate-100 dark:border-slate-800 -mx-12 mb-8 px-12 overflow-x-auto no-scrollbar">
+          <div className="flex flex-wrap gap-3 border-b border-slate-100 dark:border-slate-800 -mx-12 mb-8 px-12 pb-6 overflow-x-auto no-scrollbar">
             <TabButton active={activeTab === 'personal'} onClick={() => setActiveTab('personal')} icon={User} label="Personal" />
             <TabButton active={activeTab === 'academic'} onClick={() => setActiveTab('academic')} icon={GraduationCap} label="Academic" />
             <TabButton active={activeTab === 'attendance'} onClick={() => setActiveTab('attendance')} icon={Calendar} label="Attendance" />

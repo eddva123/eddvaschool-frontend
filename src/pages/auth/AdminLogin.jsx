@@ -113,7 +113,13 @@ export default function Login() {
 
       finishAuthRedirect(nextTenantDomain, navigate, user.role);
     } catch (err) {
-      setError(err.response?.data?.message || err.response?.data?.error || 'Login failed');
+      console.error('Login error full:', err);
+      console.error('Error response:', err?.response);
+      console.error('Error response data:', err?.response?.data);
+      console.error('Error message property:', err?.response?.data?.message);
+      const errorMsg = err?.response?.data?.message || err?.response?.data?.error || err?.message || 'Login failed';
+      console.error('Final error message:', errorMsg);
+      setError(errorMsg);
     } finally {
       setLoading(false);
     }

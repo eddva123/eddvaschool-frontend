@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Video, Calendar, Users, Clock, Eye, Heart, Plus, Radio } from 'lucide-react';
+import { Video, Calendar, Users, Clock, Plus, Radio } from 'lucide-react';
 import Button from '../../components/Button';
 import Badge from '../../components/Badge';
 import Tabs from '../../components/Tabs';
@@ -7,7 +7,8 @@ import Modal from '../../components/Modal';
 import InputField from '../../components/InputField';
 import SelectField from '../../components/SelectField';
 import DataTable from '../../components/DataTable';
-import { recordedClasses } from '../../data/dummyData';import api from '../../services/api';
+import api from '../../services/api';
+import useLiveRefresh from '../../hooks/useLiveRefresh';
 
 import './ClassManagement.css';
 
@@ -81,6 +82,11 @@ const ClassManagement: React.FC = () => {
       console.error('Failed to fetch recordings', error);
     }
   };
+
+  useLiveRefresh(() => {
+    fetchSchedules();
+    fetchRecordedClasses();
+  }, [], 30000);
 
   const recordedColumns = [
     { key: 'title', title: 'Recording Title' },

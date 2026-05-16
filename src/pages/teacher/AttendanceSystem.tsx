@@ -9,12 +9,14 @@ import Tabs from '../../components/Tabs';
 import DataTable from '../../components/DataTable';
 import InputField from '../../components/InputField';
 import SelectField from '../../components/SelectField';
+import useLiveRefresh from '../../hooks/useLiveRefresh';
 
 const AttendanceSystem: React.FC = () => {
   const [records, setRecords] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedClass, setSelectedClass] = useState('');
   const [students, setStudents] = useState<any[]>([]);
+  const [classes, setClasses] = useState<any[]>([]);
   const [attendanceData, setAttendanceData] = useState<any>({});
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
 
@@ -46,14 +48,32 @@ const avgAttendance =
 
   const fetchRecords = async () => {
     try {
-      const res = await api.get('/attendance/report', {
-        params: { student_id: 1 } // Placeholder for demo
-      });
+      const res = await api.get('/attendance/report');
       setRecords(res.data.data);
     } catch (err) {
       console.error(err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchClasses = async () => {
+    try {
+      const res = await api.get('/classes');
+      const list = res.data?.data ?? res.data ?? [];
+      const formatted = Array.isArray(list)
+        ? list.map((cls: any) => ({
+            value: String(cls.id),
+            label: cls.class_name || cls.name || cls.section?.class?.name || cls.section?.name || `Class ${cls.id}`,
+          }))
+        : [];
+
+      setClasses(formatted);
+      if (!selectedClass && formatted.length > 0) {
+        setSelectedClass(formatted[0].value);
+      }
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -68,7 +88,16 @@ const avgAttendance =
 
   useEffect(() => {
     fetchRecords();
+    fetchClasses();
   }, []);
+
+  useLiveRefresh(() => {
+    fetchRecords();
+    fetchClasses();
+    if (selectedClass) {
+      fetchStudents(selectedClass);
+    }
+  }, [selectedClass], 30000);
   const columns = [
     { key: 'studentId', title: 'Student ID' },
     { key: 'name', title: 'Student Name' },
@@ -133,7 +162,7 @@ const avgAttendance =
               onChange={(e) => {
                 setSelectedClass(e.target.value);
                 fetchStudents(e.target.value);
-              }}              options={[
+              }}              options={classes.length > 0 ? classes : [
                 { value: '1', label: 'Class 12-A' },
                 { value: '2', label: 'Class 11-B' },
               ]}

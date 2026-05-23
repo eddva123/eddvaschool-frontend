@@ -1,0 +1,8 @@
+{
+  "step_index": 360,
+  "source": "MODEL",
+  "type": "VIEW_FILE",
+  "status": "DONE",
+  "created_at": "2026-05-22T12:16:00Z",
+  "content": "Created At: 2026-05-22T12:16:00Z\nCompleted At: 2026-05-22T12:16:00Z\nFile Path: `file:///c:/Users/prata/vscode/Eddva/eddvaschool-frontend/src/pages/admin/InstituteDashboardWorkspace.jsx`\nTotal Lines: 575\nTotal Bytes: 31112\nShowing lines 450 to 458\nThe following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.\n450:               </div>\r\n451:             )}\r\n452:           </div>\r\n453:         </motion.div>\n454:         </div>\n455: \n456:       </div>\n457: \n458:       {/* Right Sidebar Area */}\nThe above content does NOT show the entire file contents. If you need to view any lines of the file which were not shown to complete your task, call this tool again to view those lines.\n"
+}

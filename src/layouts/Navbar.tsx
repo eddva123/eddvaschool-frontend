@@ -1,7 +1,14 @@
+<<<<<<< HEAD
 import React, { useState, useEffect } from "react";
 import { Menu, Bell, Search, Settings, User } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+=======
+import React, { useState } from "react";
+import { Menu, Bell, Search, Settings, User } from "lucide-react";
+import { Link } from "react-router-dom";
+import { teacherProfile, notifications } from "../data/dummyData";
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
 import "./Navbar.css";
 
 interface NavbarProps {
@@ -11,6 +18,7 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ onMenuToggle, title }) => {
   const [showNotifications, setShowNotifications] = useState(false);
+<<<<<<< HEAD
   const [storedNotifications, setStoredNotifications] = useState<any[]>([]);
   const { user } = useAuth();
 
@@ -31,6 +39,13 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle, title }) => {
   const displayRole = user?.role ? user.role.replace('_', ' ') : "Teacher";
   const initials = displayName.split(" ").map(n => n[0]).join("").substring(0, 2).toUpperCase() || "T";
 
+=======
+  const storedNotifications =
+    JSON.parse(localStorage.getItem("teacher_notifications") || "null") ||
+    notifications;
+
+  const unreadCount = storedNotifications.filter((n: any) => !n.read).length;
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
   return (
     <header className="navbar">
       <div className="navbar__left">
@@ -81,7 +96,11 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle, title }) => {
                     }`}
                   >
                     <div
+<<<<<<< HEAD
                       className={`navbar__notification-dot navbar__notification-dot--${n.type || "info"}`}
+=======
+                      className={`navbar__notification-dot navbar__notification-dot--${n.type}`}
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
                     />
 
                     <div className="navbar__notification-content">
@@ -93,11 +112,14 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle, title }) => {
                     </div>
                   </div>
                 ))}
+<<<<<<< HEAD
                 {storedNotifications.length === 0 && (
                   <div className="navbar__notification" style={{ justifyContent: 'center' }}>
                     <p className="navbar__notification-msg">No notifications</p>
                   </div>
                 )}
+=======
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
               </div>
             </div>
           )}
@@ -108,6 +130,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle, title }) => {
         </button>
 
         <Link to="/profile" className="navbar__profile">
+<<<<<<< HEAD
           {user?.photo ? (
             <img src={user.photo} alt={displayName} className="navbar__avatar" style={{ padding: 0, objectFit: 'cover' }} />
           ) : (
@@ -117,6 +140,14 @@ const Navbar: React.FC<NavbarProps> = ({ onMenuToggle, title }) => {
           <div className="navbar__profile-info">
             <p className="navbar__profile-name">{displayName}</p>
             <p className="navbar__profile-role">{displayRole}</p>
+=======
+          <div className="navbar__avatar">SM</div>
+
+          <div className="navbar__profile-info">
+            <p className="navbar__profile-name">{teacherProfile.name}</p>
+
+            <p className="navbar__profile-role">{teacherProfile.subject}</p>
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
           </div>
         </Link>
       </div>

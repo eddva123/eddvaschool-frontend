@@ -11,20 +11,31 @@ export default function SuperAdminLogin() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+<<<<<<< HEAD
   const { setAuthSession, login } = useAuth();
+=======
+  const { setAuthSession } = useAuth();
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
+<<<<<<< HEAD
       const res = await login(email, password);
       if (res?.user?.role !== 'SUPER_ADMIN') {
+=======
+      const res = await api.post('/auth/login', { email, password });
+      
+      if (res.data.user.role !== 'SUPER_ADMIN') {
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
         toast.error('Access Denied: Only Super Admins can access this panel.');
         setLoading(false);
         return;
       }
 
+<<<<<<< HEAD
       toast.success('Welcome back, System Administrator');
       // Redirect to role-based home (admin dashboard)
       navigate('/super-admin/dashboard');
@@ -32,6 +43,18 @@ export default function SuperAdminLogin() {
       const message = error.response?.data?.message || error.response?.data?.error || error.message || 'Authentication failed';
       console.error('SuperAdmin login error:', error.response || error.message || error);
       toast.error(message);
+=======
+      setAuthSession({
+        token: res.data.token,
+        user: res.data.user,
+        institute: res.data.institute || null,
+        tenantDomain: null,
+      });
+      toast.success('Welcome back, System Administrator');
+      navigate('/super-admin/dashboard');
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'Authentication failed');
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
     } finally {
       setLoading(false);
     }

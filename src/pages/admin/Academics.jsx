@@ -25,10 +25,17 @@ export default function Academics() {
 
   const fetchData = async () => {
     try {
+<<<<<<< HEAD
         const [classRes, subRes] = await Promise.all([
           api.get('/academic/classes'),
           api.get('/academic/subjects')
         ]);
+=======
+      const [classRes, subRes] = await Promise.all([
+        api.get('/academic/classes'),
+        api.get('/academic/subjects')
+      ]);
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
       const classPayload = classRes.data?.data ?? classRes.data;
       const subPayload = subRes.data?.data ?? subRes.data;
       setClasses(Array.isArray(classPayload) ? classPayload : []);
@@ -87,12 +94,19 @@ export default function Academics() {
     try {
       if (selectedClass) {
         const res = await api.put(`/academic/classes/${selectedClass.id}`, formData);
+<<<<<<< HEAD
         const savedClass = res.data?.data ?? res.data;
         setClasses(classes.map(c => c.id === selectedClass.id ? savedClass : c));
       } else {
         const res = await api.post('/academic/classes', formData);
         const savedClass = res.data?.data ?? res.data;
         setClasses([...classes, savedClass]);
+=======
+        setClasses(classes.map(c => c.id === selectedClass.id ? res.data : c));
+      } else {
+        const res = await api.post('/academic/classes', formData);
+        setClasses([...classes, res.data]);
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
       }
       setIsClassModalOpen(false);
       setSelectedClass(null);
@@ -148,12 +162,19 @@ export default function Academics() {
     try {
       if (selectedSubject) {
         const res = await api.put(`/academic/subjects/${selectedSubject.id}`, formData);
+<<<<<<< HEAD
         const savedSubject = res.data?.data ?? res.data;
         setSubjects(subjects.map(s => s.id === selectedSubject.id ? savedSubject : s));
       } else {
         const res = await api.post('/academic/subjects', formData);
         const savedSubject = res.data?.data ?? res.data;
         setSubjects([...subjects, savedSubject]);
+=======
+        setSubjects(subjects.map(s => s.id === selectedSubject.id ? res.data : s));
+      } else {
+        const res = await api.post('/academic/subjects', formData);
+        setSubjects([...subjects, res.data]);
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
       }
       setIsSubjectModalOpen(false);
       setSelectedSubject(null);

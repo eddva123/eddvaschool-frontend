@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { AlertCircle, Loader } from 'lucide-react';
 import api from '../../../services/api';
+<<<<<<< HEAD
 import { getResponseList } from '../../../utils/apiData';
+=======
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
 
 export default function TimetableForm({ timetable, onSubmit, onCancel, isLoading }) {
   const [formData, setFormData] = useState({
@@ -42,17 +45,28 @@ export default function TimetableForm({ timetable, onSubmit, onCancel, isLoading
       ]);
       
       const allSections = [];
+<<<<<<< HEAD
       getResponseList(secRes).forEach(cls => {
+=======
+      (Array.isArray(secRes.data) ? secRes.data : []).forEach(cls => {
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
         (cls.sections || []).forEach(section => {
           allSections.push({ ...section, className: cls.name });
         });
       });
       
       setSections(allSections);
+<<<<<<< HEAD
       setSubjects(getResponseList(subjRes));
       setTeachers(getResponseList(teachRes));
     } catch (error) {
       console.error('Failed to load timetable data:', error);
+=======
+      setSubjects(Array.isArray(subjRes.data) ? subjRes.data : []);
+      setTeachers(Array.isArray(teachRes.data) ? teachRes.data : []);
+    } catch (error) {
+      console.error(error);
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
     }
   };
 
@@ -73,10 +87,13 @@ export default function TimetableForm({ timetable, onSubmit, onCancel, isLoading
       setError('Please select a subject');
       return;
     }
+<<<<<<< HEAD
     if (!formData.teacherId) {
       setError('Please select a teacher');
       return;
     }
+=======
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
 
     await onSubmit(formData);
   };
@@ -153,7 +170,11 @@ export default function TimetableForm({ timetable, onSubmit, onCancel, isLoading
             >
               <option value="">Select Teacher</option>
               {teachers.map(teacher => (
+<<<<<<< HEAD
                 <option key={teacher.teacherProfile?.id || teacher.id} value={teacher.teacherProfile?.id || teacher.id}>
+=======
+                <option key={teacher.id} value={teacher.id}>
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
                   {teacher.name}
                 </option>
               ))}

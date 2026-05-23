@@ -343,8 +343,12 @@ function TeacherFormWizard({ teacher, onSubmit, onCancel, isLoading }) {
   const fetchClasses = async () => {
     try {
       const res = await api.get('/academic/classes');
+<<<<<<< HEAD
       const data = res.data?.data ?? res.data;
       setClasses(Array.isArray(data) ? data : []);
+=======
+      setClasses(Array.isArray(res.data) ? res.data : []);
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
     } catch (err) {
       console.error('Failed to fetch classes:', err);
     }
@@ -353,8 +357,12 @@ function TeacherFormWizard({ teacher, onSubmit, onCancel, isLoading }) {
   const fetchSubjects = async () => {
     try {
       const res = await api.get('/academic/subjects');
+<<<<<<< HEAD
       const data = res.data?.data ?? res.data;
       setAvailableSubjects(Array.isArray(data) ? data : []);
+=======
+      setAvailableSubjects(Array.isArray(res.data) ? res.data : []);
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
     } catch (err) {
       console.error('Failed to fetch subjects:', err);
     }
@@ -661,11 +669,50 @@ function TeacherFormWizard({ teacher, onSubmit, onCancel, isLoading }) {
         </div>
       </div>
 
+<<<<<<< HEAD
       <div className="mb-8 rounded-2xl border border-blue-200/60 bg-blue-50/60 p-4 dark:border-blue-900/40 dark:bg-blue-900/10">
         <p className="text-xs font-black uppercase tracking-widest text-blue-700 dark:text-blue-300">Academic Sync Active</p>
         <p className="mt-2 text-sm font-semibold text-slate-700 dark:text-slate-300">
           Class and section mappings are now auto-managed from Academic Settings. Assign subject expertise below and the latest classes, sections, and subjects stay synced in real time.
         </p>
+=======
+      <div className="mb-8">
+        <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 ml-1">Class & Section Assignments</h5>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {classes.map(cls => (
+            <div key={cls.id} className="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/50">
+              <h6 className="text-xs font-black text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+                {cls.name}
+              </h6>
+              <div className="flex flex-wrap gap-2">
+                {(cls.sections || []).map(sec => {
+                  const isSelected = (formData.sectionIds || []).includes(sec.id);
+                  return (
+                    <button
+                      key={sec.id}
+                      type="button"
+                      onClick={() => {
+                        const current = formData.sectionIds || [];
+                        const next = isSelected ? current.filter(id => id !== sec.id) : [...current, sec.id];
+                        setFormData(prev => ({ ...prev, sectionIds: next }));
+                      }}
+                      className={`
+                        px-3 py-1.5 rounded-xl text-[10px] font-black transition-all
+                        ${isSelected 
+                          ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' 
+                          : 'bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-slate-200'}
+                      `}
+                    >
+                      SEC {sec.name}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+        </div>
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
       </div>
 
       <AIAssistantCard message={`I've analyzed the current class schedules. The teacher is assigned to ${(formData.assignedSections || []).length} sections. Recommended subjects based on expertise: Physics, Mathematics.`} />

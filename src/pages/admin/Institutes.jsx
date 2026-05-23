@@ -13,7 +13,10 @@ import {
   X,
   XCircle,
 } from 'lucide-react';
+<<<<<<< HEAD
 import toast from 'react-hot-toast';
+=======
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
 import api from '../../services/api';
 import { InstituteLogo, StatusBadge } from '../../components/admin/Brand';
 import { Skeleton } from '../../components/admin/Skeleton';
@@ -25,7 +28,10 @@ const emptyForm = {
   registrationNo: '',
   email: '',
   phone: '',
+<<<<<<< HEAD
   alternatePhone: '',
+=======
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
   adminPassword: '',
   plotNo: '',
   streetName: '',
@@ -34,6 +40,7 @@ const emptyForm = {
   district: '',
   state: '',
   pinCode: '',
+<<<<<<< HEAD
   website: '',
   tenantDomain: '',
   academicSession: '',
@@ -68,6 +75,11 @@ const moduleOptions = [
   ['liveClasses', 'Live Classes'],
 ];
 
+=======
+  logo: '',
+};
+
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
 const inputClass =
   'w-full rounded-lg border border-surface-200 bg-surface-50 px-4 py-2.5 text-sm font-medium text-surface-950 outline-none transition focus:border-brand-400 focus:bg-white focus:ring-4 focus:ring-brand-100';
 
@@ -90,13 +102,17 @@ export default function Institutes() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [selectedInstitute, setSelectedInstitute] = useState(null);
+<<<<<<< HEAD
   const [editMode, setEditMode] = useState(false);
   const [editForm, setEditForm] = useState(emptyForm);
+=======
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
   const [createOpen, setCreateOpen] = useState(false);
   const [createForm, setCreateForm] = useState(emptyForm);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
 
+<<<<<<< HEAD
   function dispatchDataChanged(resource = 'institutes') {
     window.dispatchEvent(new CustomEvent('eddva:data-changed', { detail: { resource } }));
   }
@@ -144,17 +160,27 @@ export default function Institutes() {
     };
   }
 
+=======
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
   async function loadInstitutes() {
     try {
       setLoading(true);
       const res = await api.get('/institutes', {
         params: {
+<<<<<<< HEAD
           perPage: 1000,
+=======
+          perPage: 100,
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
           status: statusFilter,
           search: search || undefined,
         },
       });
+<<<<<<< HEAD
       setList(res.data?.data?.items || res.data?.items || []);
+=======
+      setList(res.data.items || []);
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
     } catch (err) {
       console.error(err);
       setError(err.response?.data?.message || err.response?.data?.error || 'Unable to load institutes.');
@@ -189,6 +215,7 @@ export default function Institutes() {
       setSaving(true);
       const res = await api.put(`/institutes/${instituteId}/${action}`);
       setSelectedInstitute(res.data.institute);
+<<<<<<< HEAD
       toast.success(`Institute ${action === 'approve' ? 'activated' : 'suspended'} successfully`);
       dispatchDataChanged('institutes');
       await loadInstitutes();
@@ -255,6 +282,11 @@ export default function Institutes() {
       const message = err.response?.data?.message || err.response?.data?.error || 'Unable to update institute.';
       setError(message);
       toast.error(message);
+=======
+      await loadInstitutes();
+    } catch (err) {
+      setError(err.response?.data?.message || err.response?.data?.error || 'Unable to update institute.');
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
     } finally {
       setSaving(false);
     }
@@ -276,7 +308,11 @@ export default function Institutes() {
     setError('');
 
     try {
+<<<<<<< HEAD
       await api.post('/institutes', { ...createForm, status: 'ACTIVE' });
+=======
+      await api.post('/institutes', createForm);
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
       setCreateForm(emptyForm);
       setCreateOpen(false);
       await loadInstitutes();
@@ -292,6 +328,7 @@ export default function Institutes() {
     if (url) window.location.assign(url);
   };
 
+<<<<<<< HEAD
   const toggleModulePermission = (key) => {
     setEditForm((prev) => ({
       ...prev,
@@ -302,6 +339,8 @@ export default function Institutes() {
     }));
   };
 
+=======
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
   return (
     <div className="space-y-6 pb-12">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
@@ -382,7 +421,11 @@ export default function Institutes() {
                 </tr>
               ) : (
                 filteredList.map((item) => (
+<<<<<<< HEAD
                   <tr key={item.id} onClick={() => { setSelectedInstitute(item); setEditMode(false); }} className="cursor-pointer border-t border-surface-100 transition hover:bg-surface-50">
+=======
+                  <tr key={item.id} onClick={() => setSelectedInstitute(item)} className="cursor-pointer border-t border-surface-100 transition hover:bg-surface-50">
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
                     <td className="p-4 pl-5">
                       <div className="flex items-center gap-3">
                         <InstituteLogo institute={item} size="md" />
@@ -400,6 +443,7 @@ export default function Institutes() {
                     <td className="p-4 text-sm font-bold text-surface-700">{item._count?.users || 0}</td>
                     <td className="p-4"><StatusBadge status={item.status} /></td>
                     <td className="p-4 text-right">
+<<<<<<< HEAD
                       <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={(event) => {
@@ -421,6 +465,18 @@ export default function Institutes() {
                           <ExternalLink className="h-3.5 w-3.5" />
                         </button>
                       </div>
+=======
+                      <button
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          openWorkspace(item.tenantDomain);
+                        }}
+                        className="inline-flex items-center gap-2 rounded-lg border border-surface-200 bg-white px-3 py-2 text-xs font-bold text-surface-700 hover:border-brand-200 hover:text-brand-700"
+                      >
+                        Open
+                        <ExternalLink className="h-3.5 w-3.5" />
+                      </button>
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
                     </td>
                   </tr>
                 ))
@@ -443,6 +499,7 @@ export default function Institutes() {
             >
               <div className="flex items-center justify-between border-b border-surface-200 p-5">
                 <h2 className="font-display text-xl font-bold text-surface-950">Institute Details</h2>
+<<<<<<< HEAD
                 <div className="flex items-center gap-2">
                   <button onClick={() => { setEditForm(toEditForm(selectedInstitute)); setEditMode((value) => !value); }} className="rounded-lg border border-brand-200 bg-brand-50 px-3 py-2 text-xs font-bold text-brand-700 hover:bg-brand-100">
                     {editMode ? 'View Profile' : 'Edit Institute'}
@@ -451,6 +508,11 @@ export default function Institutes() {
                     <X className="h-5 w-5" />
                   </button>
                 </div>
+=======
+                <button onClick={() => setSelectedInstitute(null)} className="rounded-lg p-2 text-surface-500 hover:bg-surface-100">
+                  <X className="h-5 w-5" />
+                </button>
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
               </div>
 
               <div className="flex-1 overflow-y-auto p-6">
@@ -462,6 +524,7 @@ export default function Institutes() {
                   </div>
                 </div>
 
+<<<<<<< HEAD
                 {editMode ? (
                   <form className="space-y-5" onSubmit={saveInstitute}>
                     <div className="grid gap-4 sm:grid-cols-2">
@@ -573,6 +636,34 @@ export default function Institutes() {
                     </div>
                   </div>
                 )}
+=======
+                <div className="space-y-5">
+                  <div className="rounded-lg border border-surface-200 bg-surface-50 p-4">
+                    <p className="mb-3 text-xs font-bold uppercase text-surface-500">Contact</p>
+                    <div className="space-y-3 text-sm font-medium text-surface-700">
+                      <p className="flex items-center gap-3"><Mail className="h-4 w-4 text-brand-600" /> {selectedInstitute.email}</p>
+                      <p className="flex items-center gap-3"><ShieldCheck className="h-4 w-4 text-brand-600" /> {selectedInstitute.principalName || 'Principal not provided'}</p>
+                    </div>
+                  </div>
+
+                  <div className="rounded-lg border border-surface-200 bg-surface-50 p-4">
+                    <p className="mb-3 text-xs font-bold uppercase text-surface-500">Location</p>
+                    <p className="flex gap-3 text-sm font-medium leading-6 text-surface-700">
+                      <MapPin className="mt-1 h-4 w-4 flex-shrink-0 text-brand-600" />
+                      <span>
+                        {[selectedInstitute.plotNo, selectedInstitute.streetName, selectedInstitute.landMark, selectedInstitute.city, selectedInstitute.district, selectedInstitute.state, selectedInstitute.pinCode]
+                          .filter(Boolean)
+                          .join(', ') || 'Address not provided'}
+                      </span>
+                    </p>
+                  </div>
+
+                  <div className="rounded-lg border border-brand-100 bg-brand-50 p-4">
+                    <p className="text-xs font-bold uppercase text-brand-700">Tenant Workspace</p>
+                    <p className="mt-1 font-mono text-sm font-bold text-surface-950">{selectedInstitute.tenantDomain}.localhost:8080</p>
+                  </div>
+                </div>
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
               </div>
 
               <div className="grid gap-3 border-t border-surface-200 bg-surface-50 p-5 sm:grid-cols-2">

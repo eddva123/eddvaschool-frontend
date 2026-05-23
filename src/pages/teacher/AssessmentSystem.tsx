@@ -31,7 +31,11 @@ const AssessmentSystem: React.FC = () => {
   const [formData, setFormData] = useState({
     title: "",
     type: "topic",
+<<<<<<< HEAD
     class_id: "",
+=======
+    class_id: "1",
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
     total_marks: 100,
     duration_minutes: 120,
     scheduled_date: "",
@@ -106,11 +110,19 @@ const AssessmentSystem: React.FC = () => {
   useEffect(() => {
     const loadData = async () => {
       await fetchTests();
+<<<<<<< HEAD
+=======
+
+      // temporary default assessment
+      await fetchLeaderboard(1);
+      await fetchAnalytics(1);
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
     };
 
     loadData();
   }, []);
 
+<<<<<<< HEAD
   useEffect(() => {
     if (testsList.length > 0) {
       fetchLeaderboard(testsList[0].id);
@@ -118,6 +130,8 @@ const AssessmentSystem: React.FC = () => {
     }
   }, [testsList]);
 
+=======
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
   const handleCreateTest = async () => {
     if (!formData.title.trim()) {
       alert("Please enter test title");
@@ -176,7 +190,11 @@ const AssessmentSystem: React.FC = () => {
       };
 
       if (editingTest) {
+<<<<<<< HEAD
         await api.patch(`/assessments/${editingTest.id}`, payload);
+=======
+        await api.put(`/assessments/${editingTest.id}`, payload);
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
       } else {
         await api.post("/assessments", payload);
       }
@@ -195,7 +213,11 @@ const AssessmentSystem: React.FC = () => {
       setFormData({
         title: "",
         type: "topic",
+<<<<<<< HEAD
         class_id: "",
+=======
+        class_id: "1",
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
         total_marks: 100,
         duration_minutes: 120,
         scheduled_date: "",

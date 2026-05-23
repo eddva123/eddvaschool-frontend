@@ -113,6 +113,7 @@ export default function Navbar({ onMenuClick }) {
         { name: 'Fees Management', path: '/admin/fees', icon: SettingsIcon },
         { name: 'System Settings', path: '/admin/settings', icon: SettingsIcon },
         { name: 'Academics & Classes', path: '/admin/academics', icon: SettingsIcon },
+<<<<<<< HEAD
         { name: 'Subjects', path: '/admin/subjects', icon: SettingsIcon },
         { name: 'Assignments & Homework', path: '/admin/assignments', icon: SettingsIcon },
         { name: 'Study Materials', path: '/admin/study-materials', icon: SettingsIcon },
@@ -132,6 +133,8 @@ export default function Navbar({ onMenuClick }) {
         { name: 'Student Performance Analytics', path: '/admin/student-performance', icon: SettingsIcon },
         { name: 'Attendance Analytics', path: '/admin/attendance-analytics', icon: SettingsIcon },
         { name: 'Custom Reports', path: '/admin/custom-reports', icon: SettingsIcon },
+=======
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
       ];
       const pages = (isTeacher ? teacherPages : adminPages).filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()));
 

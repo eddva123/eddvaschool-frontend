@@ -25,6 +25,7 @@ const Dashboard: React.FC = () => {
 
   const loadDashboard = async () => {
     try {
+<<<<<<< HEAD
       const [statsRes, noticesRes, eventsRes] = await Promise.allSettled([
         api.get('/dashboard/stats'),
         api.get('/notices'),
@@ -47,6 +48,25 @@ const Dashboard: React.FC = () => {
       if (noticesRes.status === 'fulfilled') {
         const list = noticesRes.value.data?.data?.announcements ?? noticesRes.value.data?.announcements ?? noticesRes.value.data?.data ?? noticesRes.value.data ?? [];
         setNotices(Array.isArray(list) ? list : []);
+=======
+      const [statsRes, eventsRes, studentsRes, noticesRes] = await Promise.allSettled([
+        api.get('/dashboard/stats'),
+        api.get('/events'),
+        api.get('/students'),
+        api.get('/notices'),
+      ]);
+
+      if (statsRes.status === 'fulfilled') {
+        const data = statsRes.value.data || {};
+        setStats(data);
+        setUpcomingClasses((data.upcomingClasses || []).map((item: any) => ({
+          id: item.id,
+          time: `${item.startTime || item.start_time || '--'} - ${item.endTime || item.end_time || '--'}`,
+          subject: item.subjectName || item.subject_name || 'Scheduled class',
+          room: item.room || 'Classroom',
+          class: item.className || item.class_name || '-',
+        })));
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
       }
 
       if (eventsRes.status === 'fulfilled') {
@@ -54,6 +74,19 @@ const Dashboard: React.FC = () => {
         setEvents(Array.isArray(list) ? list : []);
       }
 
+<<<<<<< HEAD
+=======
+      if (studentsRes.status === 'fulfilled') {
+        const list = studentsRes.value.data?.data ?? studentsRes.value.data ?? [];
+        setStudents(Array.isArray(list) ? list : []);
+      }
+
+      if (noticesRes.status === 'fulfilled') {
+        const list = noticesRes.value.data?.data ?? noticesRes.value.data ?? [];
+        setNotices(Array.isArray(list) ? list : []);
+      }
+
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
       try {
         const res = await api.get('/notifications');
         const list = res.data?.data ?? res.data;

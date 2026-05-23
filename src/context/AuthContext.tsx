@@ -1,6 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import api from '../services/api';
+<<<<<<< HEAD
 import { getPortalLoginPath } from '../utils/tenantRedirect';
+=======
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
 
 // ======================================
 // Types
@@ -38,6 +41,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
 }
 
+<<<<<<< HEAD
 function normalizeRole(role?: string | null): User['role'] | null {
   if (!role) return null;
   const normalized = role.toUpperCase().replace(/[-\s]+/g, '_');
@@ -80,6 +84,8 @@ function normalizeLoginResponse(payload: any) {
   return { token, refreshToken, user, institute, tenantDomain, raw: data };
 }
 
+=======
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
 // ======================================
 // Storage helpers
 // ======================================
@@ -149,7 +155,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         try {
           // Verify token is still valid by calling /auth/me
           const res = await api.get('/auth/me');
+<<<<<<< HEAD
           const userData: User = normalizeUser(res.data.data);
+=======
+          const userData: User = res.data.data;
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
           setUser(userData);
           if (userData.institute) setInstitute(userData.institute);
           // Re-save updated user data
@@ -181,16 +191,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     institute?: Institute | null;
     tenantDomain?: string | null;
   }) => {
+<<<<<<< HEAD
     const normalizedUser = normalizeUser(userData);
     saveSession({ token, user: normalizedUser, institute: instData, tenantDomain });
     setUser(normalizedUser);
+=======
+    saveSession({ token, user: userData, institute: instData, tenantDomain });
+    setUser(userData);
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
     setInstitute(instData || null);
   };
 
   const login = async (email: string, password: string) => {
     try {
       const res = await api.post('/auth/login', { email, password });
+<<<<<<< HEAD
       const { token, user: userData, institute: instData, tenantDomain } = normalizeLoginResponse(res);
+=======
+      const { token, user: userData, institute: instData, tenantDomain } = res.data;
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
 
       // Multi-tenant redirect: if INSTITUTE_ADMIN and not already on tenant subdomain
       const onTenantHost = isTenantHost();
@@ -200,7 +219,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setAuthSession({ token, user: userData, institute: instData, tenantDomain });
       }
 
+<<<<<<< HEAD
       return { token, user: userData, institute: instData, tenantDomain };
+=======
+      return res.data;
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
     } catch (err) {
       throw err;
     }
@@ -217,7 +240,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setInstitute(null);
     // Call backend logout to clear cookie
     api.get('/auth/logout').catch(() => {});
+<<<<<<< HEAD
     window.location.replace(getPortalLoginPath());
+=======
+    window.location.href = '/login';
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
   };
 
   const value: AuthContextType = {

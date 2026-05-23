@@ -25,7 +25,11 @@ export default function Complaints() {
     try {
       setLoading(true);
       const res = await api.get('/complaints');
+<<<<<<< HEAD
       setComplaints(res.data?.data || res.data || []);
+=======
+      setComplaints(res.data || []);
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
     } catch (err) {
       setError(err.response?.data?.message || err.response?.data?.error || 'Unable to load support tickets.');
     } finally {

@@ -6,11 +6,16 @@ import api from '../../services/api';
 import { mapTeacherFormToApi } from '../../utils/onboardPayload';
 import { getTenantLoginUrl } from '../../utils/tenantRedirect';
 import { useAuth } from '../../context/AuthContext';
+<<<<<<< HEAD
 import useLiveRefresh from '../../hooks/useLiveRefresh';
 import { getResponseList, notifyDataChanged } from '../../utils/apiData';
 import Modal from '../../components/admin/Modal';
 import AddTeacherMultiStep from '../../components/admin/forms/AddTeacherMultiStep';
 import { toast } from '../../utils/toast';
+=======
+import Modal from '../../components/admin/Modal';
+import AddTeacherMultiStep from '../../components/admin/forms/AddTeacherMultiStep';
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
 
 function formatNumber(value) {
   return Number(value || 0).toLocaleString();
@@ -54,6 +59,7 @@ export default function Teachers() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
+<<<<<<< HEAD
   const [selectedYear, setSelectedYear] = useState('ALL');
 
   const years = ['ALL', '2023', '2024', '2025', '2026', '2027'];
@@ -62,14 +68,33 @@ export default function Teachers() {
     try {
       const res = await api.get('/teachers');
       setTeachers(getResponseList(res));
+=======
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear().toString());
+
+  const years = ['2023', '2024', '2025', '2026', '2027'];
+
+  useEffect(() => {
+    fetchTeachers();
+  }, []);
+
+  const fetchTeachers = async () => {
+    try {
+      const res = await api.get('/teachers');
+      const list = res.data?.data ?? res.data;
+      setTeachers(Array.isArray(list) ? list : []);
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
     } catch (error) {
       console.error(error);
     } finally {
       setLoading(false);
     }
+<<<<<<< HEAD
   }
 
   useLiveRefresh(fetchTeachers, [], 15000);
+=======
+  };
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
 
   const handleAddClick = () => {
     setSelectedTeacher(null);
@@ -86,11 +111,17 @@ export default function Teachers() {
       try {
         await api.delete(`/teachers/${id}`);
         setTeachers(teachers.filter(t => t.id !== id));
+<<<<<<< HEAD
         notifyDataChanged('teachers');
         toast.success('Teacher deleted successfully');
       } catch (error) {
         console.error(error);
         toast.error('Failed to delete teacher');
+=======
+      } catch (error) {
+        console.error(error);
+        alert('Failed to delete teacher');
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
       }
     }
   };
@@ -100,22 +131,44 @@ export default function Teachers() {
     try {
       if (selectedTeacher) {
         await api.put(`/teachers/${selectedTeacher.id}`, formData);
+<<<<<<< HEAD
         toast.success('Teacher updated successfully');
+=======
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
       } else {
         const payload = mapTeacherFormToApi(formData);
         await api.post('/teachers', payload);
         const tenant = institute?.tenantDomain || localStorage.getItem('tenantDomain') || 'demo-school';
         const loginUrl = getTenantLoginUrl(tenant);
+<<<<<<< HEAD
         toast.success(`Teacher created successfully. Portal: ${loginUrl}`);
+=======
+        if (loginUrl) {
+          alert(
+            `Teacher saved successfully.\n\nThey must log in at the institute portal:\n${loginUrl}\n\nEmail: ${payload.email}\nPassword: (as set in the form)`
+          );
+        }
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
       }
       setIsModalOpen(false);
       setSelectedTeacher(null);
       await fetchTeachers();
+<<<<<<< HEAD
       notifyDataChanged('teachers');
     } catch (error) {
       console.error(error);
       const errorMsg = error.response?.data?.error || error.response?.data?.message || error.message || 'Failed to save teacher';
       toast.error(errorMsg);
+=======
+    } catch (error) {
+      console.error(error);
+      alert(
+        error.message ||
+          error.response?.data?.error ||
+          error.response?.data?.message ||
+          'Failed to save teacher'
+      );
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
     } finally {
       setIsSubmitting(false);
     }
@@ -145,10 +198,14 @@ export default function Teachers() {
         return true;
       })
       .filter((t) => {
+<<<<<<< HEAD
         const matchesYear =
           selectedYear === 'ALL'
             ? true
             : (t.createdAt ? new Date(t.createdAt).getFullYear().toString() === selectedYear : false);
+=======
+        const matchesYear = t.createdAt ? new Date(t.createdAt).getFullYear().toString() === selectedYear : false;
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
         if (!q) return matchesYear;
         const dept = t.teacherProfile?.department || '';
         const matchesQuery = [t.name, t.email, dept].some((v) => String(v || '').toLowerCase().includes(q));
@@ -336,7 +393,11 @@ export default function Teachers() {
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-2">
                         <Link
+<<<<<<< HEAD
                           to={`/admin/teachers/${teacher.id}`}
+=======
+                          to={`/teachers/${teacher.id}`}
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
                           className="group relative flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 transition-all hover:border-blue-400 hover:bg-blue-50 hover:text-blue-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400 dark:hover:bg-slate-800"
                         >
                           <Eye className="h-4 w-4" />

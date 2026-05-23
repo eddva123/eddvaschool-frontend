@@ -2,7 +2,10 @@ import React, { useMemo, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Edit2, Trash2, Eye } from 'lucide-react';
 import api from '../../services/api';
+<<<<<<< HEAD
 import { getResponseList } from '../../utils/apiData';
+=======
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
 import Modal from '../../components/admin/Modal';
 import AttendanceForm from '../../components/admin/forms/AttendanceForm';
 
@@ -38,7 +41,11 @@ export default function Attendance() {
         params.endDate = filterDate;
       }
       const res = await api.get('/attendance', { params });
+<<<<<<< HEAD
       setAttendance(getResponseList(res));
+=======
+      setAttendance(Array.isArray(res.data) ? res.data : []);
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
     } catch (error) {
       console.error(error);
     } finally {
@@ -229,7 +236,11 @@ export default function Attendance() {
             ) : (
               filteredAttendance.map(record => (
                 <tr key={record.id}>
+<<<<<<< HEAD
                   <td className="px-6 py-4 font-semibold text-surface-950">{record.user?.name || '-'}</td>
+=======
+                  <td className="px-6 py-4 font-semibold text-surface-950">{record.user?.name}</td>
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
                   <td className="px-6 py-4">{new Date(record.date).toLocaleDateString()}</td>
                   <td className="px-6 py-4">
                     <span className={`inline-flex rounded-full px-2 py-1 text-xs font-bold ${statusColors[record.status] || statusColors.PRESENT}`}>
@@ -248,6 +259,7 @@ export default function Attendance() {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex gap-2">
+<<<<<<< HEAD
                       {record.user?.id ? (
                         <Link
                           to={record.user.role === 'STUDENT' ? `/admin/students/${record.user.id}` : `/admin/teachers/${record.user.id}`}
@@ -266,6 +278,15 @@ export default function Attendance() {
                           <Eye className="h-4 w-4" />
                         </button>
                       )}
+=======
+                      <Link
+                        to={record.user?.role === 'STUDENT' ? `/students/${record.user.id}` : `/teachers/${record.user.id}`}
+                        className="group relative flex h-8 w-8 items-center justify-center rounded-lg border border-surface-200 bg-white text-surface-500 transition-all hover:border-brand-400 hover:bg-brand-50 hover:text-brand-600"
+                      >
+                        <Eye className="h-4 w-4" />
+                        <span className="absolute -top-9 left-1/2 -translate-x-1/2 scale-0 rounded bg-surface-900 px-2 py-1 text-[10px] font-bold text-white transition-all group-hover:scale-100">View</span>
+                      </Link>
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
                       <button
                         onClick={() => handleEditClick(record)}
                         className="group relative flex h-8 w-8 items-center justify-center rounded-lg border border-surface-200 bg-white text-surface-500 transition-all hover:border-brand-400 hover:bg-brand-50 hover:text-brand-600"

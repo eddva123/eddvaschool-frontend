@@ -47,6 +47,7 @@ export default function TeacherProfile() {
     fetchTeacher();
   }, [id]);
 
+<<<<<<< HEAD
   const fetchTeacher = async () => {
     try {
       const res = await api.get(`/teachers/${id}`);
@@ -59,6 +60,8 @@ export default function TeacherProfile() {
     }
   };
 
+=======
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
   const [exporting, setExporting] = useState(false);
 
   const handleExportPDF = async () => {

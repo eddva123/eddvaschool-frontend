@@ -296,7 +296,15 @@ export default function InstituteDashboardWorkspace({ stats, institute, loading 
       time: relativeTime(log.createdAt),
       live: Date.now() - new Date(log.createdAt).getTime() < 10 * 60 * 1000,
     }));
+<<<<<<< HEAD
     return fromApi.slice(0, 10);
+=======
+    const seed = [
+      { id: 's1', text: 'AI flagged 3 students with declining weekly attendance', time: '2m ago', live: true },
+      { id: 's2', text: 'Fee reminder sent to 42 guardians (Grade 9)', time: '18m ago', live: false },
+    ];
+    return [...fromApi, ...seed].slice(0, 10);
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
   }, [stats?.recentActivity]);
 
   const sparkStudents = useMemo(
@@ -326,9 +334,13 @@ export default function InstituteDashboardWorkspace({ stats, institute, loading 
   }
 
   return (
+<<<<<<< HEAD
     <motion.div variants={container} initial="hidden" animate="show" className="grid gap-6 lg:grid-cols-4 pb-12 px-6">
       {/* Main Content Area */}
       <div className="lg:col-span-3 space-y-6 min-w-0">
+=======
+    <motion.div variants={container} initial="hidden" animate="show" className="space-y-6 pb-12 px-6">
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Hero Section */}
         <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-600 to-blue-700 p-8 text-white shadow-xl lg:col-span-2">
@@ -375,12 +387,21 @@ export default function InstituteDashboardWorkspace({ stats, institute, loading 
           <h3 className="mb-6 font-display text-lg font-bold text-slate-950 dark:text-white">Quick Actions</h3>
           <div className="grid grid-cols-3 gap-6">
             {[
+<<<<<<< HEAD
               { label: 'Add Student', icon: GraduationCap, color: 'text-blue-600', bg: 'bg-blue-50', to: '/admin/students' },
               { label: 'Add Teacher', icon: Users, color: 'text-emerald-600', bg: 'bg-emerald-50', to: '/admin/teachers' },
               { label: 'Schedule Live Class', icon: CalendarDays, color: 'text-amber-600', bg: 'bg-amber-50', to: '/admin/timetable' },
               { label: 'Mark Attendance', icon: ClipboardList, color: 'text-violet-600', bg: 'bg-violet-50', to: '/admin/attendance' },
               { label: 'Collect Fees', icon: CircleDollarSign, color: 'text-emerald-600', bg: 'bg-emerald-50', to: '/admin/fees' },
               { label: 'Send Notice', icon: MessageSquare, color: 'text-rose-600', bg: 'bg-rose-50', to: '/admin/notices' },
+=======
+              { label: 'Add Student', icon: GraduationCap, color: 'text-blue-600', bg: 'bg-blue-50', to: '/students' },
+              { label: 'Add Teacher', icon: Users, color: 'text-emerald-600', bg: 'bg-emerald-50', to: '/admin/teachers' },
+              { label: 'Schedule Class', icon: CalendarDays, color: 'text-amber-600', bg: 'bg-amber-50', to: '/timetable' },
+              { label: 'Mark Attendance', icon: ClipboardList, color: 'text-violet-600', bg: 'bg-violet-50', to: '/attendance' },
+              { label: 'Collect Fees', icon: CircleDollarSign, color: 'text-emerald-600', bg: 'bg-emerald-50', to: '/reports' },
+              { label: 'Send Notice', icon: MessageSquare, color: 'text-rose-600', bg: 'bg-rose-50', to: '/notices' },
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
             ].map((action) => (
               <button 
                 key={action.label} 
@@ -711,11 +732,16 @@ export default function InstituteDashboardWorkspace({ stats, institute, loading 
         </motion.div>
       </div>
 
+<<<<<<< HEAD
       
       </div>
       {/* Right Sidebar Area */}
       <div className="space-y-6 w-full shrink-0">
 
+=======
+      {/* Calendar + comms + finance + support */}
+      <div className="grid gap-3 lg:grid-cols-2 xl:grid-cols-4">
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
         <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} className="rounded-3xl border border-slate-100 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900 xl:col-span-1">
           <div className="mb-4 flex items-center justify-between">
             <h3 className="font-display text-lg font-bold text-surface-950 dark:text-white">Smart calendar</h3>
@@ -778,6 +804,7 @@ export default function InstituteDashboardWorkspace({ stats, institute, loading 
           </div>
           <div className="space-y-3 text-sm">
             <div className="flex justify-between rounded-xl bg-blue-600/5 px-3 py-2 dark:bg-blue-500/10">
+<<<<<<< HEAD
               <span className="font-semibold text-surface-600 dark:text-slate-300">Total revenue</span>
               <span className="font-bold text-surface-950 dark:text-white">{formatInr(stats?.financeSummary?.totalRevenue || 0)}</span>
             </div>
@@ -788,6 +815,18 @@ export default function InstituteDashboardWorkspace({ stats, institute, loading 
             <div className="flex justify-between rounded-xl bg-amber-500/10 px-3 py-2 dark:bg-amber-500/15">
               <span className="font-semibold text-surface-600 dark:text-slate-300">Pending</span>
               <span className="font-bold text-amber-700 dark:text-amber-300">{formatInr(stats?.financeSummary?.totalPending || 0)}</span>
+=======
+              <span className="font-semibold text-surface-600 dark:text-slate-300">Total revenue (demo)</span>
+              <span className="font-bold text-surface-950 dark:text-white">{formatInr(1820000)}</span>
+            </div>
+            <div className="flex justify-between rounded-xl bg-surface-50 px-3 py-2 dark:bg-slate-800/80">
+              <span className="font-semibold text-surface-600 dark:text-slate-300">Monthly collection</span>
+              <span className="font-bold text-emerald-600 dark:text-emerald-400">{formatInr(450000)}</span>
+            </div>
+            <div className="flex justify-between rounded-xl bg-amber-500/10 px-3 py-2 dark:bg-amber-500/15">
+              <span className="font-semibold text-surface-600 dark:text-slate-300">Pending</span>
+              <span className="font-bold text-amber-700 dark:text-amber-300">{formatInr(92000)}</span>
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
             </div>
           </div>
         </motion.div>
@@ -809,6 +848,7 @@ export default function InstituteDashboardWorkspace({ stats, institute, loading 
             System health: optimal · Backups verified · API latency 42ms (edge)
           </div>
         </motion.div>
+<<<<<<< HEAD
       
         {/* Upcoming Exams Widget */}
         <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} className="rounded-3xl border border-slate-100 bg-gradient-to-br from-indigo-50 to-blue-50 p-6 shadow-sm dark:border-slate-800 dark:from-indigo-950/40 dark:to-blue-900/20">
@@ -831,6 +871,9 @@ export default function InstituteDashboardWorkspace({ stats, institute, loading 
         </motion.div>
       </div>
 
+=======
+      </div>
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
     </motion.div>
   );
 }

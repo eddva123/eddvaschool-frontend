@@ -1,8 +1,14 @@
 import axios from 'axios';
+<<<<<<< HEAD
 import { getPortalLoginPath } from '../utils/tenantRedirect';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://127.0.0.1:5000/api/v1',
+=======
+
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1',
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
   withCredentials: true,
   timeout: 15000,
 });
@@ -24,6 +30,7 @@ api.interceptors.request.use((config) => {
 
   const tenantDomain = getTenantDomainFromHostname();
   if (tenantDomain) {
+<<<<<<< HEAD
     config.headers['x-tenant-subdomain'] = tenantDomain;
   }
   
@@ -33,6 +40,10 @@ api.interceptors.request.use((config) => {
       config.headers['x-tenant-id'] = institute.id;
     }
   } catch (e) {}
+=======
+    config.headers['x-tenant-domain'] = tenantDomain;
+  }
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
 
   return config;
 });
@@ -44,9 +55,14 @@ api.interceptors.response.use(
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       localStorage.removeItem('institute');
+<<<<<<< HEAD
       const loginPath = getPortalLoginPath();
       if (window.location.pathname !== loginPath) {
         window.location.replace(loginPath);
+=======
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login';
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
       }
     }
     if (error.code === 'ECONNABORTED') {

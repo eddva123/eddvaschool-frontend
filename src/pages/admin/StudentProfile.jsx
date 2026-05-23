@@ -75,7 +75,11 @@ export default function StudentProfile() {
   const fetchStudent = async () => {
     try {
       const res = await api.get(`/students/${id}`);
+<<<<<<< HEAD
       setStudent(res.data?.data ?? res.data);
+=======
+      setStudent(res.data);
+>>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
     } catch (err) {
       console.error(err);
       setStudent({ error: err.response?.data?.error || "Student not found." });

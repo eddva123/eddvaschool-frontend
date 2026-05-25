@@ -4,16 +4,12 @@ import { motion } from 'framer-motion';
 import { Download, Edit2, Plus, Search, Trash2, Users, Eye, Filter, Calendar } from 'lucide-react';
 import api from '../../services/api';
 import { mapStudentFormToApi } from '../../utils/onboardPayload';
-<<<<<<< HEAD
 import useLiveRefresh from '../../hooks/useLiveRefresh';
 import { getResponseList, notifyDataChanged } from '../../utils/apiData';
 import Modal from '../../components/admin/Modal';
 import AddStudentMultiStep from '../../components/admin/forms/AddStudentMultiStep';
 import { toast } from '../../utils/toast';
-=======
-import Modal from '../../components/admin/Modal';
-import AddStudentMultiStep from '../../components/admin/forms/AddStudentMultiStep';
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
+import { useAuth } from '../../context/AuthContext';
 
 function formatNumber(value) {
   return Number(value || 0).toLocaleString();
@@ -49,6 +45,7 @@ function downloadCsv(filename, rows) {
 }
 
 export default function Students() {
+  const { institute } = useAuth();
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -56,7 +53,6 @@ export default function Students() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
-<<<<<<< HEAD
   const [selectedYear, setSelectedYear] = useState('ALL');
   
   const years = ['ALL', '2023', '2024', '2025', '2026', '2027'];
@@ -65,33 +61,14 @@ export default function Students() {
     try {
       const res = await api.get('/students');
       setStudents(getResponseList(res));
-=======
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear().toString());
-  
-  const years = ['2023', '2024', '2025', '2026', '2027'];
-
-  useEffect(() => {
-    fetchStudents();
-  }, []);
-
-  const fetchStudents = async () => {
-    try {
-      const res = await api.get('/students');
-      const list = res.data?.data ?? res.data;
-      setStudents(Array.isArray(list) ? list : []);
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
     } catch (error) {
       console.error(error);
     } finally {
       setLoading(false);
     }
-<<<<<<< HEAD
   }
 
   useLiveRefresh(fetchStudents, [], 15000);
-=======
-  };
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
 
   const handleAddClick = () => {
     setSelectedStudent(null);
@@ -108,17 +85,11 @@ export default function Students() {
       try {
         await api.delete(`/students/${id}`);
         setStudents(students.filter(s => s.id !== id));
-<<<<<<< HEAD
         notifyDataChanged('students');
         toast.success('Student deleted successfully');
       } catch (error) {
         console.error(error);
         toast.error('Failed to delete student');
-=======
-      } catch (error) {
-        console.error(error);
-        alert('Failed to delete student');
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
       }
     }
   };
@@ -128,37 +99,20 @@ export default function Students() {
     try {
       if (selectedStudent) {
         await api.put(`/students/${selectedStudent.id}`, formData);
-<<<<<<< HEAD
         toast.success('Student updated successfully');
       } else {
         const payload = mapStudentFormToApi(formData);
         await api.post('/students', payload);
         toast.success('Student created successfully');
-=======
-      } else {
-        const payload = mapStudentFormToApi(formData);
-        await api.post('/students', payload);
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
       }
       setIsModalOpen(false);
       setSelectedStudent(null);
       await fetchStudents();
-<<<<<<< HEAD
       notifyDataChanged('students');
     } catch (error) {
       console.error(error);
       const errorMsg = error.response?.data?.error || error.response?.data?.message || error.message || 'Failed to save student';
       toast.error(errorMsg);
-=======
-    } catch (error) {
-      console.error(error);
-      alert(
-        error.message ||
-          error.response?.data?.error ||
-          error.response?.data?.message ||
-          'Failed to save student'
-      );
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
     } finally {
       setIsSubmitting(false);
     }
@@ -188,14 +142,10 @@ export default function Students() {
         return true;
       })
       .filter((s) => {
-<<<<<<< HEAD
         const matchesYear =
           selectedYear === 'ALL'
             ? true
             : (s.createdAt ? new Date(s.createdAt).getFullYear().toString() === selectedYear : false);
-=======
-        const matchesYear = s.createdAt ? new Date(s.createdAt).getFullYear().toString() === selectedYear : false;
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
         if (!q) return matchesYear;
         
         const enrollment = s.studentProfile?.enrollmentNo || '';
@@ -395,11 +345,7 @@ export default function Students() {
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-2">
                         <Link
-<<<<<<< HEAD
                           to={`/admin/students/${student.id}`}
-=======
-                          to={`/students/${student.id}`}
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
                           className="group relative flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 transition-all hover:border-blue-400 hover:bg-blue-50 hover:text-blue-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400 dark:hover:bg-slate-800"
                         >
                           <Eye className="h-4 w-4" />

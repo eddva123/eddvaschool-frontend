@@ -69,9 +69,6 @@ export function mapStudentFormToApi(form) {
     medicalConditions: form.medicalConditions || null,
     allergies: form.allergies || null,
     documents: form.documents || {},
-<<<<<<< HEAD
     instituteAdminPassword: form.instituteAdminPassword || null,
-=======
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
   };
 }

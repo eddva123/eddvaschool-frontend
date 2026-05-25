@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Clock, Plus, Edit2, Trash2 } from 'lucide-react';
 import api from '../../services/api';
-<<<<<<< HEAD
 import { getResponseList } from '../../utils/apiData';
-=======
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
 import Modal from '../../components/admin/Modal';
 import TimetableForm from '../../components/admin/forms/TimetableForm';
 
@@ -22,11 +19,7 @@ export default function Timetable() {
   const fetchTimetables = async () => {
     try {
       const res = await api.get('/timetable');
-<<<<<<< HEAD
       setTimetables(getResponseList(res));
-=======
-      setTimetables(Array.isArray(res.data) ? res.data : []);
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
     } catch (err) {
       console.error(err);
     } finally {
@@ -49,17 +42,10 @@ export default function Timetable() {
     try {
       if (selectedTimetable) {
         const res = await api.put(`/timetable/${selectedTimetable.id}`, formData);
-<<<<<<< HEAD
         setTimetables((prev) => prev.map((p) => (p.id === selectedTimetable.id ? (res.data?.data ?? res.data) : p)));
       } else {
         const res = await api.post('/timetable', formData);
         setTimetables((prev) => [...prev, res.data?.data ?? res.data]);
-=======
-        setTimetables((prev) => prev.map((p) => (p.id === selectedTimetable.id ? res.data : p)));
-      } else {
-        const res = await api.post('/timetable', formData);
-        setTimetables((prev) => [...prev, res.data]);
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
       }
       setIsModalOpen(false);
       setSelectedTimetable(null);

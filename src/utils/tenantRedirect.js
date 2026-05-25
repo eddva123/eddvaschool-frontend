@@ -32,10 +32,7 @@ export function getPortalType(hostname = window.location.hostname) {
 }
 
 export function getPortalLoginPath(portalType = getPortalType()) {
-<<<<<<< HEAD
   if (portalType === 'SUPER_ADMIN') return '/super-admin/login';
-=======
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
   if (portalType === 'INSTITUTE') return '/login';
   if (portalType === 'STUDENT') return '/login';
   if (portalType === 'PARENT') return '/login';
@@ -128,17 +125,10 @@ export function finishAuthRedirect(tenantDomain, navigate, role) {
 
   if (role === 'SUPER_ADMIN') {
     if (onTenant) {
-<<<<<<< HEAD
       window.location.replace(`${getBaseAppUrl()}/super-admin/dashboard`);
       return;
     }
     navigate('/super-admin/dashboard', { replace: true });
-=======
-      window.location.assign(`${getBaseAppUrl()}/admin`);
-      return;
-    }
-    navigate('/admin');
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
     return;
   }
 
@@ -151,19 +141,11 @@ export function finishAuthRedirect(tenantDomain, navigate, role) {
         tenantDomain,
       });
       if (handoff) {
-<<<<<<< HEAD
         window.location.replace(handoff);
         return;
       }
     }
     navigate('/admin', { replace: true });
-=======
-        window.location.assign(handoff);
-        return;
-      }
-    }
-    navigate('/admin');
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
     return;
   }
 
@@ -171,34 +153,30 @@ export function finishAuthRedirect(tenantDomain, navigate, role) {
     if (!onTenant && tenantDomain) {
       const tenantTeacherUrl = `${formatTenantUrl(tenantDomain)}/teacher`;
       if (tenantTeacherUrl) {
-<<<<<<< HEAD
         window.location.replace(tenantTeacherUrl);
         return;
       }
     }
     navigate('/teacher', { replace: true });
-=======
-        window.location.assign(tenantTeacherUrl);
-        return;
-      }
-    }
-    navigate('/teacher');
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
     return;
   }
 
-  if (role === 'STUDENT' || role === 'PARENT') {
-<<<<<<< HEAD
+  if (role === 'STUDENT') {
+    if (!onTenant && tenantDomain) {
+      const tenantStudentUrl = `${formatTenantUrl(tenantDomain)}/student`;
+      if (tenantStudentUrl) {
+        window.location.replace(tenantStudentUrl);
+        return;
+      }
+    }
+    navigate('/student', { replace: true });
+    return;
+  }
+
+  if (role === 'PARENT') {
     navigate('/login', { replace: true });
     return;
   }
 
   navigate('/login', { replace: true });
-=======
-    navigate('/login');
-    return;
-  }
-
-  navigate('/login');
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
 }

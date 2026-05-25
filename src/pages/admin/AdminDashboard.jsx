@@ -15,10 +15,7 @@ import {
 import { ArrowUpRight, Building2, CheckCircle2, Clock3, ShieldCheck, Sparkles, Users } from 'lucide-react';
 import { motion } from 'framer-motion';
 import api from '../../services/api';
-<<<<<<< HEAD
 import { getResponseData } from '../../utils/apiData';
-=======
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
 import { Skeleton } from '../../components/admin/Skeleton';
 import { InstituteLogo, StatusBadge } from '../../components/admin/Brand';
 import { useAuth } from '../../context/AuthContext';
@@ -77,16 +74,10 @@ export default function Dashboard() {
   async function loadStats() {
     try {
       const res = await api.get('/dashboard/stats');
-<<<<<<< HEAD
       const statsData = getResponseData(res);
       setStats(statsData);
       if (statsData?.currentInstitute) {
         localStorage.setItem('institute', JSON.stringify(statsData.currentInstitute));
-=======
-      setStats(res.data);
-      if (res.data.currentInstitute) {
-        localStorage.setItem('institute', JSON.stringify(res.data.currentInstitute));
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
       }
     } catch (err) {
       console.error(err);
@@ -98,17 +89,12 @@ export default function Dashboard() {
 
   useEffect(() => {
     loadStats();
-<<<<<<< HEAD
     window.addEventListener('eddva:data-changed', loadStats);
     const interval = setInterval(loadStats, 30000);
     return () => {
       clearInterval(interval);
       window.removeEventListener('eddva:data-changed', loadStats);
     };
-=======
-    const interval = setInterval(loadStats, 30000);
-    return () => clearInterval(interval);
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
   }, []);
 
   const institute = stats?.currentInstitute || storedInstitute;

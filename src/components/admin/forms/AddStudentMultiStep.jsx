@@ -142,10 +142,7 @@ export default function AddStudentMultiStep({ student, onSubmit, onCancel, isLoa
 
   const [idLoading, setIdLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-<<<<<<< HEAD
   const [showAdminPassword, setShowAdminPassword] = useState(false);
-=======
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
   const [classes, setClasses] = useState([]);
   const [sections, setSections] = useState([]);
 
@@ -164,19 +161,8 @@ export default function AddStudentMultiStep({ student, onSubmit, onCancel, isLoa
 
   const fetchClasses = async () => {
     try {
-<<<<<<< HEAD
       const res = await api.get('/academic/classes');
       const data = res.data?.data ?? res.data;
-=======
-      // Using the standardized api instance is preferred as it includes auth headers
-      const res = await api.get('/academic/classes');
-      
-      if (res.status !== 200) {
-        throw new Error("Failed to fetch classes");
-      }
-      
-      const data = res.data;
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
       setClasses(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error("Failed to fetch classes:", error);
@@ -185,13 +171,9 @@ export default function AddStudentMultiStep({ student, onSubmit, onCancel, isLoa
 
   useEffect(() => {
     if (student) {
-<<<<<<< HEAD
       const sectionId = student.studentProfile?.section?.id || student.studentProfile?.sectionId || '';
       const inferredClass = classes.find((cls) => (cls.sections || []).some((sec) => sec.id === sectionId));
       const studentClassId = student.studentProfile?.section?.classId || student.classId || inferredClass?.id || '';
-=======
-      const studentClassId = student.studentProfile?.section?.classId || student.classId || '';
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
       setFormData(prev => ({
         ...prev,
         ...student,
@@ -199,11 +181,7 @@ export default function AddStudentMultiStep({ student, onSubmit, onCancel, isLoa
         classId: studentClassId,
       }));
     }
-<<<<<<< HEAD
   }, [student, classes]);
-=======
-  }, [student]);
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -276,7 +254,6 @@ export default function AddStudentMultiStep({ student, onSubmit, onCancel, isLoa
               <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FloatingInput label="Full Name" name="name" value={formData.name} onChange={handleChange} icon={User} />
                 <FloatingInput label="Email Address" name="email" value={formData.email} onChange={handleChange} icon={Mail} />
-<<<<<<< HEAD
                 <div className="relative">
                   <FloatingInput
                     label="Student Password"
@@ -321,10 +298,6 @@ export default function AddStudentMultiStep({ student, onSubmit, onCancel, isLoa
                     {showAdminPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
-=======
-                <FloatingInput label="Mobile Number" name="phone" value={formData.phone} onChange={handleChange} icon={Smartphone} />
-                <FloatingInput label="Aadhar / National ID" name="nationalId" value={formData.nationalId} onChange={handleChange} icon={Fingerprint} />
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
               </div>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

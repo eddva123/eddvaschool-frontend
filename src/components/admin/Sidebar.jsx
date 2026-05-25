@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import {
-<<<<<<< HEAD
   Bell,
-=======
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
   AlertCircle,
   BarChart3,
   BookOpen,
@@ -16,10 +13,7 @@ import {
   FileText,
   GraduationCap,
   LayoutDashboard,
-<<<<<<< HEAD
   LogOut,
-=======
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
   MessageSquare,
   MessageSquareWarning,
   Presentation,
@@ -36,7 +30,6 @@ import { cn } from './Skeleton';
 import { EddvaLogo, InstituteLogo } from './Brand';
 import { useAuth } from '../../context/AuthContext';
 
-<<<<<<< HEAD
 const superAdminGroups = [
   {
     heading: 'Overview',
@@ -63,20 +56,6 @@ const superAdminGroups = [
       { to: '/admin/settings', label: 'Settings', icon: SettingsIcon },
       { action: 'logout', label: 'Logout', icon: LogOut },
     ],
-=======
-const superAdminItems = [
-  { to: '/admin', label: 'Dashboard', icon: LayoutDashboard, end: true },
-  { to: '/admin/institutes', label: 'Institutes', icon: Building2 },
-  { to: '/admin/complaints', label: 'Tickets', icon: AlertCircle },
-  { to: '/admin/analytics', label: 'Analytics & Reports', icon: BarChart3 },
-  { to: '/admin/settings', label: 'Settings', icon: SettingsIcon },
-];
-
-const superAdminGroups = [
-  {
-    heading: 'Super Admin',
-    items: superAdminItems,
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
   },
 ];
 
@@ -87,7 +66,6 @@ const instituteGroups = [
       { to: '/admin', label: 'Dashboard', icon: LayoutDashboard, end: true },
       { to: '/admin/students', label: 'Students', icon: GraduationCap },
       { to: '/admin/teachers', label: 'Teachers', icon: Users },
-<<<<<<< HEAD
       { to: '/admin/academics', label: 'Classes & Curriculum', icon: Building2 },
       { to: '/admin/subjects', label: 'Subjects', icon: BookOpen },
       { to: '/admin/assignments', label: 'Assignments & Homework', icon: ClipboardList },
@@ -120,38 +98,21 @@ const instituteGroups = [
       { to: '/admin/payment-collection', label: 'Payment Collection', icon: Landmark },
       { to: '/admin/payment-history', label: 'Payment History', icon: FileText },
       { to: '/admin/fee-defaulters', label: 'Fee Defaulters', icon: AlertCircle },
-=======
-      { to: '/admin/academics', label: 'Classes & curriculum', icon: Building2 },
-    ],
-  },
-  {
-    heading: 'Management',
-    items: [
-      { to: '/admin/attendance', label: 'Attendance', icon: BarChart3 },
-      { to: '/admin/timetable', label: 'Timetable & live classes', icon: CalendarDays },
-      { to: '/admin/fees', label: 'Fees Management', icon: Wallet },
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
       { to: '/admin/finance', label: 'Finance & Analytics', icon: Landmark },
     ],
   },
   {
     heading: 'Communication',
     items: [
-<<<<<<< HEAD
       { to: '/admin/notices', label: 'Notices & Announcements', icon: AlertCircle },
       { to: '/admin/communications', label: 'Messages & Parent Connect', icon: MessageSquare },
       { to: '/admin/notifications-center', label: 'Notifications', icon: Bell },
       { to: '/admin/sms-center', label: 'SMS Center', icon: MessageSquare },
       { to: '/admin/email-center', label: 'Email Center', icon: MessageSquare },
-=======
-      { to: '/admin/notices', label: 'Notices & announcements', icon: AlertCircle },
-      { to: '/admin/communications', label: 'Messages & parent connect', icon: MessageSquare },
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
     ],
   },
   {
     heading: 'AI & Analytics',
-<<<<<<< HEAD
     items: [
       { to: '/admin/ai-insights', label: 'AI Insights', icon: Sparkles },
       { to: '/admin/student-performance', label: 'Student Performance Analytics', icon: BarChart3 },
@@ -167,15 +128,6 @@ const instituteGroups = [
       { to: '/admin/audit-logs', label: 'Audit Logs', icon: FileText },
       { to: '/admin/complaints', label: 'Support Tickets', icon: Shield },
       { to: '/admin/settings', label: 'Settings & Security', icon: SettingsIcon },
-=======
-    items: [{ to: '/admin/reports', label: 'AI insights & analytics', icon: Sparkles }],
-  },
-  {
-    heading: 'System',
-    items: [
-      { to: '/admin/complaints', label: 'Support tickets', icon: Shield },
-      { to: '/admin/settings', label: 'Settings & security', icon: SettingsIcon },
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
     ],
   },
 ];
@@ -210,24 +162,14 @@ const teacherGroups = [
 ];
 
 export default function Sidebar({ open, onClose }) {
-<<<<<<< HEAD
   const { user, institute, logout } = useAuth();
-=======
-  const { user, institute } = useAuth();
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
   const isInstitute = user?.role === 'INSTITUTE_ADMIN';
   const isTeacher = user?.role === 'TEACHER';
   const groups = isTeacher ? teacherGroups : isInstitute ? instituteGroups : superAdminGroups;
   const [collapsed, setCollapsed] = useState(false);
-<<<<<<< HEAD
   const canCollapse = true;
   const roleLabel = isTeacher ? 'Teacher Workspace' : isInstitute ? 'Institute Admin' : 'Super Admin';
   const workspaceName = isTeacher ? user?.name || 'Teacher' : isInstitute ? institute?.name || 'Institute' : 'EDDVA HQ';
-=======
-  const canCollapse = isInstitute || isTeacher;
-  const roleLabel = isTeacher ? 'Teacher Workspace' : isInstitute ? 'Institute Admin' : 'Super Admin';
-  const workspaceName = isTeacher ? user?.name || 'Teacher' : institute?.name || 'Institute';
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
 
   return (
     <>
@@ -272,7 +214,6 @@ export default function Sidebar({ open, onClose }) {
                     {group.heading}
                   </p>
                   <nav className="space-y-1">
-<<<<<<< HEAD
                     {group.items.map((item) =>
                       item.action === 'logout' ? (
                         <button
@@ -311,28 +252,6 @@ export default function Sidebar({ open, onClose }) {
                         </NavLink>
                       )
                     )}
-=======
-                    {group.items.map((item) => (
-                      <NavLink
-                        key={`${group.heading}-${item.label}`}
-                        to={item.to}
-                        end={item.end}
-                        title={collapsed && canCollapse ? item.label : undefined}
-                        onClick={onClose}
-                        className={({ isActive }) =>
-                          cn(
-                            'group flex items-center gap-3 rounded-lg px-3 py-2 text-[13px] font-semibold transition-all',
-                            isActive
-                              ? 'bg-blue-600 text-white'
-                              : 'text-slate-600 hover:bg-slate-50 dark:text-slate-400 dark:hover:bg-slate-900'
-                          )
-                        }
-                      >
-                        <item.icon className="h-[18px] w-[18px] shrink-0" />
-                        <span className={cn('truncate', collapsed && canCollapse && 'md:hidden')}>{item.label}</span>
-                      </NavLink>
-                    ))}
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
                   </nav>
                 </div>
               ))}

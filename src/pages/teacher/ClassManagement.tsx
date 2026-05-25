@@ -9,23 +9,16 @@ import SelectField from '../../components/SelectField';
 import DataTable from '../../components/DataTable';
 import api from '../../services/api';
 import useLiveRefresh from '../../hooks/useLiveRefresh';
-<<<<<<< HEAD
 import { useAuth } from '../../context/AuthContext';
-=======
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
 
 import './ClassManagement.css';
 
 const ClassManagement: React.FC = () => {
-<<<<<<< HEAD
   const { user } = useAuth();
-=======
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
   const [showScheduleModal, setShowScheduleModal] = useState(false);
   const [liveClassData, setLiveClassData] = useState([]);
   const [recordedClassData, setRecordedClassData] = useState([]);
   const [calendarData, setCalendarData] = useState([]);
-<<<<<<< HEAD
   const [academicClasses, setAcademicClasses] = useState<any[]>([]);
   const [academicSubjects, setAcademicSubjects] = useState<any[]>([]);
   const [scheduleForm, setScheduleForm] = useState({
@@ -40,8 +33,6 @@ const ClassManagement: React.FC = () => {
     liveStatus: 'scheduled',
     recurringSchedule: 'none',
   });
-=======
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
 
   const liveColumns = [
     { key: 'title', title: 'Class Title' },
@@ -58,7 +49,6 @@ const ClassManagement: React.FC = () => {
  useEffect(() => {
     fetchSchedules();
     fetchRecordedClasses();
-<<<<<<< HEAD
     fetchAcademicData();
   }, []);
 
@@ -77,20 +67,12 @@ const ClassManagement: React.FC = () => {
     }
   };
 
-=======
-  }, []);
-
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
   const fetchSchedules = async () => {
     try {
       const response = await api.get('/classes/schedules');    console.log(response.data);
       const formattedData = response.data.data.map((item: any) => ({
         id: item.id,
-<<<<<<< HEAD
         title: item.subject_name || item.title,
-=======
-        title: item.subject_name,
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
         class: item.class_name,
         date: item.day_of_week,
         time: `${new Date(`1970-01-01T${item.start_time}`).toLocaleTimeString('en-US', {
@@ -103,15 +85,10 @@ const ClassManagement: React.FC = () => {
             hour12: true,
           })}`,        
         duration: '-',
-<<<<<<< HEAD
         status: item.live_status || 'scheduled',
         attendees: 0,
         zoomLink: item.zoom_link,
         googleMeetLink: item.google_meet_link,
-=======
-        status: 'scheduled',
-        attendees: 0,
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
       }));
 
       setLiveClassData(formattedData);
@@ -169,7 +146,6 @@ const ClassManagement: React.FC = () => {
     <DataTable columns={liveColumns} data={liveClassData} />    </div>
   );
 
-<<<<<<< HEAD
   const toEndTime = (startTime: string, durationMinutes: number) => {
     const [h, m] = String(startTime || '00:00').split(':').map(Number);
     const startTotal = (h * 60) + m;
@@ -179,8 +155,6 @@ const ClassManagement: React.FC = () => {
     return `${String(endHour).padStart(2, '0')}:${String(endMinute).padStart(2, '0')}`;
   };
 
-=======
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
   const recordedContent = (
     <div className="class__section">
       <div className="class__section-header">
@@ -255,7 +229,6 @@ const ClassManagement: React.FC = () => {
 
       <Modal isOpen={showScheduleModal} onClose={() => setShowScheduleModal(false)} title="Schedule New Class">
         <div className="class__modal-form">
-<<<<<<< HEAD
           <InputField
             label="Class Title"
             placeholder="Enter class title"
@@ -327,37 +300,11 @@ const ClassManagement: React.FC = () => {
               { value: 'monthly', label: 'Monthly' },
             ]}
           />
-=======
-          <InputField label="Class Title" placeholder="Enter class title" />
-          <SelectField
-            label="Subject"
-            options={[
-              { value: 'math', label: 'Mathematics' },
-              { value: 'physics', label: 'Physics' },
-              { value: 'chemistry', label: 'Chemistry' },
-            ]}
-          />
-          <SelectField
-            label="Class"
-            options={[
-              { value: '12-A', label: 'Class 12-A' },
-              { value: '11-B', label: 'Class 11-B' },
-              { value: '12-C', label: 'Class 12-C' },
-              { value: '10-A', label: 'Class 10-A' },
-            ]}
-          />
-          <div className="class__modal-row">
-            <InputField label="Date" type="date" />
-            <InputField label="Time" type="time" />
-          </div>
-          <InputField label="Duration" placeholder="e.g., 45 min" />
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
           <div className="class__modal-actions">
             <Button variant="outline" onClick={() => setShowScheduleModal(false)}>Cancel</Button>
             <Button
               onClick={async () => {
                 try {
-<<<<<<< HEAD
                   if (!scheduleForm.classId || !scheduleForm.subjectId || !scheduleForm.date || !scheduleForm.time) {
                     console.log('Form validation failed:', scheduleForm);
                     alert('Please fill in class, subject, date and time fields');
@@ -394,22 +341,6 @@ const ClassManagement: React.FC = () => {
                     ? error.message
                     : 'Failed to schedule class';
                   alert(errorMessage);
-=======
-                  await api.post('/classes/schedules', {
-                    class_id: 1,
-                    subject_id: 1,
-                    teacher_id: 3,
-                    day_of_week: 'Monday',
-                    start_time: '10:00',
-                    end_time: '11:00',
-                  });
-
-                  fetchSchedules();
-
-                  setShowScheduleModal(false);
-                } catch (error) {
-                  console.error('Failed to create schedule', error);
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
                 }
               }}
             >

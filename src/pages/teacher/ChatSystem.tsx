@@ -44,11 +44,7 @@ const ChatSystem: React.FC = () => {
   useEffect(() => {
     async function fetchRooms() {
       try {
-<<<<<<< HEAD
         const res = await api.get('/chat/conversations?role=student');
-=======
-        const res = await api.get('/chat/rooms');
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
         const list = res.data?.data ?? [];
         const formatted = list.map((room: any) => ({
           id: room.id,

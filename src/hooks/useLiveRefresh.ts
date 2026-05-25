@@ -30,10 +30,7 @@ export default function useLiveRefresh(
     runRefresh();
 
     window.addEventListener('focus', runRefresh);
-<<<<<<< HEAD
     window.addEventListener('eddva:data-changed', runRefresh as EventListener);
-=======
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
     document.addEventListener('visibilitychange', handleVisibility);
 
     const timer = window.setInterval(runRefresh, intervalMs);
@@ -42,15 +39,8 @@ export default function useLiveRefresh(
       active = false;
       window.clearInterval(timer);
       window.removeEventListener('focus', runRefresh);
-<<<<<<< HEAD
       window.removeEventListener('eddva:data-changed', runRefresh as EventListener);
       document.removeEventListener('visibilitychange', handleVisibility);
     };
   }, deps);
 }
-=======
-      document.removeEventListener('visibilitychange', handleVisibility);
-    };
-  }, deps);
-}
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de

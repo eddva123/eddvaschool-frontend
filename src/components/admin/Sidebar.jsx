@@ -67,7 +67,6 @@ const instituteGroups = [
       { to: '/admin/students', label: 'Students', icon: GraduationCap },
       { to: '/admin/teachers', label: 'Teachers', icon: Users },
       { to: '/admin/academics', label: 'Classes & Curriculum', icon: Building2 },
-      { to: '/admin/subjects', label: 'Subjects', icon: BookOpen },
       { to: '/admin/assignments', label: 'Assignments & Homework', icon: ClipboardList },
       { to: '/admin/study-materials', label: 'Study Materials', icon: BookOpen },
       { to: '/admin/syllabus', label: 'Syllabus Tracking', icon: GraduationCap },

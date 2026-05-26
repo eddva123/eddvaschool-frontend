@@ -22,7 +22,7 @@ export default function Dashboard() {
         const [dashRes, contRes, actRes] = await Promise.all([
           api.get('/students/dashboard'),
           api.get('/students/continue-learning').catch(() => ({ data: null })),
-          api.get('/students/activity/weekly').catch(() => ({ data: null }))
+          api.get('/students/weekly-activity').catch(() => ({ data: null }))
         ]);
         
         setDashboardData(dashRes.data);

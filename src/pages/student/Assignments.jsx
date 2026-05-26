@@ -11,7 +11,8 @@ export default function Assignments() {
     const fetchAssignments = async () => {
       try {
         const response = await api.get('/assignments');
-        setAssignments(response.data || []);
+        const assignmentsList = response.data?.data || (Array.isArray(response.data) ? response.data : []);
+        setAssignments(assignmentsList);
       } catch (error) {
         console.error('Failed to fetch assignments:', error);
       } finally {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import api from '../../services/api';
-import { Swords, Trophy, Users, Star, Flame, Crown, PlayCircle } from 'lucide-react';
+import { Swords, Trophy, Users, Star, Flame, Crown, PlayCircle, Bot } from 'lucide-react';
 import { cn } from '../../components/admin/Skeleton';
 
 export default function BattleArena() {
@@ -20,10 +20,15 @@ export default function BattleArena() {
           api.get('/battles/my-history')
         ]);
         
-        setEloData(eloRes.data);
-        setLeaderboard(leaderboardRes.data?.rankings || []);
-        setDailyBattle(dailyRes.data);
-        setHistory(historyRes.data || []);
+        setEloData(eloRes.data?.data !== undefined ? eloRes.data.data : eloRes.data);
+        
+        const rankData = leaderboardRes.data?.data !== undefined ? leaderboardRes.data.data : leaderboardRes.data;
+        setLeaderboard(Array.isArray(rankData) ? rankData : (rankData?.rankings || []));
+        
+        setDailyBattle(dailyRes.data?.data !== undefined ? dailyRes.data.data : dailyRes.data);
+        
+        const histData = historyRes.data?.data !== undefined ? historyRes.data.data : historyRes.data;
+        setHistory(Array.isArray(histData) ? histData : []);
       } catch (error) {
         console.error('Failed to fetch battle data:', error);
       } finally {

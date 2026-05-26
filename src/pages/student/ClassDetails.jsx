@@ -14,10 +14,12 @@ export default function ClassDetails() {
   useEffect(() => {
     const fetchCourse = async () => {
       try {
-        const res = await api.get(`/students/courses/${id}`);
-        setCourse(res.data);
-        if (res.data?.curriculum?.length > 0) {
-          setExpandedSubject(res.data.curriculum[0].id);
+        const res = await api.get(`/students/my-courses/${id}`);
+        // Handle wrapped envelope if present
+        const data = res.data?.data || res.data;
+        setCourse(data);
+        if (data?.curriculum?.length > 0) {
+          setExpandedSubject(data.curriculum[0].id);
         }
       } catch (error) {
         console.error('Failed to fetch course details:', error);

@@ -24,9 +24,10 @@ export default function StudyPlanner() {
   const fetchCourses = async () => {
     try {
       const res = await api.get('/study-plans/courses');
-      setCourses(res.data || []);
-      if (res.data?.length > 0) {
-        setSelectedCourse(res.data[0].batchId);
+      const coursesData = res.data?.data || (Array.isArray(res.data) ? res.data : []);
+      setCourses(coursesData);
+      if (coursesData.length > 0) {
+        setSelectedCourse(coursesData[0].batchId);
       } else {
         setLoading(false);
       }
@@ -43,8 +44,10 @@ export default function StudyPlanner() {
         api.get(`/study-plans/today?batchId=${batchId}`),
         api.get(`/study-plans/next-action?batchId=${batchId}`)
       ]);
-      setTodayTasks(todayRes.data?.items || []);
-      setNextAction(nextRes.data || null);
+      const todayData = todayRes.data?.data || todayRes.data;
+      const nextData = nextRes.data?.data || nextRes.data;
+      setTodayTasks(todayData?.items || todayRes.data?.items || []);
+      setNextAction(nextData || null);
     } catch (error) {
       console.error('Failed to fetch plan data:', error);
     } finally {

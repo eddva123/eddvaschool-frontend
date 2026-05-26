@@ -11,8 +11,9 @@ export default function Classes() {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await api.get('/students/courses/my');
-        setCourses(response.data || []);
+        const response = await api.get('/students/my-courses');
+        const coursesList = response.data?.data || (Array.isArray(response.data) ? response.data : []);
+        setCourses(coursesList);
       } catch (error) {
         console.error('Failed to fetch courses:', error);
       } finally {

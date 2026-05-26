@@ -13,7 +13,7 @@ export default function Layout() {
   const { user } = useAuth();
 
   return (
-    <div className="relative flex min-h-screen w-full overflow-hidden bg-surface-50 dark:bg-slate-950">
+    <div className="relative flex h-screen w-full overflow-hidden bg-surface-50 dark:bg-slate-950">
       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
         <Navbar onMenuClick={() => setSidebarOpen(true)} />

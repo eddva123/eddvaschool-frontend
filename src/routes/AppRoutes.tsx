@@ -275,11 +275,9 @@ const router = createBrowserRouter([
       {
         path: 'users',
         element: (
-          <SuperAdminOnly>
-            <Suspense fallback={<PageLoader />}>
-              <AdminUsers />
-            </Suspense>
-          </SuperAdminOnly>
+          <Suspense fallback={<PageLoader />}>
+            <AdminUsers />
+          </Suspense>
         ),
       },
       { path: 'students', element: <Suspense fallback={<PageLoader />}><AdminStudents /></Suspense> },
@@ -325,6 +323,16 @@ const router = createBrowserRouter([
       { path: 'notifications-center', element: <Suspense fallback={<PageLoader />}><NotificationsCenter /></Suspense> },
       { path: 'message-logs', element: <Suspense fallback={<PageLoader />}><MessageLogs /></Suspense> },
       { path: 'email-center', element: <Suspense fallback={<PageLoader />}><EmailCenter /></Suspense> },
+      {
+        path: 'sms-center',
+        element: (
+          <PlaceholderPage
+            title="SMS Center"
+            description="Manage and broadcast SMS alerts to students, teachers, and parents."
+            icon={MessageSquare}
+          />
+        ),
+      },
       
       // New AI & Analytics Routes
       { path: 'ai-insights', element: <Suspense fallback={<PageLoader />}><AiInsights /></Suspense> },

@@ -149,7 +149,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         try {
           // Verify token is still valid by calling /auth/me
           const res = await api.get('/auth/me');
-          const userData: User = normalizeUser(res.data.data);
+          const userData: User = normalizeUser(res.data.data.user || res.data.data);
           setUser(userData);
           if (userData.institute) setInstitute(userData.institute);
           // Re-save updated user data

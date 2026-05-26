@@ -11,8 +11,8 @@ export default function TopicDetails() {
   useEffect(() => {
     const fetchTopic = async () => {
       try {
-        const res = await api.get(`/students/courses/${batchId}/topics/${topicId}`);
-        setTopicData(res.data);
+        const res = await api.get(`/students/my-courses/${batchId}/topics/${topicId}`);
+        setTopicData(res.data?.data || res.data);
       } catch (error) {
         console.error('Failed to fetch topic details:', error);
       } finally {

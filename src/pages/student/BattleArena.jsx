@@ -52,9 +52,9 @@ export default function BattleArena() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2">
-            <Swords className="text-amber-500" /> Battle Arena
+            <Trophy className="text-amber-500" /> Challenge Zone
           </h1>
-          <p className="mt-1 text-sm font-medium text-slate-500">Compete with friends, earn XP, and climb the leaderboard.</p>
+          <p className="mt-1 text-sm font-medium text-slate-500">Solve quiz challenges, earn Stars & XP, and learn with classmates.</p>
         </div>
       </div>
 
@@ -71,14 +71,14 @@ export default function BattleArena() {
             </div>
             
             <div className="flex flex-col items-center justify-center rounded-[2rem] border border-slate-100 bg-white p-6 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
-              <Swords className="mb-2 h-6 w-6 text-blue-500" />
-              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Rating</p>
+              <Trophy className="mb-2 h-6 w-6 text-blue-500" />
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Stars Earned</p>
               <p className="text-2xl font-black text-slate-900 dark:text-white">{eloData?.eloRating || 1200}</p>
             </div>
             
             <div className="flex flex-col items-center justify-center rounded-[2rem] border border-slate-100 bg-white p-6 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
               <Flame className="mb-2 h-6 w-6 text-orange-500" />
-              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Win Rate</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Success Rate</p>
               <p className="text-2xl font-black text-slate-900 dark:text-white">
                 {eloData?.matchesPlayed > 0 ? Math.round((eloData.wins / eloData.matchesPlayed) * 100) : 0}%
               </p>
@@ -86,7 +86,7 @@ export default function BattleArena() {
             
             <div className="flex flex-col items-center justify-center rounded-[2rem] border border-slate-100 bg-white p-6 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
               <Crown className="mb-2 h-6 w-6 text-emerald-500" />
-              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Rank</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Badge Tier</p>
               <p className="text-2xl font-black text-slate-900 dark:text-white">{eloData?.currentRank || 'Bronze'}</p>
             </div>
           </div>
@@ -95,16 +95,16 @@ export default function BattleArena() {
           <div className="grid gap-6 sm:grid-cols-2">
             <div className="flex flex-col rounded-[2rem] border border-slate-100 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
               <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-50 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400">
-                <Swords size={24} />
+                <Users size={24} />
               </div>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white">1v1 Multiplayer</h3>
-              <p className="mb-6 mt-2 text-sm text-slate-500 flex-1">Challenge friends or random opponents in real-time topic battles.</p>
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white">Classmate Challenge</h3>
+              <p className="mb-6 mt-2 text-sm text-slate-500 flex-1">Solve academic puzzles with classmates in friendly real-time challenges.</p>
               <div className="flex gap-2">
                 <button className="flex-1 rounded-xl bg-amber-500 py-3 text-sm font-bold text-white transition hover:bg-amber-600">
-                  Find Match
+                  Find Challenge
                 </button>
                 <button className="flex-1 rounded-xl bg-slate-100 py-3 text-sm font-bold text-slate-700 transition hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700">
-                  Join Room
+                  Enter Code
                 </button>
               </div>
             </div>
@@ -113,8 +113,8 @@ export default function BattleArena() {
               <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400">
                 <Bot size={24} />
               </div>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white">Play with Bot</h3>
-              <p className="mb-6 mt-2 text-sm text-slate-500 flex-1">Practice specific topics against our AI bot to improve your speed and accuracy.</p>
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white">AI Practice Mode</h3>
+              <p className="mb-6 mt-2 text-sm text-slate-500 flex-1">Practice specific school topics against the AI Tutor to build your confidence and accuracy.</p>
               <button className="w-full rounded-xl bg-indigo-600 py-3 text-sm font-bold text-white transition hover:bg-indigo-700">
                 Start Practice
               </button>
@@ -126,7 +126,7 @@ export default function BattleArena() {
             <div className="flex items-center justify-between overflow-hidden rounded-[2rem] border border-blue-200 bg-gradient-to-r from-blue-500 to-indigo-600 p-8 text-white shadow-lg">
               <div>
                 <span className="rounded-lg bg-white/20 px-3 py-1 text-[10px] font-black uppercase tracking-widest backdrop-blur-md">
-                  Daily Challenge
+                  Daily Quest
                 </span>
                 <h3 className="mt-4 text-2xl font-black">{dailyBattle.title}</h3>
                 <p className="mt-2 text-sm font-medium text-blue-100">{dailyBattle.participants} students joined today</p>
@@ -143,7 +143,7 @@ export default function BattleArena() {
           {/* Leaderboard */}
           <div className="rounded-[2rem] border border-slate-100 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
             <h2 className="mb-6 text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
-              <Trophy className="text-amber-500" /> Top Players
+              <Trophy className="text-amber-500" /> Leaderboard
             </h2>
             
             <div className="space-y-4">
@@ -164,7 +164,7 @@ export default function BattleArena() {
                       </div>
                       <div>
                         <p className="text-sm font-bold text-slate-900 dark:text-white">{player.name}</p>
-                        <p className="text-xs font-semibold text-slate-500">{player.rating} Rating</p>
+                        <p className="text-xs font-semibold text-slate-500">{player.rating} Stars</p>
                       </div>
                     </div>
                     <span className="text-xs font-bold text-amber-600 dark:text-amber-400">{player.xp} XP</span>
@@ -176,11 +176,11 @@ export default function BattleArena() {
           
           {/* Match History */}
           <div className="rounded-[2rem] border border-slate-100 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            <h2 className="mb-6 text-lg font-black text-slate-900 dark:text-white">Recent Matches</h2>
+            <h2 className="mb-6 text-lg font-black text-slate-900 dark:text-white">Recent Challenges</h2>
             
             <div className="space-y-3">
               {history.length === 0 ? (
-                <p className="text-center text-sm text-slate-500">No matches played yet.</p>
+                <p className="text-center text-sm text-slate-500">No challenges played yet.</p>
               ) : (
                 history.slice(0, 5).map((match) => (
                   <div key={match.id} className="flex items-center justify-between border-b border-slate-100 pb-3 last:border-0 last:pb-0 dark:border-slate-800">
@@ -194,7 +194,7 @@ export default function BattleArena() {
                       match.result === 'loss' ? "bg-rose-50 text-rose-600 dark:bg-rose-900/30 dark:text-rose-400" :
                       "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400"
                     )}>
-                      {match.result}
+                      {match.result === 'win' ? 'Passed' : match.result === 'loss' ? 'Attempted' : match.result}
                     </span>
                   </div>
                 ))

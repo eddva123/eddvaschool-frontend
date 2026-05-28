@@ -7,6 +7,11 @@ import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import './ChatSystem.css';
 
+function getSocketBaseUrl(): string {
+  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
+  return apiUrl.replace(/\/api\/v1\/?$/, '');
+}
+
 const ChatSystem: React.FC = () => {
   const { user } = useAuth();
   const [activeContact, setActiveContact] = useState<any>(null);
@@ -21,7 +26,7 @@ const ChatSystem: React.FC = () => {
   };
 
   useEffect(() => {
-    socketRef.current = io('http://localhost:5000');
+    socketRef.current = io(getSocketBaseUrl(), { transports: ['websocket', 'polling'] });
     socketRef.current.on('receive_message', (newMsg: any) => {
       if (newMsg.sender_id !== user?.id) {
         setMessages((prev) => [

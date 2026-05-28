@@ -216,13 +216,13 @@ export default function Profile() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-black uppercase tracking-widest text-slate-400">Target College</label>
+                  <label className="text-xs font-black uppercase tracking-widest text-slate-400">Target University</label>
                   <input
                     type="text"
                     disabled={!editMode}
                     value={form.targetCollege}
                     onChange={(e) => setForm({ ...form, targetCollege: e.target.value })}
-                    placeholder="IIT, AIIMS, etc."
+                    placeholder="Delhi University, Oxford, etc."
                     className="mt-1 w-full rounded-2xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm font-semibold outline-none focus:border-blue-500 focus:bg-white disabled:opacity-70 dark:border-slate-800 dark:bg-slate-950 dark:text-white"
                   />
                 </div>

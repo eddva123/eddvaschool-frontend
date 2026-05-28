@@ -43,12 +43,16 @@ function normalizeRole(role?: string | null): User['role'] | null {
   const normalized = role.toUpperCase().replace(/[-\s]+/g, '_');
   switch (normalized) {
     case 'SUPER_ADMIN':
+      return 'SUPER_ADMIN';
     case 'INSTITUTE_ADMIN':
     case 'ADMIN':
+      return 'INSTITUTE_ADMIN';
     case 'TEACHER':
+      return 'TEACHER';
     case 'STUDENT':
+      return 'STUDENT';
     case 'PARENT':
-      return normalized;
+      return 'PARENT';
     default:
       return null;
   }
@@ -60,7 +64,7 @@ function normalizeUser(user: any): User {
     id: user?.id,
     name: user?.name || user?.fullName || '',
     email: user?.email || '',
-    role: normalizedRole === 'ADMIN' ? 'INSTITUTE_ADMIN' : normalizedRole,
+    role: normalizedRole,
     instituteId: user?.instituteId ?? user?.tenantId ?? null,
     institute: user?.institute ?? null,
     photo: user?.photo ?? user?.profilePictureUrl ?? null,

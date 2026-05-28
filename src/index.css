@@ -32,6 +32,16 @@
   --transition-base: 0.2s ease;
 }
 
+.dark {
+  --glass-bg: rgba(15, 23, 42, 0.65);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --gray-50: #0f172a;
+  --gray-100: #1e293b;
+  --gray-200: #334155;
+  --gray-800: #f1f5f9;
+  --gray-900: #f8fafc;
+}
+
 *,
 *::before,
 *::after {

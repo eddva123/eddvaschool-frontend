@@ -34,7 +34,7 @@ export default function Syllabus() {
     try {
       setLoading(true);
       const res = await api.get('/content/chapters');
-      let data = [];
+      let data: any[] = [];
       if (Array.isArray(res.data)) {
         data = res.data;
       } else if (res.data && Array.isArray(res.data.data)) {
@@ -142,7 +142,7 @@ export default function Syllabus() {
       key: 'completionPercentage', 
       title: 'Progress', 
       width: '20%',
-      render: (val: any) => <ProgressBar progress={val} showLabel />
+      render: (val: any) => <ProgressBar value={val} showValue />
     },
     { key: 'status', title: 'Status', width: '15%' },
     {

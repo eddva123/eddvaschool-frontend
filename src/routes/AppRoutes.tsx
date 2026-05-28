@@ -15,12 +15,8 @@ import { finishAuthRedirect, getPortalLoginPath } from '../utils/tenantRedirect'
 
 // New placeholders
 import PlaceholderPage from '../components/admin/PlaceholderPage';
-import { 
-  BookOpen, ClipboardList, BookMarked, GraduationCap, FileText, 
-  Award, FileSpreadsheet, CreditCard, History, UserX, 
-  BellRing, MessageSquare, Mail, BrainCircuit, TrendingUp,
-  LineChart, UserCog, ShieldCheck, Activity
-} from 'lucide-react';
+import { MessageSquare } from 'lucide-react';
+
 
 const StudentDashboard = lazy(() => import('../pages/student/Dashboard'));
 const StudentClasses = lazy(() => import('../pages/student/Classes'));
@@ -30,14 +26,34 @@ const StudentAssignments = lazy(() => import('../pages/student/Assignments'));
 const StudentAssessments = lazy(() => import('../pages/student/Assessments'));
 const StudentTestEngine = lazy(() => import('../pages/student/TestEngine'));
 const StudentSessionResult = lazy(() => import('../pages/student/SessionResult'));
-const StudentAiAssistant = lazy(() => import('../pages/student/AiAssistant'));
+const StudentAiAssistant = lazy(() => import('../pages/student/AiDoubtSolver'));
 const StudentBattleArena = lazy(() => import('../pages/student/BattleArena'));
 const StudentStudyPlanner = lazy(() => import('../pages/student/StudyPlanner'));
 const StudentCalendar = lazy(() => import('../pages/student/Calendar'));
-const StudentAnalytics = lazy(() => import('../pages/student/Analytics'));
 const StudentFeedback = lazy(() => import('../pages/student/Feedback'));
 const StudentChat = lazy(() => import('../pages/student/Chat'));
 const StudentProfile = lazy(() => import('../pages/student/Profile'));
+
+// New ERP Pages
+const StudentRecordedLectures = lazy(() => import('../pages/student/RecordedLectures'));
+const StudentNotesLibrary = lazy(() => import('../pages/student/NotesLibrary'));
+const StudentResources = lazy(() => import('../pages/student/Resources'));
+const StudentAiTutor = lazy(() => import('../pages/student/AiTutor'));
+const StudentAiNotesGenerator = lazy(() => import('../pages/student/AiNotesGenerator'));
+const StudentAiPerformanceReview = lazy(() => import('../pages/student/AiPerformanceReview'));
+const StudentAiQuiz = lazy(() => import('../pages/student/AiQuiz'));
+const StudentTeacherQuiz = lazy(() => import('../pages/student/TeacherQuiz'));
+const StudentPerformanceAnalytics = lazy(() => import('../pages/student/PerformanceAnalytics'));
+const StudentAttendanceAnalytics = lazy(() => import('../pages/student/AttendanceAnalytics'));
+const StudentExamReports = lazy(() => import('../pages/student/ExamReports'));
+const StudentTimetable = lazy(() => import('../pages/student/Timetable'));
+const StudentExamSchedule = lazy(() => import('../pages/student/ExamSchedule'));
+const StudentDiscussionForum = lazy(() => import('../pages/student/DiscussionForum'));
+const StudentAnnouncements = lazy(() => import('../pages/student/Announcements'));
+const StudentSettings = lazy(() => import('../pages/student/Settings'));
+const StudentNotifications = lazy(() => import('../pages/student/Notifications'));
+const StudentSecurity = lazy(() => import('../pages/student/Security'));
+const StudentAppearance = lazy(() => import('../pages/student/Appearance'));
 
 const TeacherDashboard = lazy(() => import('../pages/teacher/Dashboard'));
 const TopicManagement = lazy(() => import('../pages/teacher/TopicManagement'));
@@ -239,18 +255,38 @@ const router = createBrowserRouter([
       { path: 'classes', element: <Suspense fallback={<PageLoader />}><StudentClasses /></Suspense> },
       { path: 'classes/:id', element: <Suspense fallback={<PageLoader />}><StudentClassDetails /></Suspense> },
       { path: 'classes/:batchId/topics/:topicId', element: <Suspense fallback={<PageLoader />}><StudentTopicDetails /></Suspense> },
+      { path: 'recorded-lectures', element: <Suspense fallback={<PageLoader />}><StudentRecordedLectures /></Suspense> },
+      { path: 'notes-library', element: <Suspense fallback={<PageLoader />}><StudentNotesLibrary /></Suspense> },
       { path: 'assignments', element: <Suspense fallback={<PageLoader />}><StudentAssignments /></Suspense> },
       { path: 'assessments', element: <Suspense fallback={<PageLoader />}><StudentAssessments /></Suspense> },
       { path: 'assessments/:id/take', element: <Suspense fallback={<PageLoader />}><StudentTestEngine /></Suspense> },
       { path: 'assessments/:id', element: <Suspense fallback={<PageLoader />}><StudentSessionResult /></Suspense> },
-      { path: 'ai-assistant', element: <Suspense fallback={<PageLoader />}><StudentAiAssistant /></Suspense> },
-      { path: 'battle-arena', element: <Suspense fallback={<PageLoader />}><StudentBattleArena /></Suspense> },
+      { path: 'resources', element: <Suspense fallback={<PageLoader />}><StudentResources /></Suspense> },
+      { path: 'ai-tutor', element: <Suspense fallback={<PageLoader />}><StudentAiTutor /></Suspense> },
+      { path: 'ai-doubt-solver', element: <Suspense fallback={<PageLoader />}><StudentAiAssistant /></Suspense> },
+      { path: 'ai-assistant', element: <Navigate to="/student/ai-doubt-solver" replace /> },
       { path: 'planner', element: <Suspense fallback={<PageLoader />}><StudentStudyPlanner /></Suspense> },
+      { path: 'ai-notes', element: <Suspense fallback={<PageLoader />}><StudentAiNotesGenerator /></Suspense> },
+      { path: 'ai-performance-review', element: <Suspense fallback={<PageLoader />}><StudentAiPerformanceReview /></Suspense> },
+      { path: 'ai-quiz', element: <Suspense fallback={<PageLoader />}><StudentAiQuiz /></Suspense> },
+      { path: 'teacher-quiz', element: <Suspense fallback={<PageLoader />}><StudentTeacherQuiz /></Suspense> },
+      { path: 'battle-arena', element: <Suspense fallback={<PageLoader />}><StudentBattleArena /></Suspense> },
+      { path: 'performance-analytics', element: <Suspense fallback={<PageLoader />}><StudentPerformanceAnalytics /></Suspense> },
+      { path: 'attendance-analytics', element: <Suspense fallback={<PageLoader />}><StudentAttendanceAnalytics /></Suspense> },
+      { path: 'exam-reports', element: <Suspense fallback={<PageLoader />}><StudentExamReports /></Suspense> },
       { path: 'calendar', element: <Suspense fallback={<PageLoader />}><StudentCalendar /></Suspense> },
-      { path: 'analytics', element: <Suspense fallback={<PageLoader />}><StudentAnalytics /></Suspense> },
-      { path: 'feedback', element: <Suspense fallback={<PageLoader />}><StudentFeedback /></Suspense> },
+      { path: 'timetable', element: <Suspense fallback={<PageLoader />}><StudentTimetable /></Suspense> },
+      { path: 'exam-schedule', element: <Suspense fallback={<PageLoader />}><StudentExamSchedule /></Suspense> },
       { path: 'chat', element: <Suspense fallback={<PageLoader />}><StudentChat /></Suspense> },
+      { path: 'forum', element: <Suspense fallback={<PageLoader />}><StudentDiscussionForum /></Suspense> },
+      { path: 'announcements', element: <Suspense fallback={<PageLoader />}><StudentAnnouncements /></Suspense> },
       { path: 'profile', element: <Suspense fallback={<PageLoader />}><StudentProfile /></Suspense> },
+      { path: 'settings', element: <Suspense fallback={<PageLoader />}><StudentSettings /></Suspense> },
+      { path: 'notifications', element: <Suspense fallback={<PageLoader />}><StudentNotifications /></Suspense> },
+      { path: 'security', element: <Suspense fallback={<PageLoader />}><StudentSecurity /></Suspense> },
+      { path: 'appearance', element: <Suspense fallback={<PageLoader />}><StudentAppearance /></Suspense> },
+      { path: 'analytics', element: <Navigate to="/student/performance-analytics" replace /> },
+      { path: 'feedback', element: <Suspense fallback={<PageLoader />}><StudentFeedback /></Suspense> },
     ],
   },
   {

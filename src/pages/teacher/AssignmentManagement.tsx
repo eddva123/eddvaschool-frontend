@@ -42,8 +42,6 @@ const AssignmentManagement: React.FC = () => {
       setAssignmentsList(res.data?.data || res.data || []);
     } catch (err) {
       console.error(err);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -173,7 +171,7 @@ const AssignmentManagement: React.FC = () => {
       key: "subject_name",
       title: "Subject",
       render: (v: string) => (
-        <Badge variant="secondary">{v || "No Subject"}</Badge>
+        <Badge variant="default">{v || "No Subject"}</Badge>
       ),
     },
     {

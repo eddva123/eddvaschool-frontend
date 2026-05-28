@@ -11,7 +11,26 @@ import {
   FileText,
   Target,
   Trophy,
-  ChevronRight
+  ChevronRight,
+  Sparkles,
+  PlayCircle,
+  BookOpen,
+  FolderOpen,
+  Bot,
+  PenTool,
+  TrendingUp,
+  HelpCircle,
+  UploadCloud,
+  BarChart3,
+  CalendarCheck,
+  FileSpreadsheet,
+  Clock,
+  AlertCircle,
+  MessagesSquare,
+  Megaphone,
+  User,
+  Shield,
+  Palette
 } from 'lucide-react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
@@ -73,11 +92,31 @@ export default function Navbar({ onMenuClick }) {
     if (searchQuery.length > 1) {
       const studentPages = [
         { name: 'Dashboard', path: '/student', icon: Target },
-        { name: 'My Classes', path: '/student/classes', icon: Video },
+        { name: 'Classes', path: '/student/classes', icon: Video },
+        { name: 'Recorded Lectures', path: '/student/recorded-lectures', icon: PlayCircle },
+        { name: 'Notes Library', path: '/student/notes-library', icon: BookOpen },
         { name: 'Assignments', path: '/student/assignments', icon: FileText },
-        { name: 'Assessments', path: '/student/assessments', icon: FileText },
-        { name: 'Battle Arena', path: '/student/battle-arena', icon: Trophy },
-        { name: 'Study Planner', path: '/student/planner', icon: Target },
+        { name: 'Assessments', path: '/student/assessments', icon: ClipboardList },
+        { name: 'Resources', path: '/student/resources', icon: FolderOpen },
+        { name: 'AI Tutor', path: '/student/ai-tutor', icon: Bot },
+        { name: 'AI Doubt Solver', path: '/student/ai-doubt-solver', icon: Sparkles },
+        { name: 'AI Study Planner', path: '/student/planner', icon: CalendarCheck },
+        { name: 'AI Notes Generator', path: '/student/ai-notes', icon: PenTool },
+        { name: 'AI Performance Review', path: '/student/ai-performance-review', icon: TrendingUp },
+        { name: 'AI Quiz', path: '/student/ai-quiz', icon: HelpCircle },
+        { name: 'Teacher Quiz', path: '/student/teacher-quiz', icon: UploadCloud },
+        { name: 'Challenge Zone', path: '/student/battle-arena', icon: Trophy },
+        { name: 'Performance Analytics', path: '/student/performance-analytics', icon: BarChart3 },
+        { name: 'Attendance Analytics', path: '/student/attendance-analytics', icon: CalendarCheck },
+        { name: 'Exam Reports', path: '/student/exam-reports', icon: FileSpreadsheet },
+        { name: 'Calendar', path: '/student/calendar', icon: CalendarCheck },
+        { name: 'Timetable', path: '/student/timetable', icon: Clock },
+        { name: 'Exam Schedule', path: '/student/exam-schedule', icon: AlertCircle },
+        { name: 'Chat', path: '/student/chat', icon: MessageSquare },
+        { name: 'Discussion Forum', path: '/student/forum', icon: MessagesSquare },
+        { name: 'Announcements', path: '/student/announcements', icon: Megaphone },
+        { name: 'Profile', path: '/student/profile', icon: User },
+        { name: 'Settings', path: '/student/settings', icon: User },
       ];
       const pages = studentPages.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()));
       setSearchResults({ pages });
@@ -158,6 +197,15 @@ export default function Navbar({ onMenuClick }) {
           >
             {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
           </button>
+
+          <button
+            type="button"
+            onClick={() => navigate('/student/ai-doubt-solver')}
+            className="relative h-10 w-10 flex items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 hover:bg-indigo-100 dark:bg-indigo-950/40 dark:text-indigo-400 dark:hover:bg-indigo-900/40 transition-colors"
+            title="Ask AI Doubt Solver"
+          >
+            <Sparkles className="h-5 w-5 animate-pulse" />
+          </button>
           
           <button
             type="button"
@@ -192,7 +240,7 @@ export default function Navbar({ onMenuClick }) {
               <div className="grid h-10 w-10 place-items-center rounded-2xl bg-blue-100 text-sm font-black text-blue-700 dark:bg-blue-900 dark:text-blue-300">
                 {(user?.name || 'S').charAt(0).toUpperCase()}
               </div>
-              <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-950" />
+              <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-emerald-500 animate-pulse border-2 border-white dark:border-slate-950" />
             </div>
             <div className="hidden min-w-0 sm:block">
               <p className="truncate text-xs font-black text-slate-950 dark:text-white leading-tight">{user?.name || 'Student'}</p>

@@ -113,7 +113,6 @@ export default function Navbar({ onMenuClick }) {
         { name: 'Fees Management', path: '/admin/fees', icon: SettingsIcon },
         { name: 'System Settings', path: '/admin/settings', icon: SettingsIcon },
         { name: 'Academics & Classes', path: '/admin/academics', icon: SettingsIcon },
-<<<<<<< HEAD
         { name: 'Subjects', path: '/admin/subjects', icon: SettingsIcon },
         { name: 'Assignments & Homework', path: '/admin/assignments', icon: SettingsIcon },
         { name: 'Study Materials', path: '/admin/study-materials', icon: SettingsIcon },
@@ -133,8 +132,6 @@ export default function Navbar({ onMenuClick }) {
         { name: 'Student Performance Analytics', path: '/admin/student-performance', icon: SettingsIcon },
         { name: 'Attendance Analytics', path: '/admin/attendance-analytics', icon: SettingsIcon },
         { name: 'Custom Reports', path: '/admin/custom-reports', icon: SettingsIcon },
-=======
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
       ];
       const pages = (isTeacher ? teacherPages : adminPages).filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()));
 
@@ -176,28 +173,28 @@ export default function Navbar({ onMenuClick }) {
   );
 
   return (
-    <header className="sticky top-0 z-30 border-b border-slate-100 bg-white/80 backdrop-blur-xl px-6 py-3 dark:border-slate-800 dark:bg-slate-950/80">
+    <header className="sticky top-0 z-30 transition-all duration-300 md:my-4 md:mr-4 md:ml-4 border-b border-slate-200/80 bg-white dark:border-slate-800/80 dark:bg-slate-950 md:rounded-[2rem] md:border md:bg-white/70 md:backdrop-blur-xl md:shadow-sm px-6 py-3.5">
       <div className="flex items-center justify-between gap-8">
         <div className="flex items-center gap-3">
-          <button onClick={onMenuClick} className="rounded-xl p-2 text-surface-600 hover:bg-slate-50 md:hidden dark:text-slate-300 dark:hover:bg-slate-900" aria-label="Open menu">
+          <button onClick={onMenuClick} className="rounded-xl p-2 text-slate-500 hover:bg-slate-50 hover:text-slate-700 md:hidden dark:text-slate-300 dark:hover:bg-slate-900 transition-colors" aria-label="Open menu">
             <Menu className="h-6 w-6" />
           </button>
           <div className="flex flex-col">
-            <p className="text-[11px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-tighter">
+            <p className="text-[10px] font-black bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent uppercase tracking-tight">
               {workspaceName}
             </p>
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest opacity-60">
+            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest opacity-80 mt-0.5">
               {workspaceLabel}
             </p>
-            <h1 className="mt-0.5 text-lg font-black leading-tight text-slate-950 dark:text-white">{title}</h1>
+            <h1 className="mt-0.5 text-base font-extrabold leading-tight text-slate-900 dark:text-white tracking-tight">{title}</h1>
           </div>
         </div>
 
         <div className="hidden flex-1 justify-center lg:flex" ref={searchRef}>
-          <div className="relative w-full max-w-xl">
+          <div className="relative w-full max-w-lg">
             <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
             <input
-              className="w-full rounded-2xl border border-slate-100 bg-slate-50 py-3 pl-12 pr-12 text-sm font-bold text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-400 focus:bg-white dark:border-slate-800 dark:bg-slate-900 dark:text-white"
+              className="w-full rounded-2xl border border-slate-200 bg-slate-50/50 py-2.5 pl-11 pr-12 text-sm font-semibold text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-blue-500/50 focus:bg-white focus:ring-4 focus:ring-blue-500/5 dark:border-slate-800/80 dark:bg-slate-900/50 dark:text-white"
               placeholder={searchPlaceholder}
               type="search"
               value={searchQuery}
@@ -207,24 +204,24 @@ export default function Navbar({ onMenuClick }) {
               }}
               onFocus={() => setSearchOpen(true)}
             />
-            <kbd className="pointer-events-none absolute right-4 top-1/2 hidden -translate-y-1/2 rounded-lg border border-slate-200 bg-white px-2 py-1 text-[10px] font-black text-slate-400 md:inline dark:border-slate-700 dark:bg-slate-800 dark:text-slate-500">
-              Ctrl K
+            <kbd className="pointer-events-none absolute right-4 top-1/2 hidden -translate-y-1/2 rounded-lg border border-slate-200 bg-white px-2 py-1 text-[9px] font-bold text-slate-400 md:inline dark:border-slate-700 dark:bg-slate-850 dark:text-slate-500">
+              ⌘K
             </kbd>
 
             {/* Search Results Dropdown */}
             {searchOpen && (searchQuery.length > 0 || searchResults.pages.length > 0) && (
-              <div className="absolute top-full mt-3 w-full overflow-hidden rounded-[2rem] border border-slate-100 bg-white shadow-2xl dark:border-slate-800 dark:bg-slate-900">
+              <div className="absolute top-full mt-3 w-full overflow-hidden rounded-[2rem] border border-slate-100/80 bg-white/95 backdrop-blur-md shadow-xl dark:border-slate-800/80 dark:bg-slate-900/95">
                 <div className="max-h-[480px] overflow-y-auto p-2">
                   {isSearching && (
-                    <div className="p-4 text-center text-xs font-bold text-slate-400 animate-pulse">Searching the intelligence engine...</div>
+                    <div className="p-4 text-center text-xs font-bold text-slate-400 animate-pulse">Searching matching entries...</div>
                   )}
                   
                   {searchResults.pages.length > 0 && (
                     <div className="mb-4">
                       <p className="px-4 py-2 text-[10px] font-black uppercase tracking-widest text-slate-400">Navigation</p>
                       {searchResults.pages.map(page => (
-                        <Link key={page.path} to={page.path} onClick={() => setSearchOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 group">
-                          <div className="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-600 flex items-center justify-center">
+                        <Link key={page.path} to={page.path} onClick={() => setSearchOpen(false)} className="flex items-center gap-3 px-4 py-2.5 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 group transition-colors">
+                          <div className="w-8 h-8 rounded-xl bg-blue-50/50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center">
                             <page.icon size={16} />
                           </div>
                           <span className="text-sm font-bold text-slate-700 dark:text-slate-200">{page.name}</span>
@@ -238,7 +235,7 @@ export default function Navbar({ onMenuClick }) {
                     <div className="mb-4">
                       <p className="px-4 py-2 text-[10px] font-black uppercase tracking-widest text-slate-400">Students</p>
                       {searchResults.students.map(s => (
-                        <Link key={s.id} to="/admin/students" onClick={() => setSearchOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 group">
+                        <Link key={s.id} to="/admin/students" onClick={() => setSearchOpen(false)} className="flex items-center gap-3 px-4 py-2.5 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 group transition-colors">
                           <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-[10px] font-black">
                             {s.photo ? <img src={s.photo} className="w-full h-full object-cover rounded-xl" /> : s.name[0]}
                           </div>
@@ -255,7 +252,7 @@ export default function Navbar({ onMenuClick }) {
                     <div className="mb-4">
                       <p className="px-4 py-2 text-[10px] font-black uppercase tracking-widest text-slate-400">Teachers</p>
                       {searchResults.teachers.map(t => (
-                        <Link key={t.id} to="/admin/teachers" onClick={() => setSearchOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 group">
+                        <Link key={t.id} to="/admin/teachers" onClick={() => setSearchOpen(false)} className="flex items-center gap-3 px-4 py-2.5 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800 group transition-colors">
                           <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-[10px] font-black">
                             {t.photo ? <img src={t.photo} className="w-full h-full object-cover rounded-xl" /> : t.name[0]}
                           </div>
@@ -271,7 +268,7 @@ export default function Navbar({ onMenuClick }) {
                   {!isSearching && searchResults.pages.length === 0 && searchResults.students.length === 0 && searchResults.teachers.length === 0 && (
                     <div className="p-8 text-center">
                       <Search className="mx-auto h-8 w-8 text-slate-200 mb-3" />
-                      <p className="text-sm font-bold text-slate-400 italic">No matching records found for "{searchQuery}"</p>
+                      <p className="text-sm font-bold text-slate-400 italic">No records matching "{searchQuery}"</p>
                     </div>
                   )}
                 </div>
@@ -280,32 +277,32 @@ export default function Navbar({ onMenuClick }) {
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           <div className="relative" ref={quickRef}>
             <button
               type="button"
               onClick={() => setQuickOpen((o) => !o)}
-              className="flex h-10 w-10 items-center justify-center rounded-2xl bg-blue-600 text-white shadow-lg shadow-blue-600/20 transition hover:scale-105 active:scale-95"
+              className="flex h-9 w-9 items-center justify-center rounded-2xl bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-md shadow-blue-500/10 transition-all hover:scale-105 active:scale-95"
               aria-label="Quick create"
             >
-              <Plus className={cn('h-6 w-6 transition-transform duration-300', quickOpen && 'rotate-45')} />
+              <Plus className={cn('h-5 w-5 transition-transform duration-300', quickOpen && 'rotate-45')} />
             </button>
             {quickOpen && (
-              <div className="absolute right-0 z-50 mt-4 w-56 overflow-hidden rounded-[2rem] border border-slate-100 bg-white py-2 shadow-2xl dark:border-slate-800 dark:bg-slate-900">
-                <Link to={isTeacher ? '/teacher/assignments' : '/admin/students'} className="flex items-center gap-3 px-5 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-800" onClick={() => setQuickOpen(false)}>
+              <div className="absolute right-0 z-50 mt-4 w-56 overflow-hidden rounded-[2rem] border border-slate-100/80 bg-white/95 backdrop-blur-md py-2 shadow-xl dark:border-slate-800/80 dark:bg-slate-900/95">
+                <Link to={isTeacher ? '/teacher/assignments' : '/admin/students'} className="flex items-center gap-3 px-5 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-800 transition-colors" onClick={() => setQuickOpen(false)}>
                   <div className="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-600 flex items-center justify-center">
                     <GraduationCap size={16} />
                   </div>
                   {isTeacher ? 'Add assignment' : 'Add student'}
                 </Link>
-                <Link to={isTeacher ? '/teacher/assessments' : '/admin/teachers'} className="flex items-center gap-3 px-5 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-800" onClick={() => setQuickOpen(false)}>
+                <Link to={isTeacher ? '/teacher/assessments' : '/admin/teachers'} className="flex items-center gap-3 px-5 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-800 transition-colors" onClick={() => setQuickOpen(false)}>
                   <div className="w-8 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 flex items-center justify-center">
                     <Users size={16} />
                   </div>
                   {isTeacher ? 'Create assessment' : 'Add teacher'}
                 </Link>
                 <div className="h-px bg-slate-100 dark:bg-slate-800 my-1 mx-4" />
-                <Link to={isTeacher ? '/teacher/creator' : '/admin/notices'} className="flex items-center gap-3 px-5 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-800" onClick={() => setQuickOpen(false)}>
+                <Link to={isTeacher ? '/teacher/creator' : '/admin/notices'} className="flex items-center gap-3 px-5 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-800 transition-colors" onClick={() => setQuickOpen(false)}>
                   <div className="w-8 h-8 rounded-xl bg-amber-50 dark:bg-amber-900/30 text-amber-600 flex items-center justify-center">
                     <MessageCircle size={16} />
                   </div>
@@ -319,73 +316,73 @@ export default function Navbar({ onMenuClick }) {
             <button
               type="button"
               onClick={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))}
-              className="h-10 w-10 flex items-center justify-center rounded-2xl text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
+              className="h-9 w-9 flex items-center justify-center rounded-xl text-slate-500 hover:bg-slate-50 hover:text-slate-700 dark:hover:bg-slate-900 dark:hover:text-slate-300 transition-colors"
               aria-label="Toggle theme"
             >
-              {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+              {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </button>
             <button
               type="button"
               onClick={() => navigate(messagesPath)}
-              className="relative h-10 w-10 flex items-center justify-center rounded-2xl text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
+              className="relative h-9 w-9 flex items-center justify-center rounded-xl text-slate-500 hover:bg-slate-50 hover:text-slate-700 dark:hover:bg-slate-900 dark:hover:text-slate-300 transition-colors"
               aria-label="Messages"
             >
-              <MessageCircle className="h-5 w-5" />
+              <MessageCircle className="h-4 w-4" />
             </button>
             <div className="relative" ref={notifRef}>
               <button
                 type="button"
                 onClick={() => setNotifOpen((o) => !o)}
-                className="relative h-10 w-10 flex items-center justify-center rounded-2xl text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
+                className="relative h-9 w-9 flex items-center justify-center rounded-xl text-slate-500 hover:bg-slate-50 hover:text-slate-700 dark:hover:bg-slate-900 dark:hover:text-slate-300 transition-colors"
                 aria-label="Notifications"
               >
-                <Bell className="h-5 w-5" />
-                <span className="absolute right-2.5 top-2.5 h-4 min-w-[16px] flex items-center justify-center rounded-full bg-rose-500 px-1 text-[9px] font-black text-white border-2 border-white dark:border-slate-950">
+                <Bell className="h-4 w-4" />
+                <span className="absolute right-2 top-2 h-3.5 min-w-[14px] flex items-center justify-center rounded-full bg-rose-500 px-1 text-[8px] font-black text-white border-2 border-white dark:border-slate-950">
                   5
                 </span>
               </button>
               {notifOpen && (
-                <div className="absolute right-0 z-50 mt-4 w-80 overflow-hidden rounded-[2rem] border border-slate-100 bg-white shadow-2xl dark:border-slate-800 dark:bg-slate-900">
+                <div className="absolute right-0 z-50 mt-4 w-80 overflow-hidden rounded-[2rem] border border-slate-100/80 bg-white/95 backdrop-blur-md shadow-xl dark:border-slate-800/80 dark:bg-slate-900/95">
                   <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
                     <h3 className="text-sm font-bold text-slate-900 dark:text-white">Notifications</h3>
-                    <span className="text-[10px] font-black text-blue-600 bg-blue-50 dark:bg-blue-900/30 px-2 py-1 rounded-full">5 Unread</span>
+                    <span className="text-[10px] font-black text-blue-600 bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 rounded-full">5 Unread</span>
                   </div>
                   <div className="max-h-80 overflow-y-auto">
-                    <div className="p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 cursor-pointer border-b border-slate-50 dark:border-slate-800/50">
+                    <div className="p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 cursor-pointer border-b border-slate-50 dark:border-slate-800/50 transition-colors">
                       <p className="text-sm font-bold text-slate-800 dark:text-slate-200">New Institute Registered</p>
-                      <p className="text-xs text-slate-500 mt-1">Delhi Public School just registered on the platform.</p>
-                      <p className="text-[10px] text-slate-400 mt-2">2 minutes ago</p>
+                      <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">Delhi Public School just registered on the platform.</p>
+                      <p className="text-[10px] text-slate-400 mt-2 font-semibold">2 minutes ago</p>
                     </div>
-                    <div className="p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 cursor-pointer border-b border-slate-50 dark:border-slate-800/50">
+                    <div className="p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 cursor-pointer border-b border-slate-50 dark:border-slate-800/50 transition-colors">
                       <p className="text-sm font-bold text-slate-800 dark:text-slate-200">System Update</p>
-                      <p className="text-xs text-slate-500 mt-1">Version 2.4.1 has been deployed successfully.</p>
-                      <p className="text-[10px] text-slate-400 mt-2">1 hour ago</p>
+                      <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">Version 2.4.1 has been deployed successfully.</p>
+                      <p className="text-[10px] text-slate-400 mt-2 font-semibold">1 hour ago</p>
                     </div>
                   </div>
-                  <div className="p-3 border-t border-slate-100 dark:border-slate-800 text-center">
-                    <button className="text-xs font-bold text-blue-600 hover:text-blue-700">Mark all as read</button>
+                  <div className="p-3 border-t border-slate-100 dark:border-slate-800 text-center bg-slate-50/50 dark:bg-slate-900/50">
+                    <button className="text-xs font-bold text-blue-600 hover:text-blue-700 transition-colors">Mark all as read</button>
                   </div>
                 </div>
               )}
             </div>
           </div>
 
-          <Link to={profilePath} className="flex items-center gap-3 border-l border-slate-100 pl-4 dark:border-slate-800">
+          <Link to={profilePath} className="flex items-center gap-3 border-l border-slate-200/80 pl-4 dark:border-slate-800 transition-all">
             <div className="relative">
-              <div className="grid h-10 w-10 place-items-center rounded-2xl bg-blue-100 text-sm font-black text-blue-700 dark:bg-blue-900 dark:text-blue-300">
+              <div className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-blue-50 to-purple-50 text-blue-600 border border-blue-100/50 text-xs font-black shadow-sm dark:from-blue-900/20 dark:to-purple-900/20 dark:text-blue-300 dark:border-blue-800/50">
                 {(user?.name || 'A').charAt(0).toUpperCase()}
               </div>
-              <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-950" />
+              <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-950 animate-pulse" />
             </div>
             <div className="hidden min-w-0 sm:block">
-              <p className="truncate text-xs font-black text-slate-950 dark:text-white leading-tight">{user?.name || 'Admin'}</p>
-              <p className="truncate text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5 opacity-60">
+              <p className="truncate text-xs font-extrabold text-slate-900 dark:text-white leading-tight">{user?.name || 'Admin'}</p>
+              <p className="truncate text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5 opacity-80">
                 {roleName}
               </p>
             </div>
           </Link>
-          <button onClick={logout} className="ml-2 rounded-2xl p-2.5 text-slate-400 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/40 transition-colors" aria-label="Logout">
-            <LogOut className="h-5 w-5" />
+          <button onClick={logout} className="ml-1 rounded-xl p-2 text-slate-400 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/40 transition-colors" aria-label="Logout">
+            <LogOut className="h-4 w-4" />
           </button>
         </div>
       </div>

@@ -10,10 +10,7 @@ import { toast } from 'react-hot-toast';
 import api from '../../services/api';
 import { cn } from '../../components/admin/Skeleton';
 import Modal from '../../components/admin/Modal';
-<<<<<<< HEAD
 import { notifyDataChanged } from '../../utils/apiData.js';
-=======
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
 
 export default function Fees() {
   const [fees, setFees] = useState([]);
@@ -27,7 +24,6 @@ export default function Fees() {
   useEffect(() => {
     fetchFees();
     fetchAnalytics();
-<<<<<<< HEAD
 
     const handleRefresh = () => {
       fetchFees();
@@ -41,23 +37,15 @@ export default function Fees() {
       window.removeEventListener('eddva:data-changed', handleRefresh);
       window.clearInterval(interval);
     };
-=======
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
   }, []);
 
   const fetchFees = async () => {
     try {
       const res = await api.get('/fees');
-<<<<<<< HEAD
       setFees(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
       console.error('Failed to fetch fees:', err);
       setFees([]);
-=======
-      setFees(res.data);
-    } catch (err) {
-      console.error('Failed to fetch fees:', err);
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
     } finally {
       setLoading(false);
     }
@@ -283,21 +271,13 @@ export default function Fees() {
             </div>
             <div className="space-y-6">
               {fees.filter(f => f.status === 'PAID').slice(0, 4).map(f => (
-<<<<<<< HEAD
                 <div key={f._id} className="flex items-center gap-4 group">
-=======
-                <div key={f.id} className="flex items-center gap-4 group">
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
                   <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center text-emerald-500 border border-emerald-500/5">
                     <Receipt size={18} />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-black text-slate-900 dark:text-white truncate">{f.student?.user?.name}</p>
-<<<<<<< HEAD
                       <p className="text-[10px] font-bold text-slate-400">₹{f.paidAmount.toLocaleString()} · {new Date(f.latestTransaction?.paymentDate || f.paymentDate || f.updatedAt).toLocaleDateString()}</p>
-=======
-                    <p className="text-[10px] font-bold text-slate-400">₹{f.paidAmount.toLocaleString()} · {new Date(f.paymentDate || f.updatedAt).toLocaleDateString()}</p>
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
                   </div>
                   <ArrowRight size={14} className="text-slate-300 group-hover:text-blue-600 group-hover:translate-x-1 transition-all" />
                 </div>
@@ -366,11 +346,7 @@ function RecordPaymentModal({ isOpen, onClose, fee, fees, onSuccess }) {
     if (fee) {
       setFormData(prev => ({
         ...prev,
-<<<<<<< HEAD
         feeId: fee._id,
-=======
-        feeId: fee.id,
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
         amount: fee.amount - fee.paidAmount
       }));
     }
@@ -380,7 +356,6 @@ function RecordPaymentModal({ isOpen, onClose, fee, fees, onSuccess }) {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-<<<<<<< HEAD
       const res = await api.post('/fees/record', {
         ...formData,
         amount: parseFloat(formData.amount)
@@ -388,13 +363,6 @@ function RecordPaymentModal({ isOpen, onClose, fee, fees, onSuccess }) {
       const receiptNo = res.data?.data?.receipt?.receiptNo;
       toast.success(receiptNo ? `Payment recorded · ${receiptNo}` : 'Payment recorded successfully!');
       notifyDataChanged('fees');
-=======
-      await api.post('/fees/record', {
-        ...formData,
-        amount: parseFloat(formData.amount)
-      });
-      toast.success('Payment recorded successfully!');
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
       onSuccess();
     } catch (err) {
       toast.error(err.response?.data?.error || 'Failed to record payment');
@@ -432,13 +400,8 @@ function RecordPaymentModal({ isOpen, onClose, fee, fees, onSuccess }) {
                       key={f.id}
                       type="button"
                       onClick={() => {
-<<<<<<< HEAD
                         setFormData(prev => ({ ...prev, feeId: f.id, amount: f.remainingBalance || (f.amount - f.paidAmount) }));
                         setSearchTerm(`${f.student?.user?.name || 'Unknown'} - ${f.title || 'Fee'}`);
-=======
-                        setFormData(prev => ({ ...prev, feeId: f.id, amount: f.amount - f.paidAmount }));
-                        setSearchTerm('');
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
                         setShowDropdown(false);
                       }}
                       className="w-full text-left p-4 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-all flex justify-between items-center group"
@@ -446,17 +409,10 @@ function RecordPaymentModal({ isOpen, onClose, fee, fees, onSuccess }) {
                       <div>
                         <p className="text-sm font-black text-slate-900 dark:text-white">{f.student?.user?.name || 'Unknown'} <span className="text-slate-400 font-semibold mx-1">—</span> {f.title}</p>
                         <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest">
-<<<<<<< HEAD
                           Class {f.student?.studentProfile?.section?.class?.name || '-'} / {f.student?.studentProfile?.section?.name || '-'} · Roll {f.student?.rollNo || f.student?.studentProfile?.rollNo || '-'}
                         </p>
                       </div>
                       <span className="text-sm font-black text-rose-500 group-hover:scale-110 transition-transform">₹{(f.remainingBalance || (f.amount - f.paidAmount)).toLocaleString()}</span>
-=======
-                          Class {f.student?.studentProfile?.section?.class?.name || '-'} / {f.student?.studentProfile?.section?.name || '-'} · Roll {f.student?.studentProfile?.rollNo || '-'}
-                        </p>
-                      </div>
-                      <span className="text-sm font-black text-rose-500 group-hover:scale-110 transition-transform">₹{(f.amount - f.paidAmount).toLocaleString()}</span>
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
                     </button>
                   ))
                 )}
@@ -511,11 +467,7 @@ function RecordPaymentModal({ isOpen, onClose, fee, fees, onSuccess }) {
                 onClick={() => setFormData(prev => ({ ...prev, paymentMethod: method.id }))}
                 className={cn(
                   "flex flex-col items-center gap-2 p-4 rounded-2xl border transition-all",
-<<<<<<< HEAD
                           formData.paymentMethod === method.id 
-=======
-                  formData.paymentMethod === method.id 
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
                     ? "bg-blue-600 text-white border-blue-600 shadow-lg shadow-blue-600/20" 
                     : "bg-slate-50 dark:bg-slate-900 border-slate-100 dark:border-slate-800 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
                 )}

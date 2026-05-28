@@ -4,22 +4,8 @@ import { cn } from './Skeleton';
 
 export function EddvaLogo({ compact = false, className }) {
   return (
-<<<<<<< HEAD
     <div className={cn('flex items-center', className)}>
       <img src="/logo.png" alt="Eddva Logo" className={cn("object-contain", compact ? "h-8" : "h-11")} />
-=======
-    <div className={cn('flex items-center gap-3', className)}>
-      <div className="relative grid h-11 w-11 place-items-center rounded-lg bg-gradient-to-br from-brand-600 via-primary to-sky-400 text-white shadow-blue">
-        <GraduationCap className="h-6 w-6" />
-        <BrainCircuit className="absolute -bottom-1 -right-1 h-4 w-4 rounded-full bg-white p-0.5 text-primary" />
-      </div>
-      {!compact && (
-        <div className="leading-none">
-          <p className="font-display text-2xl font-extrabold text-surface-950">EDDVA</p>
-          <p className="mt-1 text-[11px] font-bold uppercase text-brand-700">Learn with AI</p>
-        </div>
-      )}
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
     </div>
   );
 }

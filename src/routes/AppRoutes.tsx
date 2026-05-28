@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 import React, { lazy, Suspense, useEffect } from 'react';
-=======
-import React, { lazy, Suspense } from 'react';
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
 import {
   createBrowserRouter,
   RouterProvider,
@@ -14,7 +10,6 @@ import { AuthProvider, useAuth } from '../context/AuthContext';
 import AdminLayout from '../components/admin/Layout';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { getHomePathForRole } from '../utils/roleRedirect';
-<<<<<<< HEAD
 import { finishAuthRedirect, getPortalLoginPath } from '../utils/tenantRedirect';
 
 // New placeholders
@@ -25,9 +20,6 @@ import {
   BellRing, MessageSquare, Mail, BrainCircuit, TrendingUp,
   LineChart, UserCog, ShieldCheck, Activity
 } from 'lucide-react';
-=======
-import { finishAuthRedirect } from '../utils/tenantRedirect';
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
 
 const TeacherDashboard = lazy(() => import('../pages/teacher/Dashboard'));
 const TopicManagement = lazy(() => import('../pages/teacher/TopicManagement'));
@@ -44,7 +36,6 @@ const TeacherProfile = lazy(() => import('../pages/teacher/Profile'));
 const TeacherNotifications = lazy(() => import('../pages/teacher/Notifications'));
 
 const AdminDashboard = lazy(() => import('../pages/admin/AdminDashboard'));
-<<<<<<< HEAD
 const SuperAdminLogin = lazy(() => import('../pages/auth/SuperAdminLogin'));
 const Institutes = lazy(() => import('../pages/admin/Institutes'));
 const AdminUsers = lazy(() => import('../pages/admin/Users'));
@@ -52,20 +43,11 @@ const AdminStudents = lazy(() => import('../pages/admin/Students'));
 const AdminTeachers = lazy(() => import('../pages/admin/Teachers'));
 const AdminStudentProfile = lazy(() => import('../pages/admin/StudentProfile'));
 const AdminTeacherProfile = lazy(() => import('../pages/admin/TeacherProfile'));
-=======
-const Institutes = lazy(() => import('../pages/admin/Institutes'));
-const AdminStudents = lazy(() => import('../pages/admin/Students'));
-const AdminTeachers = lazy(() => import('../pages/admin/Teachers'));
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
 const AdminAttendance = lazy(() => import('../pages/admin/Attendance'));
 const AdminAcademics = lazy(() => import('../pages/admin/Academics'));
 const AdminNotices = lazy(() => import('../pages/admin/Notices'));
 const AdminFees = lazy(() => import('../pages/admin/Fees'));
-<<<<<<< HEAD
 const AdminCalendar = lazy(() => import('../pages/admin/AcademicCalendar'));
-=======
-const AdminCalendar = lazy(() => import('../pages/admin/Calendar'));
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
 const AdminComplaints = lazy(() => import('../pages/admin/Complaints'));
 const AdminAnalytics = lazy(() => import('../pages/admin/Analytics'));
 const AdminTimetable = lazy(() => import('../pages/admin/Timetable'));
@@ -73,7 +55,6 @@ const AdminSettings = lazy(() => import('../pages/admin/AdminSettings'));
 const AdminReports = lazy(() => import('../pages/admin/Reports'));
 const AdminFinance = lazy(() => import('../pages/admin/Finance'));
 const AdminCommunications = lazy(() => import('../pages/admin/Communications'));
-<<<<<<< HEAD
 const AdminRoles = lazy(() => import('../pages/admin/Roles'));
 const AdminAuditLogs = lazy(() => import('../pages/admin/AuditLogs'));
 const AdminSecurity = lazy(() => import('../pages/admin/SecurityCenter'));
@@ -97,9 +78,6 @@ const AiInsights = lazy(() => import('../pages/admin/AiInsights'));
 const StudentPerformance = lazy(() => import('../pages/admin/StudentPerformance'));
 const AttendanceAnalytics = lazy(() => import('../pages/admin/AttendanceAnalytics'));
 const CustomReports = lazy(() => import('../pages/admin/CustomReports'));
-=======
-
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
 const Login = lazy(() => import('../pages/auth/AdminLogin'));
 const Register = lazy(() => import('../pages/teacher/Register'));
 const AuthComplete = lazy(() => import('../pages/auth/AuthComplete'));
@@ -113,7 +91,6 @@ const PageLoader: React.FC = () => (
 function RoleBasedHome() {
   const { user, loading } = useAuth();
   if (loading) return <PageLoader />;
-<<<<<<< HEAD
   if (!user) return <Navigate to={getPortalLoginPath()} replace />;
   return <Navigate to={getHomePathForRole(user.role)} replace />;
 }
@@ -137,24 +114,6 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
 
   if (loading) return <PageLoader />;
   if (user) return <PageLoader />;
-=======
-  if (!user) return <Navigate to="/login" replace />;
-  return <Navigate to={getHomePathForRole(user.role)} replace />;
-}
-
-function PublicRoute({ children }: { children: React.ReactNode }) {
-  const { user, institute, loading } = useAuth();
-  const navigate = useNavigate();
-  if (loading) return <PageLoader />;
-  if (user) {
-    finishAuthRedirect(
-      institute?.tenantDomain || localStorage.getItem('tenantDomain'),
-      navigate,
-      user.role
-    );
-    return <PageLoader />;
-  }
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
   return <>{children}</>;
 }
 
@@ -173,11 +132,7 @@ const ProtectedRoute: React.FC<{
 
   if (loading) return <PageLoader />;
 
-<<<<<<< HEAD
   if (!user) return <Navigate to={getPortalLoginPath()} replace />;
-=======
-  if (!user) return <Navigate to="/login" replace />;
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
 
   if (roles && !roles.includes(user.role)) {
     return <Navigate to={getHomePathForRole(user.role)} replace />;
@@ -198,7 +153,6 @@ const router = createBrowserRouter([
     ),
   },
   {
-<<<<<<< HEAD
     path: '/super-admin/login',
     element: (
       <PublicRoute>
@@ -209,8 +163,6 @@ const router = createBrowserRouter([
     ),
   },
   {
-=======
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
     path: '/register',
     element: (
       <Suspense fallback={<PageLoader />}>
@@ -276,7 +228,6 @@ const router = createBrowserRouter([
           </SuperAdminOnly>
         ),
       },
-<<<<<<< HEAD
       {
         path: 'users',
         element: (
@@ -291,10 +242,6 @@ const router = createBrowserRouter([
       { path: 'students/:id', element: <Suspense fallback={<PageLoader />}><AdminStudentProfile /></Suspense> },
       { path: 'teachers', element: <Suspense fallback={<PageLoader />}><AdminTeachers /></Suspense> },
       { path: 'teachers/:id', element: <Suspense fallback={<PageLoader />}><AdminTeacherProfile /></Suspense> },
-=======
-      { path: 'students', element: <Suspense fallback={<PageLoader />}><AdminStudents /></Suspense> },
-      { path: 'teachers', element: <Suspense fallback={<PageLoader />}><AdminTeachers /></Suspense> },
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
       { path: 'attendance', element: <Suspense fallback={<PageLoader />}><AdminAttendance /></Suspense> },
       { path: 'academics', element: <Suspense fallback={<PageLoader />}><AdminAcademics /></Suspense> },
       { path: 'notices', element: <Suspense fallback={<PageLoader />}><AdminNotices /></Suspense> },
@@ -303,17 +250,13 @@ const router = createBrowserRouter([
       { path: 'complaints', element: <Suspense fallback={<PageLoader />}><AdminComplaints /></Suspense> },
       { path: 'analytics', element: <Suspense fallback={<PageLoader />}><AdminAnalytics /></Suspense> },
       { path: 'timetable', element: <Suspense fallback={<PageLoader />}><AdminTimetable /></Suspense> },
-<<<<<<< HEAD
       { path: 'roles', element: <Suspense fallback={<PageLoader />}><AdminRoles /></Suspense> },
       { path: 'audit-logs', element: <Suspense fallback={<PageLoader />}><AdminAuditLogs /></Suspense> },
       { path: 'security', element: <Suspense fallback={<PageLoader />}><AdminSecurity /></Suspense> },
-=======
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
       { path: 'settings', element: <Suspense fallback={<PageLoader />}><AdminSettings /></Suspense> },
       { path: 'reports', element: <Suspense fallback={<PageLoader />}><AdminReports /></Suspense> },
       { path: 'finance', element: <Suspense fallback={<PageLoader />}><AdminFinance /></Suspense> },
       { path: 'communications', element: <Suspense fallback={<PageLoader />}><AdminCommunications /></Suspense> },
-<<<<<<< HEAD
       
       // New Academic Routes
       { path: 'subjects', element: <Suspense fallback={<PageLoader />}><Subjects /></Suspense> },
@@ -355,17 +298,11 @@ const router = createBrowserRouter([
     ),
     children: [
       { index: true, element: <Suspense fallback={<PageLoader />}><AdminDashboard /></Suspense> },
-=======
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
     ],
   },
   {
     path: '*',
-<<<<<<< HEAD
     element: <FallbackRedirect />,
-=======
-    element: <Navigate to="/login" replace />,
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
   },
 ]);
 

@@ -80,6 +80,11 @@ export default function Syllabus() {
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!subjectId) {
+      toast.error('Please select a subject');
+      return;
+    }
+    
     try {
       const payload = { 
         subjectId, 

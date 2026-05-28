@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { AlertCircle, Loader } from 'lucide-react';
 import api from '../../../services/api';
-<<<<<<< HEAD
 import { getResponseList } from '../../../utils/apiData';
-=======
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
 
 export default function AttendanceForm({ attendance, onSubmit, onCancel, isLoading }) {
   const [formData, setFormData] = useState({
@@ -31,11 +28,7 @@ export default function AttendanceForm({ attendance, onSubmit, onCancel, isLoadi
   const fetchStudents = async () => {
     try {
       const res = await api.get('/students');
-<<<<<<< HEAD
       setStudents(getResponseList(res));
-=======
-      setStudents(Array.isArray(res.data) ? res.data : []);
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
     } catch (error) {
       console.error(error);
     }
@@ -55,11 +48,7 @@ export default function AttendanceForm({ attendance, onSubmit, onCancel, isLoadi
       return;
     }
 
-<<<<<<< HEAD
     await onSubmit({ ...formData, userId: formData.studentId });
-=======
-    await onSubmit(formData);
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
   };
 
   return (

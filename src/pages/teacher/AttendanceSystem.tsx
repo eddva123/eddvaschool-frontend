@@ -59,11 +59,7 @@ const avgAttendance =
 
   const fetchClasses = async () => {
     try {
-<<<<<<< HEAD
       const res = await api.get('/academic/classes');
-=======
-      const res = await api.get('/classes');
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
       const list = res.data?.data ?? res.data ?? [];
       const formatted = Array.isArray(list)
         ? list.map((cls: any) => ({

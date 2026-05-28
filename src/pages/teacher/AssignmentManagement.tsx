@@ -29,13 +29,8 @@ const AssignmentManagement: React.FC = () => {
   // Form states
   const [formData, setFormData] = useState({
     title: "",
-<<<<<<< HEAD
     class_id: "",
     subject_id: "",
-=======
-    class_id: "1",
-    subject_id: "1",
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
     due_date: "",
     instructions: "",
   });
@@ -44,11 +39,7 @@ const AssignmentManagement: React.FC = () => {
   const fetchAssignments = async () => {
     try {
       const res = await api.get("/assignments");
-<<<<<<< HEAD
       setAssignmentsList(res.data?.data || res.data || []);
-=======
-      setAssignmentsList(res.data.data);
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
     } catch (err) {
       console.error(err);
     } finally {
@@ -58,11 +49,7 @@ const AssignmentManagement: React.FC = () => {
 
   const fetchClasses = async () => {
     try {
-<<<<<<< HEAD
       const res = await api.get("/academic/classes");
-=======
-      const res = await api.get("/classes");
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
 
       setClasses(res.data.data);
       if (res.data.data.length > 0) {
@@ -78,11 +65,7 @@ const AssignmentManagement: React.FC = () => {
 
   const fetchSubjects = async () => {
     try {
-<<<<<<< HEAD
       const res = await api.get("/academic/subjects");
-=======
-      const res = await api.get("/subjects");
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
 
       setSubjects(res.data.data);
 
@@ -119,13 +102,8 @@ const AssignmentManagement: React.FC = () => {
       await fetchAssignments();
       setFormData({
         title: "",
-<<<<<<< HEAD
         class_id: "",
         subject_id: "",
-=======
-        class_id: "1",
-        subject_id: "1",
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
         due_date: "",
         instructions: "",
       });

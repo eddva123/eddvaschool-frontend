@@ -22,18 +22,12 @@ import Tabs from '../../components/Tabs';
 
 import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
-<<<<<<< HEAD
 import { toast } from '../../utils/toast';
-=======
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
 
 const TopicManagement: React.FC = () => {
   const { user } = useAuth();
   const isTeacher = user?.role === 'TEACHER';
-<<<<<<< HEAD
   const canEditCurriculum = user?.role === 'INSTITUTE_ADMIN' || user?.role === 'SUPER_ADMIN';
-=======
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
   // =====================================
   // STATES
   // =====================================
@@ -72,11 +66,7 @@ const TopicManagement: React.FC = () => {
   const [newTopic, setNewTopic] =
     useState({
       name: '',
-<<<<<<< HEAD
       subject_id: '',
-=======
-      subject_id: 1,
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
     });
 
   const [newChapter, setNewChapter] =
@@ -96,7 +86,6 @@ const TopicManagement: React.FC = () => {
 
     const [uploading, setUploading] =
       useState(false);
-<<<<<<< HEAD
 
     const [materialsList, setMaterialsList] = useState<any[]>([]);
 
@@ -108,8 +97,6 @@ const TopicManagement: React.FC = () => {
         console.error(err);
       }
     };
-=======
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
   // =====================================
   // FETCH SUBJECTS
   // =====================================
@@ -117,7 +104,6 @@ const TopicManagement: React.FC = () => {
   const fetchSubjects = async () => {
     try {
       const res =
-<<<<<<< HEAD
         await api.get('/academic/subjects');
 
       const list = res.data?.data || res.data || [];
@@ -126,11 +112,6 @@ const TopicManagement: React.FC = () => {
         ...prev,
         subject_id: prev.subject_id || list[0]?.id || '',
       }));
-=======
-        await api.get('/subjects');
-
-      setSubjects(res.data.data || []);
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
     } catch (err) {
       console.error(err);
     }
@@ -147,11 +128,7 @@ const TopicManagement: React.FC = () => {
       const res =
         await api.get('/topics');
 
-<<<<<<< HEAD
       setTopicsList(res.data?.data || res.data || []);
-=======
-      setTopicsList(res.data.data || []);
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
     } catch (err) {
       console.error(err);
 
@@ -176,11 +153,7 @@ const TopicManagement: React.FC = () => {
       );
 
       setChaptersList(
-<<<<<<< HEAD
         res.data?.data || res.data || []
-=======
-        res.data.data.chapters || []
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
       );
     } catch (err) {
       console.error(err);
@@ -210,7 +183,6 @@ const TopicManagement: React.FC = () => {
     }
   }, [selectedTopic]);
 
-<<<<<<< HEAD
   useEffect(() => {
     if (selectedChapter !== null) {
       fetchMaterials(selectedChapter);
@@ -219,8 +191,6 @@ const TopicManagement: React.FC = () => {
     }
   }, [selectedChapter]);
 
-=======
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
   // =====================================
   // CREATE TOPIC
   // =====================================
@@ -231,7 +201,6 @@ const TopicManagement: React.FC = () => {
         if (
           !newTopic.name.trim()
         ) {
-<<<<<<< HEAD
           toast.warning('Topic name is required');
           return;
         }
@@ -241,12 +210,6 @@ const TopicManagement: React.FC = () => {
         }
         if (!newTopic.subject_id) {
           toast.warning('Subject is required');
-=======
-          alert(
-            'Topic name is required'
-          );
-
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
           return;
         }
 
@@ -260,31 +223,15 @@ const TopicManagement: React.FC = () => {
 
         setNewTopic({
           name: '',
-<<<<<<< HEAD
           subject_id: subjects[0]?.id || '',
-=======
-          subject_id: 1,
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
         });
 
         setShowTopicModal(false);
 
-<<<<<<< HEAD
         toast.success('Topic created successfully');
       } catch (err) {
         console.error(err);
         toast.error('Failed to create topic');
-=======
-        alert(
-          'Topic created successfully'
-        );
-      } catch (err) {
-        console.error(err);
-
-        alert(
-          'Failed to create topic'
-        );
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
       }
     };
 
@@ -298,7 +245,6 @@ const TopicManagement: React.FC = () => {
         if (
           !newChapter.name.trim()
         ) {
-<<<<<<< HEAD
           toast.warning('Chapter name is required');
           return;
         }
@@ -314,33 +260,6 @@ const TopicManagement: React.FC = () => {
           return;
         }
 
-=======
-          alert(
-            'Chapter name is required'
-          );
-
-          return;
-        }
-
-        // ============================
-        // MUST SELECT TOPIC CARD
-        // ============================
-
-        if (
-          selectedTopic === null
-        ) {
-          alert(
-            'Please select a topic card first'
-          );
-
-          return;
-        }
-
-        // ============================
-        // CREATE CHAPTER
-        // ============================
-
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
         await api.post(
           `/topics/${selectedTopic}/chapters`,
           {
@@ -348,33 +267,16 @@ const TopicManagement: React.FC = () => {
             order: Number(
               newChapter.order
             ),
-<<<<<<< HEAD
             subjectId: selectedTopic, // Assuming selectedTopic maps to something, but actually chapter needs subjectId. Wait, topics are under chapters. Let's fix this in a second pass.
           }
         );
 
-=======
-          }
-        );
-
-        // ============================
-        // REFRESH DATA
-        // ============================
-
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
         await fetchChapters(
           selectedTopic
         );
 
         await fetchTopics();
 
-<<<<<<< HEAD
-=======
-        // ============================
-        // RESET FORM
-        // ============================
-
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
         setNewChapter({
           name: '',
           order: 1,
@@ -382,22 +284,10 @@ const TopicManagement: React.FC = () => {
 
         setShowChapterModal(false);
 
-<<<<<<< HEAD
         toast.success('Chapter created successfully');
       } catch (err) {
         console.error(err);
         toast.error('Failed to create chapter');
-=======
-        alert(
-          'Chapter created successfully'
-        );
-      } catch (err) {
-        console.error(err);
-
-        alert(
-          'Failed to create chapter'
-        );
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
       }
     };
 
@@ -437,17 +327,10 @@ const TopicManagement: React.FC = () => {
       // ============================
 
       if (
-<<<<<<< HEAD
         selectedChapter === null
       ) {
         alert(
           'Please select a chapter from the Chapters tab first'
-=======
-        chaptersList.length === 0
-      ) {
-        alert(
-          'Please create a chapter first'
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
         );
 
         return;
@@ -455,17 +338,8 @@ const TopicManagement: React.FC = () => {
 
       setUploading(true);
 
-<<<<<<< HEAD
       const chapterId =
         selectedChapter;
-=======
-      // ============================
-      // USE FIRST CHAPTER FOR NOW
-      // ============================
-
-      const chapterId =
-        chaptersList[0].id;
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
 
       const formData =
         new FormData();
@@ -500,13 +374,10 @@ const TopicManagement: React.FC = () => {
         'Material uploaded successfully'
       );
 
-<<<<<<< HEAD
       if (selectedChapter !== null) {
         fetchMaterials(selectedChapter);
       }
 
-=======
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
       // reset
       setMaterialTitle('');
 
@@ -549,7 +420,6 @@ const TopicManagement: React.FC = () => {
           placeholder="Search topics..."
         />
 
-<<<<<<< HEAD
         {canEditCurriculum && (
           <Button
             icon={<Plus size={16} />}
@@ -561,17 +431,6 @@ const TopicManagement: React.FC = () => {
             Create Topic
           </Button>
         )}
-=======
-        <Button
-          icon={<Plus size={16} />}
-          className="topic__action-btn"
-          onClick={() =>
-            setShowTopicModal(true)
-          }
-        >
-          Create Topic
-        </Button>
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
       </div>
 
       <div className="topic__list">
@@ -691,7 +550,6 @@ const TopicManagement: React.FC = () => {
             : ''}
         </h3>
 
-<<<<<<< HEAD
         {canEditCurriculum && (
           <Button
             size="sm"
@@ -714,31 +572,6 @@ const TopicManagement: React.FC = () => {
             Add Chapter
           </Button>
         )}
-=======
-        <Button
-          size="sm"
-          icon={<Plus size={16} />}
-          className="topic__action-btn"
-          onClick={() => {
-            if (
-              selectedTopic ===
-              null
-            ) {
-              alert(
-                'Please select a topic card first'
-              );
-
-              return;
-            }
-
-            setShowChapterModal(
-              true
-            );
-          }}
-        >
-          Add Chapter
-        </Button>
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
       </div>
 
       <div className="topic__chapter-list">
@@ -859,7 +692,6 @@ const TopicManagement: React.FC = () => {
       </div>
 
       <div className="topic__material-list">
-<<<<<<< HEAD
         {selectedChapter === null ? (
           <p style={{ padding: '2rem', textAlign: 'center' }}>
             Please select a chapter from the Chapters tab to view its materials.
@@ -891,18 +723,6 @@ const TopicManagement: React.FC = () => {
             ))}
           </ul>
         )}
-=======
-        <p
-          style={{
-            padding: '2rem',
-            textAlign:
-              'center',
-          }}
-        >
-          Material module
-          coming soon
-        </p>
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
       </div>
     </div>
   );
@@ -959,11 +779,7 @@ const TopicManagement: React.FC = () => {
         ]}
       />
 
-<<<<<<< HEAD
       {canEditCurriculum && (
-=======
-      {
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
       <>
       {/* CREATE TOPIC MODAL */}
       <Modal
@@ -1006,15 +822,7 @@ const TopicManagement: React.FC = () => {
               setNewTopic({
                 ...newTopic,
                 subject_id:
-<<<<<<< HEAD
                   e.target.value,
-=======
-                  Number(
-                    e
-                      .target
-                      .value
-                  ),
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
               })
             }
             options={subjects.map(
@@ -1127,11 +935,7 @@ const TopicManagement: React.FC = () => {
         </div>
       </Modal>
       </>
-<<<<<<< HEAD
       )}
-=======
-      }
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de
 
       {/* MATERIAL MODAL */}
       <Modal
@@ -1186,8 +990,4 @@ const TopicManagement: React.FC = () => {
   );
 };
 
-<<<<<<< HEAD
 export default TopicManagement;
-=======
-export default TopicManagement;
->>>>>>> d0524919e2fcd28a55b1beb4f369317937eec4de

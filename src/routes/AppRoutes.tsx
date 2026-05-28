@@ -15,8 +15,12 @@ import { finishAuthRedirect, getPortalLoginPath } from '../utils/tenantRedirect'
 
 // New placeholders
 import PlaceholderPage from '../components/admin/PlaceholderPage';
-import { MessageSquare } from 'lucide-react';
-
+import {
+  BookOpen, ClipboardList, BookMarked, GraduationCap, FileText,
+  Award, FileSpreadsheet, CreditCard, History, UserX,
+  BellRing, MessageSquare, Mail, BrainCircuit, TrendingUp,
+  LineChart, UserCog, ShieldCheck, Activity
+} from 'lucide-react';
 
 const StudentDashboard = lazy(() => import('../pages/student/Dashboard'));
 const StudentClasses = lazy(() => import('../pages/student/Classes'));
@@ -335,26 +339,26 @@ const router = createBrowserRouter([
       { path: 'reports', element: <Suspense fallback={<PageLoader />}><AdminReports /></Suspense> },
       { path: 'finance', element: <Suspense fallback={<PageLoader />}><AdminFinance /></Suspense> },
       { path: 'communications', element: <Suspense fallback={<PageLoader />}><AdminCommunications /></Suspense> },
-      
+
       // New Academic Routes
       { path: 'subjects', element: <Suspense fallback={<PageLoader />}><Subjects /></Suspense> },
       { path: 'assignments', element: <Suspense fallback={<PageLoader />}><Assignments /></Suspense> },
       { path: 'study-materials', element: <Suspense fallback={<PageLoader />}><StudyMaterials /></Suspense> },
       { path: 'syllabus', element: <Suspense fallback={<PageLoader />}><Syllabus /></Suspense> },
-      
+
       // New Examinations Routes
       { path: 'exams', element: <Suspense fallback={<PageLoader />}><Exams /></Suspense> },
       { path: 'question-bank', element: <Suspense fallback={<PageLoader />}><QuestionBank /></Suspense> },
       { path: 'marks-entry', element: <Suspense fallback={<PageLoader />}><MarksEntry /></Suspense> },
       { path: 'results', element: <Suspense fallback={<PageLoader />}><Results /></Suspense> },
       { path: 'report-cards', element: <Suspense fallback={<PageLoader />}><ReportCards /></Suspense> },
-      
+
       // New Finance Routes
       { path: 'fee-structures', element: <Suspense fallback={<PageLoader />}><FeeStructures /></Suspense> },
       { path: 'payment-collection', element: <Suspense fallback={<PageLoader />}><PaymentCollection /></Suspense> },
       { path: 'payment-history', element: <Suspense fallback={<PageLoader />}><PaymentHistory /></Suspense> },
       { path: 'fee-defaulters', element: <Suspense fallback={<PageLoader />}><FeeDefaulters /></Suspense> },
-      
+
       // New Communication Routes
       { path: 'notifications-center', element: <Suspense fallback={<PageLoader />}><NotificationsCenter /></Suspense> },
       { path: 'message-logs', element: <Suspense fallback={<PageLoader />}><MessageLogs /></Suspense> },
@@ -369,7 +373,7 @@ const router = createBrowserRouter([
           />
         ),
       },
-      
+
       // New AI & Analytics Routes
       { path: 'ai-insights', element: <Suspense fallback={<PageLoader />}><AiInsights /></Suspense> },
       { path: 'student-performance', element: <Suspense fallback={<PageLoader />}><StudentPerformance /></Suspense> },

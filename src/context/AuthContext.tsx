@@ -158,11 +158,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           if (userData.institute) setInstitute(userData.institute);
           // Re-save updated user data
           localStorage.setItem('user', JSON.stringify(userData));
-        } catch {
-          // Token is invalid or expired
-          clearSession();
-          setUser(null);
-          setInstitute(null);
+        } catch (err: any) {
+          // Only clear session if it's an actual 401 Unauthorized
+          if (err.response?.status === 401) {
+            clearSession();
+            setUser(null);
+            setInstitute(null);
+          } else {
+            // It's likely a network error (backend reloading)
+            // Preserve the session and keep using stored user data
+            console.warn('Backend may be offline/reloading. Preserving auth state.');
+            const storedUser = getStoredUser();
+            if (storedUser) {
+              setUser(storedUser);
+              setInstitute(getStoredInstitute());
+            }
+          }
         }
       } else {
         setUser(null);
@@ -220,7 +231,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(null);
     setInstitute(null);
     // Call backend logout to clear cookie
-    api.get('/auth/logout').catch(() => {});
+    api.get('/auth/logout').catch(() => { });
     window.location.replace(getPortalLoginPath());
   };
 

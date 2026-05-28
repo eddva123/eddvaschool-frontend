@@ -168,8 +168,9 @@ const ProgressRing = ({ progress = 100, size = 42, strokeWidth = 3 }) => {
   const offset = circumference - (progress / 100) * circumference;
 
   return (
-    <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ width: size, height: size, top: -1, left: -1 }}>
-      <svg className="rotate-[-90deg] transform" width={size} height={size}>
+    <div className="relative flex items-center justify-center pointer-events-none" style={{ width: size, height: size }}>
+      <svg className="absolute inset-0 rotate-[-90deg] transform" width={size} height={size}>
+        {/* Background ring */}
         <circle
           stroke="currentColor"
           fill="transparent"
@@ -179,6 +180,7 @@ const ProgressRing = ({ progress = 100, size = 42, strokeWidth = 3 }) => {
           cy={size / 2}
           className="text-slate-200 dark:text-slate-800"
         />
+        {/* Progress ring */}
         <circle
           stroke="currentColor"
           fill="transparent"
@@ -211,14 +213,14 @@ export default function Sidebar({ open, onClose }) {
     <>
       <aside
         className={cn(
-          'fixed inset-y-0 left-0 z-50 w-[280px] flex-shrink-0 border-r border-slate-200 bg-white transition-all duration-300 dark:border-slate-800 dark:bg-slate-950 md:static',
-          collapsed && canCollapse ? 'md:w-[80px]' : 'md:w-[280px]',
+          'fixed inset-y-0 left-0 z-50 flex flex-col border-r border-slate-100 bg-white/70 backdrop-blur-2xl transition-all duration-300 dark:border-slate-800/40 dark:bg-slate-950/70 md:static shadow-[4px_0_24px_rgba(0,0,0,0.02)] dark:shadow-[4px_0_24px_rgba(0,0,0,0.2)]',
+          collapsed && canCollapse ? 'w-20' : 'w-[280px]',
           open ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
         )}
       >
         <div className="flex h-full flex-col overflow-hidden">
-          <div className="flex h-16 items-center justify-between border-b border-slate-100 px-6 dark:border-slate-800">
-            <div className={cn('min-w-0 transition-opacity', collapsed && canCollapse && 'md:opacity-0 md:pointer-events-none md:w-0 md:overflow-hidden')}>
+          <div className="flex h-20 shrink-0 items-center justify-between border-b border-slate-100/50 px-6 dark:border-slate-800/40">
+            <div className={cn('min-w-0 transition-opacity duration-200', collapsed && canCollapse && 'md:opacity-0 md:pointer-events-none md:w-0 md:overflow-hidden')}>
               <EddvaLogo />
             </div>
             <div className="flex items-center gap-1">
@@ -240,86 +242,144 @@ export default function Sidebar({ open, onClose }) {
 
           {/* Navigation Items */}
           <div className="flex-1 overflow-y-auto px-4 py-6 custom-scrollbar">
-            {groups.map((group) => (
-              <div key={group.heading} className="mb-6">
-                <p
-                  className={cn(
-                    'mb-2 px-3 text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500',
-                    collapsed && canCollapse && 'md:hidden'
-                  )}
-                >
-                  {group.heading}
-                </p>
-                <nav className="space-y-1">
-                  {group.items.map((item) =>
-                    item.action === 'logout' ? (
-                      <button
-                        key={`${group.heading}-${item.label}`}
-                        type="button"
-                        onClick={() => {
-                          onClose?.();
-                          logout();
-                        }}
-                        title={collapsed && canCollapse ? item.label : undefined}
-                        className={cn(
-                          'group flex w-full items-center gap-3 rounded-lg px-3 py-2 text-[13px] font-semibold transition-all text-slate-600 hover:bg-slate-50 dark:text-slate-400 dark:hover:bg-slate-900'
-                        )}
-                      >
-                        <item.icon className="h-[18px] w-[18px] shrink-0" />
-                        <span className={cn('truncate', collapsed && canCollapse && 'md:hidden')}>{item.label}</span>
-                      </button>
-                    ) : (
-                      <NavLink
-                        key={`${group.heading}-${item.label}`}
-                        to={item.to}
-                        end={item.end}
-                        title={collapsed && canCollapse ? item.label : undefined}
-                        onClick={onClose}
-                        className={({ isActive }) =>
-                          cn(
-                            'group flex items-center gap-3 rounded-lg px-3 py-2 text-[13px] font-semibold transition-all',
-                            isActive
-                              ? 'bg-blue-600 text-white'
-                              : 'text-slate-600 hover:bg-slate-50 dark:text-slate-400 dark:hover:bg-slate-900'
-                          )
-                        }
-                      >
-                        <item.icon className="h-[18px] w-[18px] shrink-0" />
-                        <span className={cn('truncate', collapsed && canCollapse && 'md:hidden')}>{item.label}</span>
-                      </NavLink>
-                    )
-                  )}
-                </nav>
-              </div>
-            ))}
+            <div className="space-y-8">
+              {groups.map((group) => (
+                <div key={group.heading} className="space-y-3">
+                  <div className="flex items-center gap-4">
+                    <p
+                      className={cn(
+                        'px-3 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400/80 dark:text-slate-500/80 transition-opacity whitespace-nowrap',
+                        collapsed && canCollapse && 'md:opacity-0 md:h-0 md:overflow-hidden'
+                      )}
+                    >
+                      {group.heading}
+                    </p>
+                    {(!collapsed || !canCollapse) && (
+                      <div className="h-px flex-1 bg-gradient-to-r from-slate-100 to-transparent dark:from-slate-800" />
+                    )}
+                  </div>
+                  <nav className="space-y-1.5">
+                    {group.items.map((item) => {
+                      const isActive = item.action !== 'logout' && (item.end ? location.pathname === item.to : location.pathname.startsWith(item.to));
+
+                      return item.action === 'logout' ? (
+                        <button
+                          key={`${group.heading}-${item.label}`}
+                          type="button"
+                          onClick={() => {
+                            onClose?.();
+                            logout();
+                          }}
+                          title={collapsed && canCollapse ? item.label : undefined}
+                          className="group relative flex w-full items-center gap-3 rounded-2xl px-3.5 py-3 text-[13px] font-bold outline-none text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+                        >
+                          <div className="absolute inset-0 rounded-2xl bg-slate-50 dark:bg-slate-900/50 opacity-0 transition-opacity group-hover:opacity-100" />
+                          <div className="relative z-10 flex items-center justify-center transition-transform group-hover:scale-110 text-rose-500">
+                            <item.icon className="h-[18px] w-[18px]" />
+                          </div>
+                          <span className={cn('relative z-10 truncate font-semibold transition-all duration-200 text-rose-600', collapsed && canCollapse && 'md:hidden')}>
+                            {item.label}
+                          </span>
+                        </button>
+                      ) : (
+                        <NavLink
+                          key={`${group.heading}-${item.label}`}
+                          to={item.to}
+                          end={item.end}
+                          title={collapsed && canCollapse ? item.label : undefined}
+                          onClick={onClose}
+                          className="relative group flex items-center gap-3 rounded-2xl px-3.5 py-3 text-[13px] font-bold transition-colors outline-none"
+                        >
+                          {/* Active Background Glow & Layout ID */}
+                          {isActive && (
+                            <motion.div
+                              layoutId="activeTabAdminSidebar"
+                              className="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 shadow-[0_0_20px_rgba(79,70,229,0.3)] dark:shadow-[0_0_20px_rgba(79,70,229,0.2)]"
+                              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                            />
+                          )}
+                          
+                          {/* Hover Background (for inactive) */}
+                          {!isActive && (
+                            <div className="absolute inset-0 rounded-2xl bg-slate-50 dark:bg-slate-900/50 opacity-0 transition-opacity group-hover:opacity-100" />
+                          )}
+
+                          <div className={cn(
+                            "relative z-10 flex items-center justify-center transition-transform group-hover:scale-110",
+                            isActive ? "text-white drop-shadow-md" : "text-slate-500 group-hover:text-slate-900 dark:text-slate-400 dark:group-hover:text-white"
+                          )}>
+                            <item.icon className={cn("h-[18px] w-[18px]", isActive && item.label === 'Dashboard' && "animate-pulse")} />
+                          </div>
+                          
+                          <span className={cn(
+                            'relative z-10 truncate font-semibold transition-all duration-200', 
+                            isActive ? "text-white" : "text-slate-600 group-hover:text-slate-900 dark:text-slate-400 dark:group-hover:text-white",
+                            collapsed && canCollapse && 'md:opacity-0 md:w-0 md:hidden'
+                          )}>
+                            {item.label}
+                          </span>
+                          
+                          {item.badge && (!collapsed || !canCollapse) && (
+                            <span className={cn(
+                              "relative z-10 ml-auto rounded-full px-2 py-0.5 text-[9px] font-black tracking-wider uppercase transition-colors shadow-sm",
+                              item.badge === 'LIVE' ? "bg-rose-500 text-white animate-bounce shadow-rose-500/30" : 
+                              item.badge.includes('Unread') || item.badge.includes('New') ? "bg-rose-100 text-rose-600 dark:bg-rose-500/20 dark:text-rose-400" :
+                              isActive ? "bg-white/20 text-white" : "bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400"
+                            )}>
+                              {item.badge}
+                            </span>
+                          )}
+
+                          {/* Show a red dot if collapsed and has an important badge */}
+                          {item.badge && collapsed && canCollapse && (item.badge === 'LIVE' || item.badge.includes('Unread') || item.badge.includes('New')) && (
+                            <span className="absolute top-3 right-3 h-2 w-2 rounded-full bg-rose-500 shadow-sm shadow-rose-500/50 animate-pulse z-20" />
+                          )}
+                        </NavLink>
+                      );
+                    })}
+                  </nav>
+                </div>
+              ))}
+            </div>
           </div>
 
-          <div className="border-t border-slate-100 p-4 dark:border-slate-800">
+          {/* Footer User Card with Progress */}
+          <div className="shrink-0 border-t border-slate-100 p-4 dark:border-slate-800/40">
             {isInstitute || isTeacher ? (
               <div
                 className={cn(
-                  'flex items-center gap-3 rounded-xl bg-slate-50 p-3 dark:bg-slate-900',
-                  collapsed && 'md:justify-center md:p-2'
+                  'group relative flex items-center gap-3 rounded-[20px] bg-white border border-slate-200/60 p-3 shadow-sm hover:shadow-md transition-all duration-300 dark:bg-slate-900/40 dark:border-slate-800/60',
+                  collapsed && canCollapse && 'md:justify-center md:p-2'
                 )}
               >
-                {isInstitute ? (
-                  <InstituteLogo institute={institute} size="sm" />
-                ) : (
-                  <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-blue-100 text-xs font-black text-blue-700 dark:bg-blue-900 dark:text-blue-300">
-                    {(user?.name || 'T').charAt(0).toUpperCase()}
-                  </div>
-                )}
-                <div className={cn('min-w-0 flex-1', collapsed && 'md:hidden')}>
-                  <p className="truncate text-xs font-bold text-slate-950 dark:text-white">{workspaceName}</p>
-                  <div className="mt-1 flex items-center gap-1.5">
-                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                    <span className="text-[10px] font-bold text-emerald-600">{roleLabel}</span>
+                <div className="relative shrink-0 flex items-center justify-center">
+                  <ProgressRing progress={100} size={42} strokeWidth={3} />
+                  {isInstitute ? (
+                    <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 shadow-inner overflow-hidden">
+                      <InstituteLogo institute={institute} size="sm" />
+                    </div>
+                  ) : (
+                    <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 text-xs font-black text-white shadow-inner">
+                      {(user?.name || 'T').charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                </div>
+                
+                <div className={cn('min-w-0 flex-1 transition-opacity', collapsed && canCollapse && 'md:hidden')}>
+                  <p className="truncate text-sm font-black text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{workspaceName}</p>
+                  <div className="mt-0.5 flex items-center gap-1.5">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.6)]" />
+                    <span className="text-[10px] font-bold text-slate-500">{roleLabel}</span>
                   </div>
                 </div>
               </div>
             ) : (
-              <div className="rounded-xl bg-blue-50 p-4 dark:bg-slate-900">
-                <p className="text-xs font-bold text-blue-700 dark:text-blue-300">Super Admin</p>
+              <div className="rounded-[20px] bg-gradient-to-r from-blue-500 to-indigo-600 p-4 shadow-md shadow-blue-500/20">
+                <p className="text-xs font-black text-white">Super Admin Console</p>
+                <div className="mt-1 flex items-center gap-1.5">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-300 animate-pulse" />
+                  <span className="text-[10px] font-bold text-blue-100">System Online</span>
+                </div>
               </div>
             )}
           </div>

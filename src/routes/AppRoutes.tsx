@@ -8,18 +8,36 @@ import {
 
 import { AuthProvider, useAuth } from '../context/AuthContext';
 import AdminLayout from '../components/admin/Layout';
+import StudentLayout from '../components/student/Layout';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { getHomePathForRole } from '../utils/roleRedirect';
 import { finishAuthRedirect, getPortalLoginPath } from '../utils/tenantRedirect';
 
 // New placeholders
 import PlaceholderPage from '../components/admin/PlaceholderPage';
-import { 
-  BookOpen, ClipboardList, BookMarked, GraduationCap, FileText, 
-  Award, FileSpreadsheet, CreditCard, History, UserX, 
+import {
+  BookOpen, ClipboardList, BookMarked, GraduationCap, FileText,
+  Award, FileSpreadsheet, CreditCard, History, UserX,
   BellRing, MessageSquare, Mail, BrainCircuit, TrendingUp,
   LineChart, UserCog, ShieldCheck, Activity
 } from 'lucide-react';
+
+const StudentDashboard = lazy(() => import('../pages/student/Dashboard'));
+const StudentClasses = lazy(() => import('../pages/student/Classes'));
+const StudentClassDetails = lazy(() => import('../pages/student/ClassDetails'));
+const StudentTopicDetails = lazy(() => import('../pages/student/TopicDetails'));
+const StudentAssignments = lazy(() => import('../pages/student/Assignments'));
+const StudentAssessments = lazy(() => import('../pages/student/Assessments'));
+const StudentTestEngine = lazy(() => import('../pages/student/TestEngine'));
+const StudentSessionResult = lazy(() => import('../pages/student/SessionResult'));
+const StudentAiAssistant = lazy(() => import('../pages/student/AiAssistant'));
+const StudentBattleArena = lazy(() => import('../pages/student/BattleArena'));
+const StudentStudyPlanner = lazy(() => import('../pages/student/StudyPlanner'));
+const StudentCalendar = lazy(() => import('../pages/student/Calendar'));
+const StudentAnalytics = lazy(() => import('../pages/student/Analytics'));
+const StudentFeedback = lazy(() => import('../pages/student/Feedback'));
+const StudentChat = lazy(() => import('../pages/student/Chat'));
+const StudentProfile = lazy(() => import('../pages/student/Profile'));
 
 const TeacherDashboard = lazy(() => import('../pages/teacher/Dashboard'));
 const TopicManagement = lazy(() => import('../pages/teacher/TopicManagement'));
@@ -210,6 +228,32 @@ const router = createBrowserRouter([
     ],
   },
   {
+    path: '/student',
+    element: (
+      <ProtectedRoute roles={['STUDENT']}>
+        <StudentLayout />
+      </ProtectedRoute>
+    ),
+    children: [
+      { index: true, element: <Suspense fallback={<PageLoader />}><StudentDashboard /></Suspense> },
+      { path: 'classes', element: <Suspense fallback={<PageLoader />}><StudentClasses /></Suspense> },
+      { path: 'classes/:id', element: <Suspense fallback={<PageLoader />}><StudentClassDetails /></Suspense> },
+      { path: 'classes/:batchId/topics/:topicId', element: <Suspense fallback={<PageLoader />}><StudentTopicDetails /></Suspense> },
+      { path: 'assignments', element: <Suspense fallback={<PageLoader />}><StudentAssignments /></Suspense> },
+      { path: 'assessments', element: <Suspense fallback={<PageLoader />}><StudentAssessments /></Suspense> },
+      { path: 'assessments/:id/take', element: <Suspense fallback={<PageLoader />}><StudentTestEngine /></Suspense> },
+      { path: 'assessments/:id', element: <Suspense fallback={<PageLoader />}><StudentSessionResult /></Suspense> },
+      { path: 'ai-assistant', element: <Suspense fallback={<PageLoader />}><StudentAiAssistant /></Suspense> },
+      { path: 'battle-arena', element: <Suspense fallback={<PageLoader />}><StudentBattleArena /></Suspense> },
+      { path: 'planner', element: <Suspense fallback={<PageLoader />}><StudentStudyPlanner /></Suspense> },
+      { path: 'calendar', element: <Suspense fallback={<PageLoader />}><StudentCalendar /></Suspense> },
+      { path: 'analytics', element: <Suspense fallback={<PageLoader />}><StudentAnalytics /></Suspense> },
+      { path: 'feedback', element: <Suspense fallback={<PageLoader />}><StudentFeedback /></Suspense> },
+      { path: 'chat', element: <Suspense fallback={<PageLoader />}><StudentChat /></Suspense> },
+      { path: 'profile', element: <Suspense fallback={<PageLoader />}><StudentProfile /></Suspense> },
+    ],
+  },
+  {
     path: '/admin',
     element: (
       <ProtectedRoute roles={['SUPER_ADMIN', 'INSTITUTE_ADMIN']}>
@@ -231,11 +275,9 @@ const router = createBrowserRouter([
       {
         path: 'users',
         element: (
-          <SuperAdminOnly>
-            <Suspense fallback={<PageLoader />}>
-              <AdminUsers />
-            </Suspense>
-          </SuperAdminOnly>
+          <Suspense fallback={<PageLoader />}>
+            <AdminUsers />
+          </Suspense>
         ),
       },
       { path: 'students', element: <Suspense fallback={<PageLoader />}><AdminStudents /></Suspense> },
@@ -257,31 +299,41 @@ const router = createBrowserRouter([
       { path: 'reports', element: <Suspense fallback={<PageLoader />}><AdminReports /></Suspense> },
       { path: 'finance', element: <Suspense fallback={<PageLoader />}><AdminFinance /></Suspense> },
       { path: 'communications', element: <Suspense fallback={<PageLoader />}><AdminCommunications /></Suspense> },
-      
+
       // New Academic Routes
       { path: 'subjects', element: <Suspense fallback={<PageLoader />}><Subjects /></Suspense> },
       { path: 'assignments', element: <Suspense fallback={<PageLoader />}><Assignments /></Suspense> },
       { path: 'study-materials', element: <Suspense fallback={<PageLoader />}><StudyMaterials /></Suspense> },
       { path: 'syllabus', element: <Suspense fallback={<PageLoader />}><Syllabus /></Suspense> },
-      
+
       // New Examinations Routes
       { path: 'exams', element: <Suspense fallback={<PageLoader />}><Exams /></Suspense> },
       { path: 'question-bank', element: <Suspense fallback={<PageLoader />}><QuestionBank /></Suspense> },
       { path: 'marks-entry', element: <Suspense fallback={<PageLoader />}><MarksEntry /></Suspense> },
       { path: 'results', element: <Suspense fallback={<PageLoader />}><Results /></Suspense> },
       { path: 'report-cards', element: <Suspense fallback={<PageLoader />}><ReportCards /></Suspense> },
-      
+
       // New Finance Routes
       { path: 'fee-structures', element: <Suspense fallback={<PageLoader />}><FeeStructures /></Suspense> },
       { path: 'payment-collection', element: <Suspense fallback={<PageLoader />}><PaymentCollection /></Suspense> },
       { path: 'payment-history', element: <Suspense fallback={<PageLoader />}><PaymentHistory /></Suspense> },
       { path: 'fee-defaulters', element: <Suspense fallback={<PageLoader />}><FeeDefaulters /></Suspense> },
-      
+
       // New Communication Routes
       { path: 'notifications-center', element: <Suspense fallback={<PageLoader />}><NotificationsCenter /></Suspense> },
       { path: 'message-logs', element: <Suspense fallback={<PageLoader />}><MessageLogs /></Suspense> },
       { path: 'email-center', element: <Suspense fallback={<PageLoader />}><EmailCenter /></Suspense> },
-      
+      {
+        path: 'sms-center',
+        element: (
+          <PlaceholderPage
+            title="SMS Center"
+            description="Manage and broadcast SMS alerts to students, teachers, and parents."
+            icon={MessageSquare}
+          />
+        ),
+      },
+
       // New AI & Analytics Routes
       { path: 'ai-insights', element: <Suspense fallback={<PageLoader />}><AiInsights /></Suspense> },
       { path: 'student-performance', element: <Suspense fallback={<PageLoader />}><StudentPerformance /></Suspense> },

@@ -67,7 +67,6 @@ const instituteGroups = [
       { to: '/admin/students', label: 'Students', icon: GraduationCap },
       { to: '/admin/teachers', label: 'Teachers', icon: Users },
       { to: '/admin/academics', label: 'Classes & Curriculum', icon: Building2 },
-      { to: '/admin/subjects', label: 'Subjects', icon: BookOpen },
       { to: '/admin/assignments', label: 'Assignments & Homework', icon: ClipboardList },
       { to: '/admin/study-materials', label: 'Study Materials', icon: BookOpen },
       { to: '/admin/syllabus', label: 'Syllabus Tracking', icon: GraduationCap },
@@ -208,13 +207,13 @@ export default function Sidebar({ open, onClose }) {
               <div key={group.heading} className="mb-6">
                 <p
                   className={cn(
-                    'mb-2 px-3 text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 transition-opacity',
-                    collapsed && canCollapse && 'md:opacity-0 md:h-0 md:overflow-hidden md:mb-0'
+                    'mb-2 px-3 text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500',
+                    collapsed && canCollapse && 'md:hidden'
                   )}
                 >
                   {group.heading}
                 </p>
-                <nav className="space-y-1.5">
+                <nav className="space-y-1">
                   {group.items.map((item) =>
                     item.action === 'logout' ? (
                       <button
@@ -226,8 +225,7 @@ export default function Sidebar({ open, onClose }) {
                         }}
                         title={collapsed && canCollapse ? item.label : undefined}
                         className={cn(
-                          'group flex w-full items-center gap-3 rounded-xl px-3.5 py-2.5 text-[13px] font-semibold transition-all text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:text-white',
-                          collapsed && canCollapse && 'md:justify-center'
+                          'group flex w-full items-center gap-3 rounded-lg px-3 py-2 text-[13px] font-semibold transition-all text-slate-600 hover:bg-slate-50 dark:text-slate-400 dark:hover:bg-slate-900'
                         )}
                       >
                         <item.icon className="h-[18px] w-[18px] shrink-0" />
@@ -242,11 +240,10 @@ export default function Sidebar({ open, onClose }) {
                         onClick={onClose}
                         className={({ isActive }) =>
                           cn(
-                            'group flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-[13px] font-semibold transition-all duration-200',
-                            collapsed && canCollapse && 'md:justify-center',
+                            'group flex items-center gap-3 rounded-lg px-3 py-2 text-[13px] font-semibold transition-all',
                             isActive
-                              ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-md shadow-blue-500/10 scale-[1.02]'
-                              : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:text-white'
+                              ? 'bg-blue-600 text-white'
+                              : 'text-slate-600 hover:bg-slate-50 dark:text-slate-400 dark:hover:bg-slate-900'
                           )
                         }
                       >

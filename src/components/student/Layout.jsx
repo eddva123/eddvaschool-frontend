@@ -3,16 +3,14 @@ import { Outlet, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import Sidebar from './Sidebar';
 import Navbar from './Navbar';
-import { PageTransition } from './PageTransition';
+import { PageTransition } from '../admin/PageTransition';
 import { useAuth } from '../../context/AuthContext';
-import { cn } from './Skeleton';
+import { cn } from '../admin/Skeleton';
 
 export default function Layout() {
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { user } = useAuth();
-  const isInstitute = user?.role === 'INSTITUTE_ADMIN';
-  const isTeacher = user?.role === 'TEACHER';
 
   return (
     <div className="relative flex h-screen w-full overflow-hidden bg-surface-50 dark:bg-slate-950">
@@ -22,7 +20,7 @@ export default function Layout() {
         <main className="flex-1 overflow-x-hidden overflow-y-auto p-3 sm:p-5 lg:p-6">
           <AnimatePresence mode="wait">
             <PageTransition key={location.pathname}>
-              <div className={cn('mx-auto h-full', isInstitute || isTeacher ? 'max-w-[1680px]' : 'max-w-7xl')}>
+              <div className="mx-auto h-full max-w-[1680px]">
                 <Outlet />
               </div>
             </PageTransition>

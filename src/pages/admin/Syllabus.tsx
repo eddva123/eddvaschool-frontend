@@ -34,13 +34,17 @@ export default function Syllabus() {
     try {
       setLoading(true);
       const res = await api.get('/content/chapters');
+      let data = [];
       if (Array.isArray(res.data)) {
-        setSyllabusList(res.data);
+        data = res.data;
       } else if (res.data && Array.isArray(res.data.data)) {
-        setSyllabusList(res.data.data);
-      } else {
-        setSyllabusList([]);
+        data = res.data.data;
       }
+      const mapped = data.map((item: any) => ({
+        ...item,
+        chapterName: item.chapterName || item.name,
+      }));
+      setSyllabusList(mapped);
     } catch (err: any) {
       toast.error('Failed to load syllabus/chapters');
       setSyllabusList([]);

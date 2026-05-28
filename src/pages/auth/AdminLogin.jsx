@@ -60,8 +60,13 @@ export default function Login() {
     return () => { ignore = true; };
   }, [tenantMode]);
 
-  const roleLabel = useMemo(() => (selectedRole === 'TEACHER' ? 'TEACHER OTP LOGIN' : 'INSTITUTE OTP LOGIN'), [selectedRole]);
+  const roleLabel = useMemo(() => {
+    if (selectedRole === 'STUDENT') return 'STUDENT OTP LOGIN';
+    if (selectedRole === 'TEACHER') return 'TEACHER OTP LOGIN';
+    return 'INSTITUTE OTP LOGIN';
+  }, [selectedRole]);
   const headline = useMemo(() => {
+    if (selectedRole === 'STUDENT') return 'Student Portal';
     if (selectedRole === 'TEACHER') return 'Teacher Access';
     return tenantMode ? (tenantInstitute?.name ? `${tenantInstitute.name} Staff Access` : 'Institute Staff Access') : 'Institute Access';
   }, [selectedRole, tenantInstitute, tenantMode]);
@@ -200,9 +205,13 @@ export default function Login() {
               </div>
 
               <form onSubmit={handleSubmit} className="mt-8 space-y-5">
-                <div className="flex gap-3">
-                  {[{ id: 'INSTITUTE_ADMIN', label: 'INSTITUTE LOGIN' }, { id: 'TEACHER', label: 'TEACHER LOGIN' }].map((item) => (
-                    <button key={item.id} type="button" onClick={() => setSelectedRole(item.id)} className={`flex-1 rounded-2xl px-4 py-3 text-sm font-bold tracking-wide transition ${selectedRole === item.id ? 'bg-gradient-to-r from-blue-600 to-sky-500 text-white shadow-lg' : 'bg-white border border-gray-200 text-slate-700'}`}>
+                <div className="flex gap-2">
+                  {[
+                    { id: 'INSTITUTE_ADMIN', label: 'INSTITUTE' },
+                    { id: 'TEACHER', label: 'TEACHER' },
+                    { id: 'STUDENT', label: 'STUDENT' }
+                  ].map((item) => (
+                    <button key={item.id} type="button" onClick={() => setSelectedRole(item.id)} className={`flex-1 rounded-2xl px-2 py-3 text-sm font-bold tracking-wide transition ${selectedRole === item.id ? 'bg-gradient-to-r from-blue-600 to-sky-500 text-white shadow-lg' : 'bg-white border border-gray-200 text-slate-700'}`}>
                       {item.label}
                     </button>
                   ))}
@@ -212,7 +221,7 @@ export default function Login() {
                   <label className="mb-2 block text-xs font-semibold text-gray-600">Email Address</label>
                   <div className="relative">
                     <Mail className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-sky-400" />
-                    <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={selectedRole === 'TEACHER' ? 'teacher@school.edu' : 'admin@institute.edu'} className="w-full rounded-2xl border border-gray-200 bg-white py-4 pl-12 pr-4 text-slate-900 outline-none focus:ring-4 focus:ring-sky-100" />
+                    <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={selectedRole === 'STUDENT' ? 'student@school.edu' : selectedRole === 'TEACHER' ? 'teacher@school.edu' : 'admin@institute.edu'} className="w-full rounded-2xl border border-gray-200 bg-white py-4 pl-12 pr-4 text-slate-900 outline-none focus:ring-4 focus:ring-sky-100" />
                   </div>
                 </div>
 

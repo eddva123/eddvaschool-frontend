@@ -10,6 +10,7 @@ export function getHomePathForRole(role?: string | null): string {
     case 'TEACHER':
       return '/teacher';
     case 'STUDENT':
+      return '/student';
     case 'PARENT':
       return '/login';
     default:

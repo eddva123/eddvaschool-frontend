@@ -161,7 +161,19 @@ export function finishAuthRedirect(tenantDomain, navigate, role) {
     return;
   }
 
-  if (role === 'STUDENT' || role === 'PARENT') {
+  if (role === 'STUDENT') {
+    if (!onTenant && tenantDomain) {
+      const tenantStudentUrl = `${formatTenantUrl(tenantDomain)}/student`;
+      if (tenantStudentUrl) {
+        window.location.replace(tenantStudentUrl);
+        return;
+      }
+    }
+    navigate('/student', { replace: true });
+    return;
+  }
+
+  if (role === 'PARENT') {
     navigate('/login', { replace: true });
     return;
   }
